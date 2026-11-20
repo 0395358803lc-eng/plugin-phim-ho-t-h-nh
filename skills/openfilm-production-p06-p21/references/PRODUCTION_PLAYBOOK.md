@@ -1,54 +1,33 @@
-# Production playbook — v1.14.1
+# Production Playbook v1.14.2 — code-only + two engines
 
-Hướng dẫn thực thi trong phạm vi đã được người dùng cấp. Không có yêu cầu chấp nhận từng Pxx, packet, frame hay take. P18/P20 là chẩn đoán/đánh giá tùy chọn; không thêm chúng vào đường phụ thuộc mặc định của P19/P21.
+## 0. Quyền và sản phẩm
 
-## Tổ chức dự án và nguồn
+Trong scope đã duyệt thực hiện đủ V01 trước bàn giao, không xét QC từng take/frame/packet. Kiểm file thật, hash, decode, audio stream và profile; người dùng quyết định thẩm mỹ sau V01. Không tự cài/tải/phát hành/đổi GPU→CPU khi thiếu quyền.
 
-Dùng root thật trên thiết bị đã chọn. Tách `source/` bất biến, `assets/`, `audio/`, `captions/`, `scenes/`, `reports/`, `renders/`, `film.json`, `film.html`. Revision có thư mục source riêng hoặc manifest hash đủ để tái tạo V01/V02. Không dùng thư mục làm outputPaths: liệt kê các file cụ thể.
+## M0–M1: môi trường và FilmData
 
-Bảy tài liệu: KICH_BAN_HOAN_CHINH.md, COT_TRUYEN.md, NHAN_VAT.md, LOI_THOAI.md, DANH_SACH_CANH.csv, HUONG_DAN_HINH_ANH_AM_THANH.md, BAO_CAO_NGHIEM_THU.md. Đọc nội dung, không suy diễn từ tên file. `audit_seven_files.py` kiểm cấu trúc/encoding/hash; người điều phối còn phải đối chiếu nhân vật, cảnh và thoại. Báo cáo nghiệm thu kịch bản không phải acceptance video.
+Chọn máy/workspace, reuse tools; chốt `masterEngine=openfilm|remotion` ở P08. A chỉ bắt CLI OpenFilm, B chỉ bắt runtime Remotion/React/Node/renderer và các dependency của nó. FilmData `film.json` có filmId, masterEngine, fps, width, height, durationInFrames, shots (`id`, startFrame, durationInFrames), dialogues (`shotId`, text, startFrame, endFrame), asset references; integer frames và IDs nhất quán. Giữ bảy nguồn không sửa.
 
-## M1: profile và FilmData
+A bootstrap `openfilm/film.html` và `openfilm/scenes/*.html`. B bootstrap `remotion/src/Root.tsx`/Composition và cảnh TSX; **không bắt film.html**. Input thay đổi phải kiểm approval scope mới.
 
-Ghi masterEngine, FPS, width/height, durationInFrames, style, âm thanh cần/không cần và lý do. `shots[]` có id, startFrame, durationInFrames, type=2d/3d, scene. `dialogues[]` có id, shotId, speaker, text, startFrame, endFrame, audio. Tất cả frame là số nguyên; shots liên tục; mỗi thoại nằm trong shot. Đo WAV xong thì cập nhật duration/interval thay vì kéo thoại theo dự tính ban đầu.
+## M2: Storyboard như dữ liệu
 
-Chạy validator có sẵn: `python validate_filmdata.py film.json --check-assets PROJECT_ROOT`. Skeleton từ `bootstrap_openfilm.py` chỉ tạo file chưa tồn tại và chưa đại diện cảnh hoàn thành. Không render V01 với placeholder hoặc thiếu asset.
+`storyboard/storyboard.json` và `storyboard/STORYBOARD.md` bắt buộc; shot data có ID, scene, frame start/duration, layout, nhân vật/vị trí/trạng thái, action, camera path, background, lighting, transition, motion keyframes, audio/subtitle refs, implementation và assetRefs. `style-bible.md` + `characters/*.md` là dữ liệu. Map shot IDs và frame đúng FilmData. Không sinh ảnh tĩnh, no thumbnails/portrait/panels/Canvas picture/ZIP; schema xem `openfilm-storyboard-data/references/STORYBOARD_SCHEMA.json`. Kiểm P10 bằng parse, completeness và consistency, không bằng pixel.
 
-## M2: storyboard và assets
+P11 lập `assets-manifest.json`: liệt kê SVG/HTML/CSS/TSX/shader/Three.js mesh/texture code và media hiện hữu. Nếu code sinh được scene mà không cần file ảnh thì `imageAssets=[]`, `zipHandoff=SKIPPED_NOT_REQUIRED`. Không giả định asset phải là PNG, không tạo ZIP ảnh để giao người dùng. Chỉ asset thiếu *và thực sự được scene tham chiếu* mới là lỗi blocking.
 
-Mỗi shot ghi cỡ cảnh, vị trí nhân vật, bố cục, action, nhịp đầu/cuối và transition. Character bible giữ tỷ lệ, palette, costume, phụ kiện và voice; style bible giữ background, ánh sáng và typography. Canvas mặc định FILE_STORYBOARD; chỉ dùng OPENFILM_CANVAS nếu capability được xác minh và trong scope. Không tự gọi Make/provider/TTS từ Canvas.
+## M3: WAV + phụ đề
 
-Assets có ID, source/license, path, hash, kích thước hoặc thông số mesh/material. SVG/HTML dùng trực tiếp nếu pipeline hỗ trợ; PNG tạo bằng image tool cần bytes thật và handoff manifest. Không bắt tạo ảnh raster nếu phim được thiết kế bằng SVG/3D. Theo dõi missing assets theo shot để sửa đúng phần phụ thuộc.
+VieNeu-TTS GPU-first local nếu có thoại; verify model/codec CUDA thật trước inference theo scope. Sinh WAV, đo duration sample rate/frames, tính lại timing FilmData, cue VTT/SRT; không dùng âm thanh ước lượng để đánh dấu sync hoàn thành. Không TTS thì skip có lý do. Không buộc user nghe từng đoạn.
 
-## M3: lời thoại và phụ đề
+## M4: mã cảnh thật
 
-Đọc openfilm-vieneu-tts và GPU_FIRST_POLICY. Tái sử dụng venv/model/codec đã có; audit path trước khởi tạo SDK. Khóa mạng/download khi làm bài thử local-only. Kiểm torch CUDA, GPU/VRAM và device thật của backbone lẫn codec sau inference; lưu version, model hash/revision, voice, seed và lệnh. NVIDIA có sẵn không đủ chứng minh inference CUDA.
+A: HTML/SVG/CSS/Canvas/GSAP paused `.seek(t)`, Three.js state theo t; mỗi shot `.html` có `window.film.frame(t)`. B: Remotion React TSX `useCurrentFrame()` / `interpolate` / `Sequence`, có thể dùng R3F/Three.js; các scene được render theo frame, không theo timer nondeterministic. Cảnh thực, không placeholder. Không buộc dùng cả 2D và 3D.
 
-Sinh WAV theo dialogue/scene bằng preset được chọn. Đo sample rate, frames/duration, channel và khả năng decode; lưu SHA256. Không im lặng chuyển CPU/provider, không cloning nếu chưa có quyền. Giữ WAV nguồn, dùng gain/ducking ở timeline khi cần.
+## M5–M7: timeline, render, bàn giao
 
-Captions VTT/SRT: cue tăng dần, start < end, không vượt shot/audio, chữ UTF-8. Timestamp theo căn chỉnh có bằng chứng; nếu chia câu theo tỷ lệ duration thì ghi rõ chưa có forced alignment cấp từ. Burn-in hoặc subtitle track theo profile; chỉ chứa VTT mà không đưa vào render không chứng minh phụ đề xuất hiện. Không lấy điểm QC nghe làm điều kiện tạo cảnh.
+A: `film.html` là timeline, chạy CLI đã xác minh trong cwd dự án, log argv/stdout/exit. B: Remotion Composition là timeline, giữ durationInFrames/fps và audio/subtitle tracks; render Remotion CLI/renderer có sẵn, log argv/stdout/exit. Không chạy OpenFilm previs hoặc fixture trong B chỉ để qua gate. Cả hai ghi `renders/V01.mp4`, FFprobe codec/streams/FPS/resolution/duration, FFmpeg decode để phát hiện lỗi và hash. Deliver V01 + source + manifest; không tự ghi `USER_ACCEPTED`. Feedback mục tiêu tạo V02/V03 riêng, bảo toàn V01. P18 smoke, P20 review chỉ kích hoạt chẩn đoán/user request.
 
-## M4: cảnh hoạt hình
+## Legacy
 
-Dùng OpenFilm scene API theo SPEC. Cố định asset URLs và seed. GSAP timeline paused, frame(t) gọi seek(t); Three.js cập nhật camera/object từ t rồi render scene. Với R3F/Remotion dùng frame/fps cùng FilmData, không phụ thuộc vòng lặp realtime. Chọn 2D hoặc 3D theo nhu cầu, không bắt cả hai.
-
-Kiểm tài sản tham chiếu tồn tại và source chạy được. Look/smoke/random seek chỉ khi chẩn đoán lỗi hoặc người dùng yêu cầu; không sinh vòng Visual PASS bắt buộc. Tắt placeholder khi nội dung thật hoàn thành. SKIPPED P15 có lý do nếu phim 2D.
-
-## M5: timeline
-
-OpenFilm film.html có track section và iframe/media với src tương đối, fragment `#t=in,out`, `at` là vị trí trên timeline. Duration đoạn được cắt phải khớp shot; offset thoại lấy từ FilmData. Caption overlay phải dùng cùng timeline. Chuyển cảnh/gain/color dùng khả năng đã xác minh, tránh ép API từ phiên bản khác.
-
-Kiểm toàn bộ src, audio durations và shot boundaries bằng dữ liệu. External inputs dùng hash lúc duyệt; file do packet trước tạo dùng outputHashes thực ngay trước khi chạy packet sau. Bất kỳ input bị đổi ngoài scope thì dừng đúng phần bị ảnh hưởng và xác minh lại.
-
-## M6–M7: render, bàn giao và sửa
-
-Đọc CLI --help đã cài, giữ executable/cwd/options cụ thể. Ví dụ với CLI đã xác minh hỗ trợ: `openfilm render --out ABS_OUTPUT.mp4 --fps 24 --workers 1` trong thư mục film.html. Lưu argv/cwd/exitCode/stdout/stderr. Tránh ghi token/URL truy cập Studio vào gói chia sẻ; giữ log gốc cục bộ và bản đã che token cho bàn giao. Không coi exitCode=0 là đủ.
-
-FFprobe kiểm codec, streams, FPS, resolution, duration. FFmpeg decode toàn MP4 và WAV để phát hiện hỏng/truncated. Video yêu cầu thoại phải có audio stream; silent profile ghi rõ requiresAudio=false. Hash output sau render. `finish_first.check_file` thực thi các kiểm tra file này; không đánh giá thẩm mỹ.
-
-Ghi `video={path,sha256,version,requiresAudio,status:OUTPUT_READY}`, dùng DELIVER_VIDEO sau bàn giao. Gửi video/source/captions/manifest thật; không tự ghi USER_ACCEPTED. Phản hồi rõ targetIds/category/request tạo revisionPlan. Sao lưu hash và videoHistory trước sửa. Giữ nguyên nguồn cảnh không liên quan, tạo V02 chưa tồn tại, render và register_revision; kiểm lại SHA V01 trước bàn giao V02.
-
-## Bộ mẫu tái lập bằng runtime có sẵn
-
-`scripts/run_vieneu_gpu.py`: model+codec local, NVIDIA/PyTorch CUDA thật, WAV và GPU_EXECUTION.json. `scripts/build_production_sample.py`: bảy tài liệu mẫu, FilmData, storyboard, SVG/GSAP ba cảnh, VTT/SRT và hai thư mục version. Chỉ chạy khi user yêu cầu bài thử; không chạy khi chỉ đọc skill. Đọc tham số --help, dùng thư mục mới và GSAP có sẵn. TTS script từ chối overwrite và không tải model. Bài tone cũ chỉ là fixture runtime, không thay bằng chứng VieNeu hoặc phim đầy đủ.
-
+Các hướng dẫn từng bắt ZIP ảnh trong M2 hoặc OpenFilm CLI trong Remotion Master là legacy. Với 99 template ID cũ, giữ ID nhưng xử lý packet dành cho engine khác bằng `SKIPPED_ENGINE_NOT_SELECTED` kèm skipReason và map đầu ra cùng chức năng bằng engine hiện tại; không tạo file giả.

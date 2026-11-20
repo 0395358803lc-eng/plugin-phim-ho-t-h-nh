@@ -1,5 +1,16 @@
 {
   "schemaVersion": 2,
+  "pluginVersion": "1.14.3",
+  "defaultMode": "FINISH_FIRST_USER_REVIEW",
+  "openfilmExecutionPolicy": "CLI_ONLY_FOR_OPENFILM",
+  "selectedMasterEngines": [
+    "openfilm",
+    "remotion"
+  ],
+  "defaultStoryboardMode": "DATA_ONLY",
+  "requiresRasterStoryboard": false,
+  "requiresImageZipHandoff": false,
+  "engineSpecificOutputPolicy": "SKIP_OTHER_ENGINE_PACKETS_WITH_REASON",
   "stages": [
     {
       "id": "P06",
@@ -11,14 +22,17 @@
       "skippable": true,
       "requiresEvidence": true,
       "requiresAcceptance": false,
-      "openfilmRuntimeProfile": "reports/openfilm/OPENFILM_RUNTIME_PROFILE.json",
-      "requiredBefore": "P07 unless renderer genuinely blocked and user changes approved scope",
-      "notes": "Installation can SKIP but runtime evidence cannot be fabricated.",
-      "openFilmRuntime": "cli-required",
-      "cliEvidenceRequired": true,
       "macroId": "M0",
       "acceptanceMode": "OUTPUT_READY",
       "userAcceptanceAt": "AFTER_DELIVERY",
+      "runtimePolicy": "SELECTED_ENGINE_ONLY",
+      "openFilmRuntime": "cli-required-if-master-openfilm",
+      "remotionRuntime": "remotion-renderer-required-if-master-remotion",
+      "cliEvidenceRequired": true,
+      "cliEvidenceConditional": "OpenFilm only; for Remotion use Remotion CLI/renderer evidence",
+      "openfilmRuntimeProfile": "reports/openfilm/OPENFILM_RUNTIME_PROFILE.json",
+      "requiredBefore": "P07 unless selected renderer genuinely blocked",
+      "notes": "Installation can SKIP but selected-engine runtime evidence required.",
       "diagnosticFixture": "first runtime verification or technical diagnosis only"
     },
     {
@@ -49,10 +63,15 @@
       "skippable": false,
       "requiresEvidence": true,
       "requiresAcceptance": false,
-      "voiceSourceLock": "reports/tts/VOICE_SOURCE_LOCK.json",
       "macroId": "M1",
       "acceptanceMode": "OUTPUT_READY",
-      "userAcceptanceAt": "AFTER_DELIVERY"
+      "userAcceptanceAt": "AFTER_DELIVERY",
+      "voiceSourceLock": "reports/tts/VOICE_SOURCE_LOCK.json",
+      "requiredChoice": [
+        "openfilm",
+        "remotion"
+      ],
+      "choicePolicy": "USER_SELECTED_NO_ENGINE_SWITCH"
     },
     {
       "id": "P09",
@@ -66,40 +85,56 @@
       "skippable": false,
       "requiresEvidence": true,
       "requiresAcceptance": false,
-      "earlyOpenFilmProject": "projects/<film-id>/openfilm/film.html",
-      "requireFilmDataValid": true,
-      "openFilmRuntime": "cli-required",
-      "cliEvidenceRequired": false,
       "macroId": "M1",
       "acceptanceMode": "OUTPUT_READY",
-      "userAcceptanceAt": "AFTER_DELIVERY"
+      "userAcceptanceAt": "AFTER_DELIVERY",
+      "runtimePolicy": "SELECTED_ENGINE_ONLY",
+      "openFilmRuntime": "cli-required-if-master-openfilm",
+      "remotionRuntime": "remotion-renderer-required-if-master-remotion",
+      "cliEvidenceRequired": false,
+      "cliEvidenceConditional": "OpenFilm only; for Remotion use Remotion CLI/renderer evidence",
+      "requireFilmDataValid": true,
+      "engineOutputs": {
+        "openfilm": "projects/<film-id>/openfilm/film.html",
+        "remotion": "projects/<film-id>/remotion/src/Root.tsx"
+      },
+      "earlyOpenFilmProject": "only-when-master-openfilm"
     },
     {
       "id": "P10",
-      "name": "Style and storyboard",
+      "name": "Code-only data storyboard",
       "dependsOn": [
         "P09"
       ],
-      "canonicalOutput": "projects/<film-id>/storyboard/",
+      "canonicalOutput": "projects/<film-id>/storyboard/storyboard.json",
       "workUnitKey": "shot_id",
       "mayWrite": true,
       "skippable": false,
       "requiresEvidence": true,
       "requiresAcceptance": false,
-      "canvasMode": "FILE_STORYBOARD(default)|OPENFILM_CANVAS(verified+approved)",
-      "openFilmRuntime": "cli-required",
-      "cliEvidenceRequired": false,
       "macroId": "M2",
       "acceptanceMode": "OUTPUT_READY",
-      "userAcceptanceAt": "AFTER_DELIVERY"
+      "userAcceptanceAt": "AFTER_DELIVERY",
+      "storyboardMode": "DATA_ONLY",
+      "storyboardFormat": [
+        "JSON",
+        "Markdown",
+        "FilmData"
+      ],
+      "secondaryOutput": "projects/<film-id>/storyboard/STORYBOARD.md",
+      "canvasMode": "DISABLED_FOR_STORYBOARD",
+      "requiresImage": false,
+      "requiresZip": false,
+      "allowImageGeneration": false,
+      "schema": "skills/openfilm-storyboard-data/references/STORYBOARD_SCHEMA.json"
     },
     {
       "id": "P11",
-      "name": "Media assets",
+      "name": "Programmatic scene assets (no image storyboard)",
       "dependsOn": [
         "P10"
       ],
-      "canonicalOutput": "projects/<film-id>/assets/",
+      "canonicalOutput": "projects/<film-id>/scene-data/assets-manifest.json",
       "workUnitKey": "asset_id",
       "mayWrite": true,
       "skippable": false,
@@ -107,7 +142,11 @@
       "requiresAcceptance": false,
       "macroId": "M2",
       "acceptanceMode": "OUTPUT_READY",
-      "userAcceptanceAt": "AFTER_DELIVERY"
+      "userAcceptanceAt": "AFTER_DELIVERY",
+      "assetPolicy": "CODE_FIRST_ONLY_REFERENCE_REAL_MEDIA",
+      "imageAssets": "OPTIONAL_EXISTING_USER_ASSET_ONLY",
+      "zipHandoff": "SKIPPED_NOT_REQUIRED",
+      "allowStoryboardImages": false
     },
     {
       "id": "P12",
@@ -143,7 +182,7 @@
     },
     {
       "id": "P14",
-      "name": "2D animation",
+      "name": "2D code animation",
       "dependsOn": [
         "P13"
       ],
@@ -153,20 +192,23 @@
       "skippable": true,
       "requiresEvidence": true,
       "requiresAcceptance": false,
-      "engineOutputs": {
-        "openfilm": "openfilm/scenes/*.html",
-        "remotion": "remotion/src/scenes/*.tsx"
-      },
-      "placeholderClearing": "Real scene pages only, one shot at a time",
-      "openFilmRuntime": "cli-required",
-      "cliEvidenceRequired": false,
       "macroId": "M4",
       "acceptanceMode": "OUTPUT_READY",
-      "userAcceptanceAt": "AFTER_DELIVERY"
+      "userAcceptanceAt": "AFTER_DELIVERY",
+      "runtimePolicy": "SELECTED_ENGINE_ONLY",
+      "openFilmRuntime": "cli-required-if-master-openfilm",
+      "remotionRuntime": "remotion-renderer-required-if-master-remotion",
+      "cliEvidenceRequired": false,
+      "cliEvidenceConditional": "OpenFilm only; for Remotion use Remotion CLI/renderer evidence",
+      "engineOutputs": {
+        "openfilm": "openfilm/scenes/<shot-id>.html",
+        "remotion": "remotion/src/scenes/<shot-id>.tsx"
+      },
+      "placeholderClearing": "Actual source per chosen engine only"
     },
     {
       "id": "P15",
-      "name": "3D animation",
+      "name": "3D code animation",
       "dependsOn": [
         "P14"
       ],
@@ -176,15 +218,18 @@
       "skippable": true,
       "requiresEvidence": true,
       "requiresAcceptance": false,
-      "engineOutputs": {
-        "openfilm": "openfilm/scenes/*.html",
-        "remotion": "remotion/src/scenes/*.tsx"
-      },
-      "openFilmRuntime": "cli-required",
-      "cliEvidenceRequired": false,
       "macroId": "M4",
       "acceptanceMode": "OUTPUT_READY",
-      "userAcceptanceAt": "AFTER_DELIVERY"
+      "userAcceptanceAt": "AFTER_DELIVERY",
+      "runtimePolicy": "SELECTED_ENGINE_ONLY",
+      "openFilmRuntime": "cli-required-if-master-openfilm",
+      "remotionRuntime": "remotion-renderer-required-if-master-remotion",
+      "cliEvidenceRequired": false,
+      "cliEvidenceConditional": "OpenFilm only; for Remotion use Remotion CLI/renderer evidence",
+      "engineOutputs": {
+        "openfilm": "openfilm/scenes/<shot-id>.html",
+        "remotion": "remotion/src/scenes/<shot-id>.tsx"
+      }
     },
     {
       "id": "P16",
@@ -192,22 +237,29 @@
       "dependsOn": [
         "P15"
       ],
-      "canonicalOutput": "projects/<film-id>/openfilm/film.html",
+      "canonicalOutput": "projects/<film-id>/",
       "workUnitKey": "shot_id",
       "mayWrite": true,
       "skippable": false,
       "requiresEvidence": true,
       "requiresAcceptance": false,
-      "beforeP17": "Actual scene code and referenced assets exist",
-      "openFilmRuntime": "cli-required",
-      "cliEvidenceRequired": false,
       "macroId": "M4",
       "acceptanceMode": "OUTPUT_READY",
-      "userAcceptanceAt": "AFTER_DELIVERY"
+      "userAcceptanceAt": "AFTER_DELIVERY",
+      "runtimePolicy": "SELECTED_ENGINE_ONLY",
+      "openFilmRuntime": "cli-required-if-master-openfilm",
+      "remotionRuntime": "remotion-renderer-required-if-master-remotion",
+      "cliEvidenceRequired": false,
+      "cliEvidenceConditional": "OpenFilm only; for Remotion use Remotion CLI/renderer evidence",
+      "engineOutputs": {
+        "openfilm": "projects/<film-id>/openfilm/film.html",
+        "remotion": "projects/<film-id>/remotion/src/Root.tsx"
+      },
+      "beforeP17": "Actual selected-engine scene source and asset refs exist"
     },
     {
       "id": "P17",
-      "name": "Master timeline assembly",
+      "name": "Selected-engine master timeline",
       "dependsOn": [
         "P16"
       ],
@@ -217,16 +269,23 @@
       "skippable": false,
       "requiresEvidence": true,
       "requiresAcceptance": false,
-      "existingTimelineOnly": true,
-      "openFilmRuntime": "cli-required",
-      "cliEvidenceRequired": false,
       "macroId": "M5",
       "acceptanceMode": "OUTPUT_READY",
-      "userAcceptanceAt": "AFTER_DELIVERY"
+      "userAcceptanceAt": "AFTER_DELIVERY",
+      "runtimePolicy": "SELECTED_ENGINE_ONLY",
+      "openFilmRuntime": "cli-required-if-master-openfilm",
+      "remotionRuntime": "remotion-renderer-required-if-master-remotion",
+      "cliEvidenceRequired": false,
+      "cliEvidenceConditional": "OpenFilm only; for Remotion use Remotion CLI/renderer evidence",
+      "existingTimelineOnly": true,
+      "engineOutputs": {
+        "openfilm": "projects/<film-id>/openfilm/film.html",
+        "remotion": "projects/<film-id>/remotion/src/Root.tsx"
+      }
     },
     {
       "id": "P18",
-      "name": "Five-second smoke",
+      "name": "Five-second diagnostic smoke",
       "dependsOn": [
         "P17"
       ],
@@ -236,16 +295,20 @@
       "skippable": true,
       "requiresEvidence": true,
       "requiresAcceptance": false,
-      "openFilmRuntime": "cli-required",
-      "cliEvidenceRequired": true,
       "macroId": "M5",
       "acceptanceMode": "OUTPUT_READY",
       "userAcceptanceAt": "AFTER_DELIVERY",
-      "optional": true
+      "runtimePolicy": "SELECTED_ENGINE_ONLY",
+      "openFilmRuntime": "cli-required-if-master-openfilm",
+      "remotionRuntime": "remotion-renderer-required-if-master-remotion",
+      "cliEvidenceRequired": true,
+      "cliEvidenceConditional": "OpenFilm only; for Remotion use Remotion CLI/renderer evidence",
+      "optional": true,
+      "diagnosticOnly": true
     },
     {
       "id": "P19",
-      "name": "Render V01",
+      "name": "Selected-engine render V01",
       "dependsOn": [
         "P17"
       ],
@@ -255,11 +318,14 @@
       "skippable": false,
       "requiresEvidence": true,
       "requiresAcceptance": false,
-      "openFilmRuntime": "cli-required",
-      "cliEvidenceRequired": true,
       "macroId": "M6",
       "acceptanceMode": "OUTPUT_READY",
-      "userAcceptanceAt": "AFTER_DELIVERY"
+      "userAcceptanceAt": "AFTER_DELIVERY",
+      "runtimePolicy": "SELECTED_ENGINE_ONLY",
+      "openFilmRuntime": "cli-required-if-master-openfilm",
+      "remotionRuntime": "remotion-renderer-required-if-master-remotion",
+      "cliEvidenceRequired": true,
+      "cliEvidenceConditional": "OpenFilm only; for Remotion use Remotion CLI/renderer evidence"
     },
     {
       "id": "P20",
@@ -273,17 +339,20 @@
       "skippable": true,
       "requiresEvidence": true,
       "requiresAcceptance": false,
-      "openFilmRuntime": "cli-required",
-      "cliEvidenceRequired": true,
       "macroId": "M6",
       "acceptanceMode": "OUTPUT_READY",
       "userAcceptanceAt": "AFTER_DELIVERY",
+      "runtimePolicy": "SELECTED_ENGINE_ONLY",
+      "openFilmRuntime": "cli-required-if-master-openfilm",
+      "remotionRuntime": "remotion-renderer-required-if-master-remotion",
+      "cliEvidenceRequired": true,
+      "cliEvidenceConditional": "OpenFilm only; for Remotion use Remotion CLI/renderer evidence",
       "optional": true,
       "activation": "USER_FEEDBACK_AFTER_DELIVERY"
     },
     {
       "id": "P21",
-      "name": "Deliver V01 for review",
+      "name": "Deliver V01 for user review",
       "dependsOn": [
         "P19"
       ],
@@ -293,16 +362,16 @@
       "skippable": false,
       "requiresEvidence": true,
       "requiresAcceptance": false,
-      "openFilmRuntime": "cli-required",
-      "cliEvidenceRequired": true,
       "macroId": "M7",
       "acceptanceMode": "OUTPUT_READY",
       "userAcceptanceAt": "AFTER_DELIVERY",
+      "runtimePolicy": "SELECTED_ENGINE_ONLY",
+      "openFilmRuntime": "cli-required-if-master-openfilm",
+      "remotionRuntime": "remotion-renderer-required-if-master-remotion",
+      "cliEvidenceRequired": true,
+      "cliEvidenceConditional": "OpenFilm only; for Remotion use Remotion CLI/renderer evidence",
       "videoOutput": "renders/V01.mp4",
       "reuseExistingRender": true
     }
-  ],
-  "openfilmExecutionPolicy": "CLI_ONLY_FOR_OPENFILM",
-  "pluginVersion": "1.14.1",
-  "defaultMode": "FINISH_FIRST_USER_REVIEW"
+  ]
 }

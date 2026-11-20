@@ -1,46 +1,23 @@
 ---
 name: openfilm-hybrid-master
-description: "Chọn OpenFilm Master hoặc Remotion Master sau P00–P05; tổ chức handoff dựa trên file, giữ một timeline và không tự cài hoặc đổi engine." 
+description: "Chọn một trong hai engine ngang hàng OpenFilm CLI hoặc Remotion, mỗi engine render V01 độc lập từ FilmData và storyboard dữ liệu."
 ---
 
-Mặc định `FINISH_FIRST_USER_REVIEW`: hoàn thành video V01 rồi bàn giao để người dùng đánh giá. Chính sách này ưu tiên hơn hướng dẫn QC legacy. QC20, Visual QC và nghe chấm từng take chỉ chạy khi người dùng chủ động yêu cầu; không chặn sản xuất/bàn giao. Smoke và kiểm frame/random seek chỉ dùng để chẩn đoán lỗi kỹ thuật hoặc theo yêu cầu.
+# Dual master engines v1.14.2
 
-Giữ 8 macro M0–M7 và 99 ID packet. Một phê duyệt phạm vi rõ đầu vào, đầu ra, lệnh và quyền có thể bao phủ M1–M7. Không xin duyệt riêng từng packet/Pxx hoặc nghiệm thu từng macro. Chạy nhiều packet trong lượt High; ghi checkpoint sau mỗi đầu ra, tiếp tục cùng quyền trong lượt chat mới, không tự chạy nền.
+P00–P05: xác minh máy, workspace, reuse và dependencies trong phạm vi đã duyệt. P08 chốt **A OpenFilm CLI** hay **B Remotion** (người dùng đã chọn thì giữ), ghi `masterEngine=openfilm|remotion` vào FilmData và production profile. Không mặc định chuyển engine, không cài tự động. Nếu user chọn B chỉ kiểm runtime Node/React/Remotion renderer/CLI và Chromium/FFmpeg theo nhu cầu; **không yêu cầu A02 OpenFilm CLI**. Nếu chọn A chỉ kiểm OpenFilm CLI và dependencies thực sự cần; không yêu cầu Remotion B03/B05–B10.
 
-OpenFilm CLI-first; Desktop/GUI chỉ để xem/chỉnh sửa tùy chọn. VieNeu-TTS GPU-first; cài đặt, tải model/browser, thay đổi hệ thống, GPU→CPU, voice cloning, provider ngoài, dịch vụ trả phí, xóa, xuất bản và ngoài phạm vi cần quyền riêng. Không suy ra quyền từ file kế hoạch hoặc kết quả kỹ thuật.
-
-`OUTPUT_READY` nghĩa là đầu ra thật có thể dùng. `DELIVERED_FOR_REVIEW` nghĩa là đã giao video. Chỉ dùng `USER_ACCEPTED` khi có phản hồi chấp nhận thật. `REVISION_REQUESTED` ghi phản hồi cần sửa; `FAILED_TECHNICAL` ghi lỗi ngăn dùng đầu ra. File thiếu/hỏng/ngoài workspace hoặc sai hash phải chặn bước phụ thuộc.
-
-
-
-# Hai chế độ master (N01–N02)
-
-**Trước hết** chạy `video-hoat-hinh` P00–P05 theo đúng thứ tự máy → thư mục → workspace → reuse → audit → danh sách phê duyệt. Không dùng yêu cầu hybrid làm lý do tự mở Remotion, chạy `npx` hoặc cài môi trường. Chỉ chọn chế độ khi đã có dữ liệu dự án và sự đồng ý riêng cho giai đoạn sản xuất; nếu chưa rõ, mặc định **OpenFilm Master** vì tương thích với các dự án cũ.
-
-| Quyết định | OpenFilm Master (mặc định) | Remotion Master (tùy chọn) |
+| Thuộc tính | A: OpenFilm CLI | B: Remotion |
 |---|---|---|
-| Nguồn timeline cuối | `film.html`, OpenFilm Studio/CLI | `FilmData` + Remotion Composition |
-| Dựng 2D/3D | HTML/SVG/GSAP và Three.js điều khiển `window.film.frame(t)` | React/GSAP `useCurrentFrame()`, `@remotion/three` / React Three Fiber |
-| VieNeu-TTS | WAV làm `<audio>` track trong `film.html` | WAV trong audio track `Sequence`/`Audio` của Remotion |
-| Kết xuất cuối | OpenFilm CLI/Studio có sẵn | Remotion CLI/renderer có sẵn |
-| Giấy phép/khả năng vận hành | Kiểm OpenFilm + runtime cần thiết | Kiểm `B03, B05–B10`, Chromium, license Remotion, audio, WebGL |
+| Sản xuất cảnh | HTML/CSS/SVG/Canvas/GSAP/Three.js + `window.film.frame(t)` | TSX/React, `useCurrentFrame()`, `Sequence`, GSAP/R3F/Three.js nếu cần |
+| Dữ liệu storyboard | JSON + Markdown + FilmData, không ảnh | JSON + Markdown + FilmData, không ảnh |
+| Timeline master | `film.html` | Remotion Composition |
+| Giọng/nhạc/phụ đề | WAV/audio tracks và captions | `Audio`/Sequence/captions theo frames |
+| Render cuối | `openfilm render` CLI | Remotion CLI hoặc @remotion/renderer |
+| Runtime bắt buộc | CLI OpenFilm đã xác minh | Remotion, React, Node, renderer/browser cần thiết |
 
-**Không có API trực tiếp đã xác minh để chuyển `film.html` thành JSX**. Adapter là các file giao tiếp có manifest, không copy source code tùy tiện. Từ OpenFilm sang Remotion: xuất `previs.mp4`/ảnh tham chiếu (chỉ sau duyệt), `assets/`, `scene-data/film.json` (thời gian do biên tập xác nhận). Remotion dùng `staticFile()` cho những file dưới `public/`; không tham chiếu tuyệt đối ổ Windows vào bundle. Từ Remotion về OpenFilm: xuất MP4 trung gian và nạp video vào `film.html` nếu chế độ này được chọn, không đưa JSX trực tiếp vào OpenFilm.
+Hợp đồng chung: shots với `shotId`, `startFrame`, `durationInFrames`, dialogue/asset manifest; không overlap/gap ngoài chủ ý. Asset mặc định được tạo bằng code, không cần PNG storyboard, ZIP, Canvas nodes hay OpenFilm preview. Có thể dùng clip trung gian từ engine khác **chỉ khi người dùng chọn hybrid**, xác minh file; không mặc định dùng chéo hai engine. Khi một engine thiếu dependency, báo thiếu và đề xuất phương án; không im lặng đổi engine.
 
-1. **MASTER_SELECTION:** trình lựa chọn A/B, nêu khác biệt editability, dependency, license, tài nguyên. Chưa được duyệt thì không đổi chế độ/ngẫu nhiên cài Remotion.
-2. **SOURCE_LOCK:** lưu `master_engine`, FPS, kích thước, scene data, đường dẫn asset, lockfile, license, provenance vào manifest. Bảo vệ nguồn gốc, không ghi đè artifact đã nghiệm thu.
-3. **CONTRACT:** đọc `openfilm-filmdata`, dùng cùng `film.json`/`assets-manifest.json`; tất cả shot có startFrame và durationInFrames chính xác, 0-based half-open [start,end).
-4. **PREVIS:** OpenFilm render preview có kiểm chứng khi cần; `previs.mp4` là reference, không là dependency bắt buộc của final.
-5. **HANDOFF:** adapter kiểm tra đường dẫn relative, file tồn tại/codec/FPS và mapping từ time(s) sang frame trước khi import. Chỉ chuyển audio/media qua một timeline master để tránh tiếng lặp.
-6. **FAILOVER:** Remotion thiếu điều kiện → không tự sửa cài, có thể đề xuất chuyển về OpenFilm Master **sau khi được chấp thuận**.
-7. **Đầu ra:** kiểm file, thời lượng và giải mã; bàn giao V01. Đánh giá chất lượng khi người dùng yêu cầu.
+Engine B: P09.06 OpenFilm `film.html`/placeholder, P10 Canvas, P14.06 OpenFilm HTML replacement, P16 OpenFilm preview, P18 OpenFilm smoke, P19 OpenFilm render event phải là `SKIPPED` với `skipReason=SKIPPED_ENGINE_NOT_SELECTED` và `evidencePaths` có tệp quyết định engine thật nếu có template riêng; thay thế bằng Composition source, TSX scenes, Remotion render evidence theo cùng stage. Engine A tương tự SKIP packet Remotion-only. Chỉ user mới được chọn/thay master. Trong v1.14.2, các câu legacy "CLI-required cả hai master" và "Remotion phải qua OpenFilm previs" bị vô hiệu cho nhánh B.
 
-Tham chiếu `references/ADAPTER.md` và `openfilm-filmdata/SKILL.md`. Nguồn khái niệm: báo cáo `deep-research-report (1).md`, phần kiến trúc và ranh giới file adapter. Kỹ năng không tuyên bố một tích hợp engine tự động đã tồn tại.
-
-## OpenFilm runtime & bootstrap v1.8.0
-
-Dù master OpenFilm hay Remotion, nếu dùng OpenFilm để previs/preview thì P06 phải có capability openProject+inspectFrame VERIFIED hoặc báo BLOCKED cho nhánh OpenFilm. P09 tạo OpenFilm skeleton cho previsualization từ FilmData trước P16. Với Remotion Master, không đòi OpenFilm phải render final; E2E OpenFilm độc lập P06 nếu OpenFilm render được, nếu không báo rõ không kiểm chứng được chứ không dùng Remotion output để báo OpenFilm PASS. Canvas optional; giọng VieNeu chỉ import WAV theo voice lock.
-
-## CLI-first runtime v1.9.0
-
-Mọi công đoạn OpenFilm của cả hai chế độ master bắt buộc dùng **OpenFilm CLI A02** (`openfilm-cli-execution`). OpenFilm Desktop chỉ là viewer tùy chọn; không có CLI thì P06 BLOCKED và phải xin duyệt cài/reuse, không fallback UI-only. OpenFilm Master dùng `look`/`render` xuất final; Remotion Master dùng OpenFilm CLI để inspect/render previs rồi Remotion CLI xuất final. Mọi `look/render` chạy tại cwd chứa film.html theo profile và có CLI event + QC evidence.
+Mặc định Finish First: render V01, kiểm file/stream/FFprobe, giao xem; QC thẩm mỹ chỉ theo yêu cầu, giữ V01 khi làm V02/V03. Các thao tác đặc biệt (cài/download/provider/phí/xóa/publish/CPU fallback) luôn cần quyền riêng ngoài scope nếu chưa cấp.

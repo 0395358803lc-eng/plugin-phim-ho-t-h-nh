@@ -1,24 +1,24 @@
 {
   "interface": {
-    "displayName": "Video-hoạt-hình",
-    "shortDescription": "Tạo & biên tập hoạt hình",
-    "longDescription": "Video-hoạt-hình v1.14.1 — Finish First — User Review Later. Sản xuất V01 từ 7 tệp nguồn đến FilmData, asset, WAV GPU, hoạt hình, timeline và MP4 dùng được. Một phạm vi phê duyệt có thể bao phủ M1–M7; giữ 8 macro, 99 ID packet, checkpoint và ZIP ảnh. OpenFilm CLI-first; VieNeu-TTS GPU-first. Bàn giao DELIVERED_FOR_REVIEW trước đánh giá chất lượng. Chỉ USER_ACCEPTED khi người dùng chấp nhận; sửa theo phản hồi thành V02/V03, giữ bản cũ. QC chất lượng tùy chọn khi user yêu cầu. Cài/tải/thay đổi hệ thống/CPU fallback/voice cloning/provider/phí/xóa/xuất bản cần quyền riêng. Không tự chạy nền hoặc báo hoàn thành khi thiếu file thật.",
+    "displayName": "Video-ho\u1ea1t-h\u00ecnh",
+    "shortDescription": "T\u1ea1o & bi\u00ean t\u1eadp ho\u1ea1t h\u00ecnh",
+    "longDescription": "Video-ho\u1ea1t-h\u00ecnh v1.14.3 \u2014 Finish First, Storyboard d\u1eef li\u1ec7u JSON/Markdown/FilmData, kh\u00f4ng sinh \u1ea3nh storyboard v\u00e0 kh\u00f4ng ZIP \u1ea3nh b\u1eaft bu\u1ed9c. Hai l\u1ef1a ch\u1ecdn ngang h\u00e0ng OpenFilm CLI ho\u1eb7c Remotion, c\u1ea3 hai d\u1ef1ng ho\u1ea1t h\u00ecnh ho\u00e0n to\u00e0n b\u1eb1ng code v\u00e0 k\u1ebft xu\u1ea5t V01. VieNeu-TTS GPU-first, 8 macro/99 packet gi\u1eef nguy\u00ean. User \u0111\u00e1nh gi\u00e1 sau b\u00e0n giao V01, y\u00eau c\u1ea7u s\u1eeda th\u00e0nh V02/V03; QC th\u1ea9m m\u1ef9 t\u00f9y ch\u1ecdn, thao t\u00e1c \u0111\u1eb7c bi\u1ec7t c\u1ea7n quy\u1ec1n ri\u00eang.",
     "developerName": "ow fe",
     "category": "Creativity",
     "capabilities": [
       "Skills"
     ],
     "defaultPrompt": [
-      "Hãy dùng Video-hoạt-hình lập storyboard và kế hoạch dựng video hoạt hình 2 phút.",
-      "Dựng cảnh hoạt hình OpenFilm tỷ lệ 9:16 từ kịch bản sau.",
-      "Kiểm tra chất lượng dự án hoạt hình và chuẩn bị render MP4."
+      "H\u00e3y d\u00f9ng Video-ho\u1ea1t-h\u00ecnh l\u1eadp storyboard v\u00e0 k\u1ebf ho\u1ea1ch d\u1ef1ng video ho\u1ea1t h\u00ecnh 2 ph\u00fat.",
+      "D\u1ef1ng c\u1ea3nh ho\u1ea1t h\u00ecnh OpenFilm t\u1ef7 l\u1ec7 9:16 t\u1eeb k\u1ecbch b\u1ea3n sau.",
+      "Ki\u1ec3m tra ch\u1ea5t l\u01b0\u1ee3ng d\u1ef1 \u00e1n ho\u1ea1t h\u00ecnh v\u00e0 chu\u1ea9n b\u1ecb render MP4."
     ],
     "logo": "./assets/logo.png",
     "composerIcon": "./assets/logo.png"
   },
   "name": "video-hoat-hinh",
-  "version": "1.14.1",
-  "description": "Video hoạt hình Finish First: hoàn thành V01 rồi người dùng đánh giá; OpenFilm CLI-first, VieNeu GPU-first, 8 macro, 99 packet và ZIP ảnh.",
+  "version": "1.14.3",
+  "description": "Video ho\u1ea1t h\u00ecnh Finish First: storyboard DATA_ONLY, code-only; ch\u1ecdn OpenFilm CLI ho\u1eb7c Remotion; VieNeu GPU-first, 8 macro, 99 packet.",
   "author": {
     "name": "ow fe",
     "email": "beecherbryson8708+68128@gmail.com"
