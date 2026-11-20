@@ -1,3 +1,5 @@
+> v1.14.0: FINISH_FIRST_USER_REVIEW ưu tiên. Đây là công thức kỹ thuật/tham khảo; mọi đánh giá thẩm mỹ chỉ theo yêu cầu người dùng, mọi cổng QC legacy không chặn V01. OpenFilm CLI-first, GUI tùy chọn.
+
 # VieNeu-TTS GPU-first — quyết định backend và nghiệm thu (v1.7.0)
 
 **Nguyên tắc không thương lượng:** Khi người dùng chọn VieNeu-TTS, GPU/PyTorch-CUDA là đích cài và vận hành mặc định trên máy Windows. Nếu GPU không sẵn sàng, **chưa tự chuyển CPU**. CPU/ONNX chỉ được **đề xuất** sau khi có bằng chứng GPU không đáp ứng và chỉ chạy khi user duyệt một lần riêng đúng ID. Phê duyệt nâng cấp plugin không phải quyền cài phần mềm. Nếu không bật VieNeu-TTS, không yêu cầu cài GPU TTS.

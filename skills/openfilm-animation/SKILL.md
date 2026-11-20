@@ -3,6 +3,16 @@ name: openfilm-animation
 description: "Thiết kế và viết hoạt hình khung hình tất định bằng HTML, SVG, Canvas/WebGL, CSS, JavaScript cho OpenFilm; định tuyến khi cần GSAP cho 2D, Three.js cho 3D hoặc Remotion cho clip React riêng."
 ---
 
+Mặc định `FINISH_FIRST_USER_REVIEW`: hoàn thành video V01 rồi bàn giao để người dùng đánh giá. Chính sách này ưu tiên hơn hướng dẫn QC legacy. QC20, Visual QC và nghe chấm từng take chỉ chạy khi người dùng chủ động yêu cầu; không chặn sản xuất/bàn giao. Smoke và kiểm frame/random seek chỉ dùng để chẩn đoán lỗi kỹ thuật hoặc theo yêu cầu.
+
+Giữ 8 macro M0–M7 và 99 ID packet. Một phê duyệt phạm vi rõ đầu vào, đầu ra, lệnh và quyền có thể bao phủ M1–M7. Không xin duyệt riêng từng packet/Pxx hoặc nghiệm thu từng macro. Chạy nhiều packet trong lượt High; ghi checkpoint sau mỗi đầu ra, tiếp tục cùng quyền trong lượt chat mới, không tự chạy nền.
+
+OpenFilm CLI-first; Desktop/GUI chỉ để xem/chỉnh sửa tùy chọn. VieNeu-TTS GPU-first; cài đặt, tải model/browser, thay đổi hệ thống, GPU→CPU, voice cloning, provider ngoài, dịch vụ trả phí, xóa, xuất bản và ngoài phạm vi cần quyền riêng. Không suy ra quyền từ file kế hoạch hoặc kết quả kỹ thuật.
+
+`OUTPUT_READY` nghĩa là đầu ra thật có thể dùng. `DELIVERED_FOR_REVIEW` nghĩa là đã giao video. Chỉ dùng `USER_ACCEPTED` khi có phản hồi chấp nhận thật. `REVISION_REQUESTED` ghi phản hồi cần sửa; `FAILED_TECHNICAL` ghi lỗi ngăn dùng đầu ra. File thiếu/hỏng/ngoài workspace hoặc sai hash phải chặn bước phụ thuộc.
+
+
+
 # Dựng cảnh OpenFilm theo `window.film.frame(t)`
 
 Đọc `openfilm-dinh-dang` trước. Mọi shot là trang HTML, khung hình ở thời điểm `t` phải có thể dựng lại khi seek bất kỳ thứ tự nào. Không cập nhật bằng `deltaTime`/RAF/interval trong host. Dùng `film.html` để ghép shot, âm thanh và video.
@@ -21,7 +31,6 @@ Một shot một `scenes/shot-xxx.html`; asset cục bộ/tương đối trong `
 
 ## Nghiệm thu
 
-Render/scrub cùng `t` nhiều lần (thứ tự t ngẫu nhiên), kiểm tra đầu/giữa/cuối và sát điểm cut; so hình bằng dung sai hợp lý (WebGL có thể sai khác pixel giữa GPU), QC media path, FPS, khung 16:9/9:16, font và text safe area. Chỉ đánh dấu PASS nếu có bằng chứng thực từ máy hoặc file kiểm thử.
 
 ## Early skeleton v1.8.0
 
@@ -29,7 +38,7 @@ Mã cảnh OpenFilm được viết **đè có kiểm soát vào bản working c
 
 ## Đường kiểm tra OpenFilm CLI v1.9.0
 
-Viết HTML/SVG/GSAP/Three.js theo `frame(t)` từ code/FilmData; để nghiệm thu shot, dùng **OpenFilm CLI** `openfilm look` từ cwd chứa `film.html` đã được P09 bootstrap và được P06 xác minh. Không dùng OpenFilm Desktop UI thay cho lệnh; Studio chỉ tùy chọn xem. Mỗi thao tác thuộc work packet/approval, log và ảnh đầu/giữa/cuối.
 
 ## v1.12.0 — Mandatory Visual Inspection & Quality Gate
-M4 không ghi nhận chất lượng hình chỉ từ `window.film.frame(t)` hoặc source review. Phải trích ảnh thật `openfilm look` ở START/Q1/MID/Q3/END mỗi shot, đưa vào lượt ChatGPT dưới dạng image content, tự xem lỗi/tính nhất quán và ghi Visual QC; thấy lỗi thì sửa trong scope rồi xem lại. Chi tiết skill `openfilm-visual-inspection`.
+
+Đầu ra là mã cảnh thật theo FilmData, assets truy cập được và render được bằng OpenFilm CLI. Kiểm năm mốc ảnh/random seek chỉ để chẩn đoán hoặc theo yêu cầu; không chấm hình trước khi chuyển tiếp.

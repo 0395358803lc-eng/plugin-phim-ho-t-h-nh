@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pluginVersion": "1.11.0",
+  "pluginVersion": "1.14.0",
   "deviceId": null,
   "projectDir": null,
   "workspace": null,
@@ -30,7 +30,9 @@
       "evidence": [],
       "workUnits": [],
       "skipReason": null,
-      "macroInternalGate": null
+      "macroInternalGate": null,
+      "outputPaths": [],
+      "outputHashes": {}
     },
     {
       "id": "P07",
@@ -54,7 +56,9 @@
       "evidence": [],
       "workUnits": [],
       "skipReason": null,
-      "macroInternalGate": null
+      "macroInternalGate": null,
+      "outputPaths": [],
+      "outputHashes": {}
     },
     {
       "id": "P08",
@@ -78,7 +82,9 @@
       "evidence": [],
       "workUnits": [],
       "skipReason": null,
-      "macroInternalGate": null
+      "macroInternalGate": null,
+      "outputPaths": [],
+      "outputHashes": {}
     },
     {
       "id": "P09",
@@ -102,7 +108,9 @@
       "evidence": [],
       "workUnits": [],
       "skipReason": null,
-      "macroInternalGate": null
+      "macroInternalGate": null,
+      "outputPaths": [],
+      "outputHashes": {}
     },
     {
       "id": "P10",
@@ -126,7 +134,9 @@
       "evidence": [],
       "workUnits": [],
       "skipReason": null,
-      "macroInternalGate": null
+      "macroInternalGate": null,
+      "outputPaths": [],
+      "outputHashes": {}
     },
     {
       "id": "P11",
@@ -150,7 +160,9 @@
       "evidence": [],
       "workUnits": [],
       "skipReason": null,
-      "macroInternalGate": null
+      "macroInternalGate": null,
+      "outputPaths": [],
+      "outputHashes": {}
     },
     {
       "id": "P12",
@@ -174,7 +186,9 @@
       "evidence": [],
       "workUnits": [],
       "skipReason": null,
-      "macroInternalGate": null
+      "macroInternalGate": null,
+      "outputPaths": [],
+      "outputHashes": {}
     },
     {
       "id": "P13",
@@ -198,7 +212,9 @@
       "evidence": [],
       "workUnits": [],
       "skipReason": null,
-      "macroInternalGate": null
+      "macroInternalGate": null,
+      "outputPaths": [],
+      "outputHashes": {}
     },
     {
       "id": "P14",
@@ -222,7 +238,9 @@
       "evidence": [],
       "workUnits": [],
       "skipReason": null,
-      "macroInternalGate": null
+      "macroInternalGate": null,
+      "outputPaths": [],
+      "outputHashes": {}
     },
     {
       "id": "P15",
@@ -246,11 +264,13 @@
       "evidence": [],
       "workUnits": [],
       "skipReason": null,
-      "macroInternalGate": null
+      "macroInternalGate": null,
+      "outputPaths": [],
+      "outputHashes": {}
     },
     {
       "id": "P16",
-      "name": "OpenFilm previs and shot review",
+      "name": "Scene source ready",
       "status": "NOT_STARTED",
       "planApproval": {
         "status": "NOT_REQUESTED",
@@ -270,7 +290,9 @@
       "evidence": [],
       "workUnits": [],
       "skipReason": null,
-      "macroInternalGate": null
+      "macroInternalGate": null,
+      "outputPaths": [],
+      "outputHashes": {}
     },
     {
       "id": "P17",
@@ -294,7 +316,9 @@
       "evidence": [],
       "workUnits": [],
       "skipReason": null,
-      "macroInternalGate": null
+      "macroInternalGate": null,
+      "outputPaths": [],
+      "outputHashes": {}
     },
     {
       "id": "P18",
@@ -318,11 +342,13 @@
       "evidence": [],
       "workUnits": [],
       "skipReason": null,
-      "macroInternalGate": null
+      "macroInternalGate": null,
+      "outputPaths": [],
+      "outputHashes": {}
     },
     {
       "id": "P19",
-      "name": "Full draft render",
+      "name": "Render V01",
       "status": "NOT_STARTED",
       "planApproval": {
         "status": "NOT_REQUESTED",
@@ -342,11 +368,13 @@
       "evidence": [],
       "workUnits": [],
       "skipReason": null,
-      "macroInternalGate": null
+      "macroInternalGate": null,
+      "outputPaths": [],
+      "outputHashes": {}
     },
     {
       "id": "P20",
-      "name": "QC20 and remediation",
+      "name": "User-requested targeted revisions",
       "status": "NOT_STARTED",
       "planApproval": {
         "status": "NOT_REQUESTED",
@@ -366,11 +394,13 @@
       "evidence": [],
       "workUnits": [],
       "skipReason": null,
-      "macroInternalGate": null
+      "macroInternalGate": null,
+      "outputPaths": [],
+      "outputHashes": {}
     },
     {
       "id": "P21",
-      "name": "Final master handoff",
+      "name": "Deliver V01 for review",
       "status": "NOT_STARTED",
       "planApproval": {
         "status": "NOT_REQUESTED",
@@ -390,7 +420,11 @@
       "evidence": [],
       "workUnits": [],
       "skipReason": null,
-      "macroInternalGate": null
+      "macroInternalGate": null,
+      "outputPaths": [],
+      "outputHashes": {}
     }
-  ]
+  ],
+  "productionMode": "FINISH_FIRST_USER_REVIEW",
+  "note": "Finish First: verify actual outputs; user review after delivery; retain old checkpoint data."
 }

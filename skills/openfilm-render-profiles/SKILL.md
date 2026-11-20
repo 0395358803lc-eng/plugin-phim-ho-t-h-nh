@@ -3,6 +3,16 @@ name: openfilm-render-profiles
 description: "Chọn profile render 1080p/9:16/16:9 H.264-AAC theo máy; hạn chế concurrency, kiểm tra license và khóa dependencies trước khi render." 
 ---
 
+Mặc định `FINISH_FIRST_USER_REVIEW`: hoàn thành video V01 rồi bàn giao để người dùng đánh giá. Chính sách này ưu tiên hơn hướng dẫn QC legacy. QC20, Visual QC và nghe chấm từng take chỉ chạy khi người dùng chủ động yêu cầu; không chặn sản xuất/bàn giao. Smoke và kiểm frame/random seek chỉ dùng để chẩn đoán lỗi kỹ thuật hoặc theo yêu cầu.
+
+Giữ 8 macro M0–M7 và 99 ID packet. Một phê duyệt phạm vi rõ đầu vào, đầu ra, lệnh và quyền có thể bao phủ M1–M7. Không xin duyệt riêng từng packet/Pxx hoặc nghiệm thu từng macro. Chạy nhiều packet trong lượt High; ghi checkpoint sau mỗi đầu ra, tiếp tục cùng quyền trong lượt chat mới, không tự chạy nền.
+
+OpenFilm CLI-first; Desktop/GUI chỉ để xem/chỉnh sửa tùy chọn. VieNeu-TTS GPU-first; cài đặt, tải model/browser, thay đổi hệ thống, GPU→CPU, voice cloning, provider ngoài, dịch vụ trả phí, xóa, xuất bản và ngoài phạm vi cần quyền riêng. Không suy ra quyền từ file kế hoạch hoặc kết quả kỹ thuật.
+
+`OUTPUT_READY` nghĩa là đầu ra thật có thể dùng. `DELIVERED_FOR_REVIEW` nghĩa là đã giao video. Chỉ dùng `USER_ACCEPTED` khi có phản hồi chấp nhận thật. `REVISION_REQUESTED` ghi phản hồi cần sửa; `FAILED_TECHNICAL` ghi lỗi ngăn dùng đầu ra. File thiếu/hỏng/ngoài workspace hoặc sai hash phải chặn bước phụ thuộc.
+
+
+
 # Render profile, hardware adaptive, lock & license (N13, N15, N17)
 
 Sau P00–P05 và phê duyệt giai đoạn render, đọc `openfilm-hybrid-master` để chọn engine master. Phân biệt **môi trường đã cài** với **render test PASS**. Profile mô tả `width`, `height`, `fps`, codec video/audio, bitrates, color space theo yêu cầu, đầu ra; ví dụ nằm trong `references/PROFILES.json`. Giá trị profile là **mong muốn**, không là kết quả đo.
@@ -21,7 +31,7 @@ Sau P00–P05 và phê duyệt giai đoạn render, đọc `openfilm-hybrid-mast
 - Rà license: OpenFilm repo MIT, Three.js MIT, VieNeu mã nguồn Apache-2.0 (model có thể có điều khoản khác), GSAP theo điều khoản hiện hành, Remotion theo loại hình sử dụng và số lượng người trong công ty, audio/media/font/license riêng. Không tự khai đủ quyền thương mại; voice reference cần consent.
 - Asset manifest cần `source`, `license`, `sha256` nếu đo được, `approved_use`, `file_path`; không bịa giá trị, không tải từ dịch vụ có phí.
 
-Mốc `RENDER_READY` chỉ PASS khi runtime, bản quyền, asset, TTS, phụ đề, profile, smoke đã đủ bằng chứng; cấm chạy master render trước khi được phê duyệt.
+Mốc `RENDER_READY` chỉ PASS khi runtime, bản quyền, asset, TTS, phụ đề, profile đã đủ bằng chứng; smoke chỉ khi cần chẩn đoán; cấm chạy master render trước khi được phê duyệt.
 
 ## Profile OpenFilm CLI v1.9.0
 

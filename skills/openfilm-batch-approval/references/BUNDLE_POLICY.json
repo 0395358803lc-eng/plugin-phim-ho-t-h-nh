@@ -108,5 +108,5 @@
   "note": "Operational policy, not proof that any stage can finish in one High turn.",
   "deprecatedForNewProjects": true,
   "supersededBy": "openfilm-macro-bundles/references/MACRO_POLICY.json",
-  "legacyOnly": "v1.10 approvalBundles persisted for backcompat; do not emit stage-by-stage buttons for v1.11 new projects"
+  "legacyOnly": true
 }

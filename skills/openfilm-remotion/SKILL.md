@@ -3,6 +3,16 @@ name: openfilm-remotion
 description: "Dùng khi cần Remotion Master dựng/encode cuối hoặc clip React trung gian cho OpenFilm Master; P00–P05, phê duyệt master và file adapter bắt buộc."
 ---
 
+Mặc định `FINISH_FIRST_USER_REVIEW`: hoàn thành video V01 rồi bàn giao để người dùng đánh giá. Chính sách này ưu tiên hơn hướng dẫn QC legacy. QC20, Visual QC và nghe chấm từng take chỉ chạy khi người dùng chủ động yêu cầu; không chặn sản xuất/bàn giao. Smoke và kiểm frame/random seek chỉ dùng để chẩn đoán lỗi kỹ thuật hoặc theo yêu cầu.
+
+Giữ 8 macro M0–M7 và 99 ID packet. Một phê duyệt phạm vi rõ đầu vào, đầu ra, lệnh và quyền có thể bao phủ M1–M7. Không xin duyệt riêng từng packet/Pxx hoặc nghiệm thu từng macro. Chạy nhiều packet trong lượt High; ghi checkpoint sau mỗi đầu ra, tiếp tục cùng quyền trong lượt chat mới, không tự chạy nền.
+
+OpenFilm CLI-first; Desktop/GUI chỉ để xem/chỉnh sửa tùy chọn. VieNeu-TTS GPU-first; cài đặt, tải model/browser, thay đổi hệ thống, GPU→CPU, voice cloning, provider ngoài, dịch vụ trả phí, xóa, xuất bản và ngoài phạm vi cần quyền riêng. Không suy ra quyền từ file kế hoạch hoặc kết quả kỹ thuật.
+
+`OUTPUT_READY` nghĩa là đầu ra thật có thể dùng. `DELIVERED_FOR_REVIEW` nghĩa là đã giao video. Chỉ dùng `USER_ACCEPTED` khi có phản hồi chấp nhận thật. `REVISION_REQUESTED` ghi phản hồi cần sửa; `FAILED_TECHNICAL` ghi lỗi ngăn dùng đầu ra. File thiếu/hỏng/ngoài workspace hoặc sai hash phải chặn bước phụ thuộc.
+
+
+
 # Remotion Master hoặc Remotion clip → OpenFilm Master · hai chế độ
 
 ## Vị trí trong hệ thống
@@ -24,5 +34,3 @@ Tìm Remotion trong workspace cũ trước; `node_modules`/path/ABI có thể kh
 Nguồn: https://www.remotion.dev/docs/api và https://www.remotion.dev/docs/renderer/render-media . Xem `references/BRIDGE.md`.
 
 ## Remotion Master — mở rộng N01–N18
-
-Nếu master `remotion`, trước khi biên tập đọc `openfilm-hybrid-master`, `openfilm-filmdata`, `openfilm-remotion-r3f`, `openfilm-audio-subtitles`, `openfilm-render-profiles`, `openfilm-qc-advanced`. `FilmData` là nguồn timeframe duy nhất; scenes dùng `useCurrentFrame()` và phụ đề/voice dùng integer frames. Bộ `@remotion/three` chỉ sử dụng nếu B06/B07/GPU/WebGL khả dụng; `Config.setChromiumOpenGlRenderer('angle')` chỉ sau khi kiểm chứng theo version. `npx remotion` có thể auto tải trong môi trường thiếu, không dùng ở P04. Render `master` bằng Remotion khi đã duyệt, không import ngược trừ khi cần mở rộng OpenFilm. Kiểm tra codec/chiều cao/chiều rộng/FPS/AAC/FFprobe và đủ QC20 trước khi tuyên bố PASS. Đối chiếu `references/BRIDGE.md` và `openfilm-hybrid-master/references/ADAPTER.md`.

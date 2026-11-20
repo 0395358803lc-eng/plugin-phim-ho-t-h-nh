@@ -1,12 +1,16 @@
 ---
 name: openfilm-batch-approval
-description: "Tương thích LEGACY với nhóm cấp stage v1.10; dự án mới dùng openfilm-macro-bundles M0–M7 để phê duyệt cấp nhiều giai đoạn."
+description: "Đọc approvalBundles legacy và chuyển sang phê duyệt phạm vi sản xuất."
 ---
 
-# Batch approval — LEGACY v1.10.0, thay bởi macro v1.11.0
+# openfilm-batch-approval — v1.14.0
 
-**Dự án mới bắt buộc dùng `openfilm-macro-bundles/SKILL.md` và `MACRO_POLICY.json`**. `BUNDLE_POLICY.json`, `bundle_scheduler.py`, `validate_bundle_gate.py` vẫn tồn tại để đọc lại các checkpoint đã duyệt ở v1.10.0, **không** được dùng để đề xuất các nút mới theo mỗi stage hoặc packet. Không yêu cầu duyệt từng Pxx nội bộ. Không tự chuyển event `APPROVE_BUNDLE` cũ thành `APPROVE_MACRO` mới mà không kiểm source hashes và quyết định thật.
+Mặc định `FINISH_FIRST_USER_REVIEW`: hoàn thành video V01 rồi bàn giao để người dùng đánh giá. Chính sách này ưu tiên hơn hướng dẫn QC legacy. QC20, Visual QC và nghe chấm từng take chỉ chạy khi người dùng chủ động yêu cầu; không chặn sản xuất/bàn giao. Smoke và kiểm frame/random seek chỉ dùng để chẩn đoán lỗi kỹ thuật hoặc theo yêu cầu.
 
-Trong v1.11.0, 8 nhóm M0–M7 có thể chứa packet trải qua nhiều Pxx; special actions luôn là sub-bundle riêng. `macro_scheduler.py` chỉ đề xuất phạm vi và chọn packet tiếp, `validate_macro_event.py` chỉ kiểm metadata. User phải click nút thật để duyệt scope, rồi nhiều packet chạy trong cùng lượt High, QC/checkpoint liên tục, cuối lượt có nút tiếp tục cùng macro mà không phải phê duyệt lại. `PRODUCTION_STATUS.json` phải phân biệt QC nội bộ với nghiệm thu của user.
+Giữ 8 macro M0–M7 và 99 ID packet. Một phê duyệt phạm vi rõ đầu vào, đầu ra, lệnh và quyền có thể bao phủ M1–M7. Không xin duyệt riêng từng packet/Pxx hoặc nghiệm thu từng macro. Chạy nhiều packet trong lượt High; ghi checkpoint sau mỗi đầu ra, tiếp tục cùng quyền trong lượt chat mới, không tự chạy nền.
 
-**LEGACY:** nếu đang xử lý một `approvalBundles[]` từ v1.10 có thật, chỉ tiếp tục theo quyền/giới hạn gốc đã cấp; không tự mở rộng sang macro khác. Muốn gộp trạng thái dở, trình một kế hoạch chuyển đổi với phạm vi rõ và user duyệt. Không xóa nội dung đã nghiệm thu, lịch sử approvals, hoặc file nguồn.
+OpenFilm CLI-first; Desktop/GUI chỉ để xem/chỉnh sửa tùy chọn. VieNeu-TTS GPU-first; cài đặt, tải model/browser, thay đổi hệ thống, GPU→CPU, voice cloning, provider ngoài, dịch vụ trả phí, xóa, xuất bản và ngoài phạm vi cần quyền riêng. Không suy ra quyền từ file kế hoạch hoặc kết quả kỹ thuật.
+
+`OUTPUT_READY` nghĩa là đầu ra thật có thể dùng. `DELIVERED_FOR_REVIEW` nghĩa là đã giao video. Chỉ dùng `USER_ACCEPTED` khi có phản hồi chấp nhận thật. `REVISION_REQUESTED` ghi phản hồi cần sửa; `FAILED_TECHNICAL` ghi lỗi ngăn dùng đầu ra. File thiếu/hỏng/ngoài workspace hoặc sai hash phải chặn bước phụ thuộc.
+
+LEGACY: scripts bundle_scheduler.py và validate_bundle_gate.py giữ để đọc checkpoint cũ. Dự án mới dùng [openfilm-macro-bundles](../openfilm-macro-bundles/SKILL.md); không gọi bộ điều phối legacy trong đường Finish First.

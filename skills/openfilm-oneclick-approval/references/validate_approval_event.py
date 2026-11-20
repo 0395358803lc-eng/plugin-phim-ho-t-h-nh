@@ -10,6 +10,19 @@ BUNDLE_ACTIONS = {'APPROVE_BUNDLE','ACCEPT_BUNDLE','ACCEPT_AND_APPROVE_NEXT_BUND
 ACTIONS = {'APPROVE_EXECUTE','ACCEPT_AND_RUN_NEXT','ACCEPT_ONLY','APPROVE_REPAIR','RECHECK','PAUSE','DETAILS'}
 
 def validate(index: dict, event: dict) -> list[str]:
+    if index.get('productionMode','FINISH_FIRST_USER_REVIEW')!='LEGACY_QC':
+        import importlib.util
+        root=Path(__file__).resolve().parents[2]/'openfilm-macro-bundles/references'
+        spec=importlib.util.spec_from_file_location('production_flow',root/'production_flow.py')
+        module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+        if event.get('action') in ('VIEW_PROGRESS','VIEW_VIDEO','DETAILS','PAUSE'):
+            errors=[k+' mismatch/stale' for k in ('deviceId','workspace','filmId','stateRevision') if event.get(k)!=index.get(k)]
+            if event.get('action')=='VIEW_VIDEO':
+                video=index.get('video',{})
+                errors+=module.f.check_file(index.get('workspace'),video.get('path'),video.get('sha256'),require_audio=video.get('requiresAudio',True))
+            return errors
+        policy=json.loads((root/'MACRO_POLICY.json').read_text(encoding='utf-8'))
+        return module.validate_event(index,event,policy)
     e=[]
     act=event.get('action')
     if act in BUNDLE_ACTIONS:

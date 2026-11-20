@@ -6,7 +6,7 @@ FILE=ROOT/'skills/openfilm-oneclick-approval/references/validate_approval_event.
 spec=spec_from_file_location('oneclick',FILE);mod=module_from_spec(spec);spec.loader.exec_module(mod)
 class GateTest(unittest.TestCase):
     def state(self):
-        return {'stateRevision':7,'deviceId':'verified-device','workspace':r'D:\film\VIDEO_HOAT_HINH_WORKSPACE','currentPacketId':'P14.02.C005','nextPacketId':'P14.02.C006','packets':[
+        return {'productionMode':'LEGACY_QC','stateRevision':7,'deviceId':'verified-device','workspace':r'D:\film\VIDEO_HOAT_HINH_WORKSPACE','currentPacketId':'P14.02.C005','nextPacketId':'P14.02.C006','packets':[
         {'packetId':'P14.02.C005','scopeIds':['C005'],'status':'READY_FOR_REVIEW','qcStatus':'PASS','evidencePaths':['qc/C005.md'],'outputPaths':['out/C005.html'],'outputHashes':{'out/C005.html':'abc'},'planApprovalId':'P-A'},
         {'packetId':'P14.02.C006','scopeIds':['C006'],'status':'PLANNED','presentedToUserRevision':7}]}
     def event(self,action='ACCEPT_AND_RUN_NEXT'):

@@ -1,24 +1,24 @@
 {
   "interface": {
-    "displayName": "Video-ho\u1ea1t-h\u00ecnh",
-    "shortDescription": "T\u1ea1o & bi\u00ean t\u1eadp ho\u1ea1t h\u00ecnh",
-    "longDescription": "Plugin Video-ho\u1ea1t-h\u00ecnh OpenFilm CLI-first + GSAP/Three.js/Remotion v\u00e0 VieNeu-TTS GPU. P00\u2013P05 ch\u1ecdn m\u00e1y, h\u1ecfi workspace, t\u00e1i d\u00f9ng c\u00f4ng c\u1ee5 v\u00e0 xin duy\u1ec7t c\u00e0i \u0111\u1eb7t ri\u00eang. Sau \u0111\u00f3 d\u00f9ng 8 macro-bundle M0\u2013M7 bao ph\u1ee7 P06\u2013P21: k\u1ecbch b\u1ea3n, FilmData, storyboard, asset, WAV GPU, ho\u1ea1t h\u00ecnh, timeline, smoke, draft, QC20 v\u00e0 MP4. Gi\u1eef 99 packet k\u1ef9 thu\u1eadt ch\u1ec9 \u0111\u1ec3 QC/checkpoint; b\u1ea5m ph\u00ea duy\u1ec7t theo nh\u00f3m, c\u00f3 th\u1ec3 ti\u1ebfp t\u1ee5c nh\u00f3m \u0111\u00e3 duy\u1ec7t qua nhi\u1ec1u l\u01b0\u1ee3t High b\u1eb1ng m\u1ed9t n\u00fat, kh\u00f4ng duy\u1ec7t ri\u00eang t\u1eebng packet/Pxx. N\u00fat ph\u1ee5 thu\u1ed9c giao di\u1ec7n host, m\u1ed7i click t\u1ea1o m\u1ed9t l\u01b0\u1ee3t chat m\u1edbi v\u00e0 kh\u00f4ng c\u00f3 th\u1ef1c thi n\u1ec1n. C\u00e0i/t\u1ea3i/CPU fallback/API ph\u00ed/x\u00f3a/xu\u1ea5t b\u1ea3n c\u1ea7n ph\u00ea duy\u1ec7t ri\u00eang; lu\u00f4n \u0111\u00f2i b\u1eb1ng ch\u1ee9ng file th\u1eadt. Visual QC b\u1eaft bu\u1ed9c: ChatGPT ph\u1ea3i nh\u1eadn v\u00e0 nh\u00ecn \u1ea3nh th\u1eadt t\u1ea1i M2/M4/M5/M6/M7, c\u00f3 b\u00e1o c\u00e1o th\u1ecb gi\u00e1c v\u00e0 hash; kh\u00f4ng PASS ch\u1ec9 v\u1edbi log/JSON/FFprobe. v1.13: m\u1ed7i khi sinh PNG th\u1eadt trong scope \u0111\u00e3 duy\u1ec7t, t\u1ef1 \u0111\u00f3ng g\u00f3i ZIP c\u00f3 \u1ea3nh + manifest SHA256 + h\u01b0\u1edbng d\u1eabn gi\u1ea3i n\u00e9n v\u00e0o \u0111\u00fang Windows workspace, trao link t\u1ea3i; ch\u1edd user \u0111\u1eb7t \u1ea3nh v\u00e0 \u0111\u1ecdc l\u1ea1i t\u1eeb Windows tr\u01b0\u1edbc VISUAL_PASS. N\u1ebfu tool kh\u00f4ng tr\u1ea3 byte \u1ea3nh th\u1eadt, d\u1eebng IMAGE_BINARY_UNAVAILABLE, kh\u00f4ng gi\u1ea3 ZIP ho\u1eb7c receipt. \u0110\u1ecdc skill openfilm-image-zip-handoff.",
+    "displayName": "Video-hoạt-hình",
+    "shortDescription": "Tạo & biên tập hoạt hình",
+    "longDescription": "Video-hoạt-hình v1.14.0 — Finish First — User Review Later. Sản xuất V01 từ 7 tệp nguồn đến FilmData, asset, WAV GPU, hoạt hình, timeline và MP4 dùng được. Một phạm vi phê duyệt có thể bao phủ M1–M7; giữ 8 macro, 99 ID packet, checkpoint và ZIP ảnh. OpenFilm CLI-first; VieNeu-TTS GPU-first. Bàn giao DELIVERED_FOR_REVIEW trước đánh giá chất lượng. Chỉ USER_ACCEPTED khi người dùng chấp nhận; sửa theo phản hồi thành V02/V03, giữ bản cũ. QC chất lượng tùy chọn khi user yêu cầu. Cài/tải/thay đổi hệ thống/CPU fallback/voice cloning/provider/phí/xóa/xuất bản cần quyền riêng. Không tự chạy nền hoặc báo hoàn thành khi thiếu file thật.",
     "developerName": "ow fe",
     "category": "Creativity",
     "capabilities": [
       "Skills"
     ],
     "defaultPrompt": [
-      "H\u00e3y d\u00f9ng Video-ho\u1ea1t-h\u00ecnh l\u1eadp storyboard v\u00e0 k\u1ebf ho\u1ea1ch d\u1ef1ng video ho\u1ea1t h\u00ecnh 2 ph\u00fat.",
-      "D\u1ef1ng c\u1ea3nh ho\u1ea1t h\u00ecnh OpenFilm t\u1ef7 l\u1ec7 9:16 t\u1eeb k\u1ecbch b\u1ea3n sau.",
-      "Ki\u1ec3m tra ch\u1ea5t l\u01b0\u1ee3ng d\u1ef1 \u00e1n ho\u1ea1t h\u00ecnh v\u00e0 chu\u1ea9n b\u1ecb render MP4."
+      "Hãy dùng Video-hoạt-hình lập storyboard và kế hoạch dựng video hoạt hình 2 phút.",
+      "Dựng cảnh hoạt hình OpenFilm tỷ lệ 9:16 từ kịch bản sau.",
+      "Kiểm tra chất lượng dự án hoạt hình và chuẩn bị render MP4."
     ],
     "logo": "./assets/logo.png",
     "composerIcon": "./assets/logo.png"
   },
   "name": "video-hoat-hinh",
-  "version": "1.13.0",
-  "description": "Video ho\u1ea1t h\u00ecnh OpenFilm/Remotion, VieNeu GPU-first; M0\u2013M7, 99 packet. T\u1ea1o \u1ea3nh r\u1ed3i ZIP b\u00e0n giao Windows, QC h\u00ecnh \u1ea3nh th\u1eadt kh\u00f4ng gi\u1ea3.",
+  "version": "1.14.0",
+  "description": "Video hoạt hình Finish First: hoàn thành V01 rồi người dùng đánh giá; OpenFilm CLI-first, VieNeu GPU-first, 8 macro, 99 packet và ZIP ảnh.",
   "author": {
     "name": "ow fe",
     "email": "beecherbryson8708+68128@gmail.com"
@@ -54,7 +54,6 @@
     "one-click approval",
     "High work packets",
     "resume",
-    "QC per packet",
     "GPU-first",
     "PyTorch CUDA",
     "NVIDIA",
@@ -70,16 +69,17 @@
     "look render",
     "approval bundles",
     "fewer clicks",
-    "batch QC",
     "visual inspection",
     "vision QC",
     "actual rendered frames",
     "multimodal images",
-    "render quality gate",
     "ZIP handoff",
     "image packaging",
     "manual Windows import",
-    "image SHA256 manifest"
+    "image SHA256 manifest",
+    "Finish First",
+    "user review",
+    "versioned revisions"
   ],
   "license": "MIT",
   "skills": "./skills"

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pluginVersion": "1.12.0",
+  "pluginVersion": "1.14.0",
   "mandatoryMacroIds": [
     "M2",
     "M4",
@@ -102,5 +102,7 @@
   ],
   "cannotProveByCode": "Scripts cannot establish that the model truly perceived image content. The agent must observe actual multimodal image tool output and truthfully enter scene-specific observations; do not fabricate receipt or claim full video watched from frame sampling.",
   "visualSamplingIsNotFullPlayback": true,
-  "mandatorySourceCheck": "Validate visual evidence on the selected Windows device using --workspace root and checksum; review the actual multimodal image content yourself."
+  "mandatorySourceCheck": "Validate visual evidence on the selected Windows device using --workspace root and checksum; review the actual multimodal image content yourself.",
+  "activation": "EXPLICIT_USER_REQUEST_ONLY",
+  "blocksProduction": false
 }

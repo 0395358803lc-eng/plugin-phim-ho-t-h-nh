@@ -1,0 +1,75 @@
+{
+  "status": "PASS",
+  "realOpenFilmCLI": true,
+  "renderedVersions": [
+    "V01.mp4",
+    "V02.mp4"
+  ],
+  "v01Status": "DELIVERED_FOR_REVIEW",
+  "v01Preserved": true,
+  "qualityQCRequired": false,
+  "syntheticFixtureEvents": true,
+  "vieneuSpeechValidated": false,
+  "audio": "synthetic tone fixture",
+  "limitation": "No live host click integration or VieNeu GPU inference tested.",
+  "executionDate": "2026-11-20",
+  "runtimeVersion": "OpenFilm 0.4.0",
+  "artifacts": [
+    {
+      "name": "V01.mp4",
+      "bytes": 113464,
+      "sha256": "a5a0a1c899627e8e8cc4be7e48b42f35b29b3d875b216f2fa807d4a67ad39064",
+      "duration": "2.000000",
+      "streams": [
+        {
+          "codec_type": "video",
+          "codec_name": "h264",
+          "width": 1280,
+          "height": 720,
+          "sample_rate": null,
+          "channels": null
+        },
+        {
+          "codec_type": "audio",
+          "codec_name": "aac",
+          "width": null,
+          "height": null,
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "decodeExitCode": 0
+    },
+    {
+      "name": "V02.mp4",
+      "bytes": 106671,
+      "sha256": "ad2d3f0aa76908e3d7b57e8a6110ee4b3468d789a42af7c8fd74531be2628908",
+      "duration": "2.000000",
+      "streams": [
+        {
+          "codec_type": "video",
+          "codec_name": "h264",
+          "width": 1280,
+          "height": 720,
+          "sample_rate": null,
+          "channels": null
+        },
+        {
+          "codec_type": "audio",
+          "codec_name": "aac",
+          "width": null,
+          "height": null,
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "decodeExitCode": 0
+    }
+  ],
+  "validation": {
+    "pytestPassed": 223,
+    "pytestSkipped": 2,
+    "skippedReason": "Windows symlink privilege unavailable",
+    "imageHandoffTests": 6
+  }
+}

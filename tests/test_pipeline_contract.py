@@ -20,6 +20,8 @@ class TestPipelineContract(unittest.TestCase):
     def setUp(self):
         self.template=json.loads((ROOT/'skills/openfilm-checkpoint-approval/references/PRODUCTION_STATUS_TEMPLATE.json').read_text(encoding='utf-8'))
 
+        self.template['productionMode']='LEGACY_QC'
+
     def test_stage_ids_are_exact_and_ordered(self):
         specs=json.loads((ROOT/'skills/openfilm-production-p06-p21/references/STAGE_DEFINITIONS.json').read_text(encoding='utf-8'))['stages']
         self.assertEqual([s['id'] for s in specs],state.IDS)

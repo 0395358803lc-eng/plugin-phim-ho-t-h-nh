@@ -1,3 +1,5 @@
+> v1.14.0: FINISH_FIRST_USER_REVIEW ưu tiên. Đây là công thức kỹ thuật/tham khảo; mọi đánh giá thẩm mỹ chỉ theo yêu cầu người dùng, mọi cổng QC legacy không chặn V01. OpenFilm CLI-first, GUI tùy chọn.
+
 # openfilm
 
 The open source AI video agent: films as web pages, the manual that teaches your coding agent to make them, the

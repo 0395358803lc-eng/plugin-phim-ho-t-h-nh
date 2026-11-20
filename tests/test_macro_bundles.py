@@ -9,7 +9,8 @@ def load(name):
     spec=importlib.util.spec_from_file_location(name,M/(name+'.py'))
     mod=importlib.util.module_from_spec(spec);spec.loader.exec_module(mod);return mod
 
-def policy():return json.loads((M/'MACRO_POLICY.json').read_text('utf-8'))
+def policy():
+    p=json.loads((M/'MACRO_POLICY.json').read_text('utf-8'));p['humanDecisionGates']={'P08':'PROFILE_CHOICE'};return p
 
 def packet(pid, stage, *, risk='NORMAL', special=False, dependencies=None):
     return {'packetId':pid,'stageId':stage,'scopeIds':[pid],
@@ -18,7 +19,7 @@ def packet(pid, stage, *, risk='NORMAL', special=False, dependencies=None):
             'specialApprovalRequired':special,'status':'PLANNED','qcStatus':'NOT_TESTED'}
 
 def index(packets):
-    return {'stateRevision':4,'deviceId':'pc1','workspace':r'D:\animation\VIDEO_HOAT_HINH_WORKSPACE',
+    return {'productionMode':'LEGACY_QC','stateRevision':4,'deviceId':'pc1','workspace':r'D:\animation\VIDEO_HOAT_HINH_WORKSPACE',
             'filmId':'a','packets':packets,'macroBundles':[], 'stageStates':{},'decisionGates':{}}
 
 def mark_preconditions(ix, earliest):

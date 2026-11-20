@@ -3,6 +3,16 @@ name: openfilm-runtime-control
 description: "Xác minh đường điều khiển OpenFilm Desktop/CLI trên Windows, ghi runtime profile có chứng cứ, khởi tạo film.html từ FilmData ngay P09 và kiểm tra khả năng preview trước P17."
 ---
 
+Mặc định `FINISH_FIRST_USER_REVIEW`: hoàn thành video V01 rồi bàn giao để người dùng đánh giá. Chính sách này ưu tiên hơn hướng dẫn QC legacy. QC20, Visual QC và nghe chấm từng take chỉ chạy khi người dùng chủ động yêu cầu; không chặn sản xuất/bàn giao. Smoke và kiểm frame/random seek chỉ dùng để chẩn đoán lỗi kỹ thuật hoặc theo yêu cầu.
+
+Giữ 8 macro M0–M7 và 99 ID packet. Một phê duyệt phạm vi rõ đầu vào, đầu ra, lệnh và quyền có thể bao phủ M1–M7. Không xin duyệt riêng từng packet/Pxx hoặc nghiệm thu từng macro. Chạy nhiều packet trong lượt High; ghi checkpoint sau mỗi đầu ra, tiếp tục cùng quyền trong lượt chat mới, không tự chạy nền.
+
+OpenFilm CLI-first; Desktop/GUI chỉ để xem/chỉnh sửa tùy chọn. VieNeu-TTS GPU-first; cài đặt, tải model/browser, thay đổi hệ thống, GPU→CPU, voice cloning, provider ngoài, dịch vụ trả phí, xóa, xuất bản và ngoài phạm vi cần quyền riêng. Không suy ra quyền từ file kế hoạch hoặc kết quả kỹ thuật.
+
+`OUTPUT_READY` nghĩa là đầu ra thật có thể dùng. `DELIVERED_FOR_REVIEW` nghĩa là đã giao video. Chỉ dùng `USER_ACCEPTED` khi có phản hồi chấp nhận thật. `REVISION_REQUESTED` ghi phản hồi cần sửa; `FAILED_TECHNICAL` ghi lỗi ngăn dùng đầu ra. File thiếu/hỏng/ngoài workspace hoặc sai hash phải chặn bước phụ thuộc.
+
+
+
 # OpenFilm Runtime Control + Early Film Bootstrap (v1.8.0)
 
 ## A. Cổng khả năng runtime thật tại P06.08
@@ -15,7 +25,6 @@ Chạy **sau** P00–P05 và phê duyệt công đoạn P06. P04–P05 chỉ đ�
 
 `reports/openfilm/OPENFILM_RUNTIME_PROFILE.json` phải ghi `deviceId`, `workspace`, `mode`, đường dẫn runtime, phiên bản, `capabilities.openProject|inspectFrame|renderClip|openCanvas`, trạng thái, evidence paths thuộc workspace, approvalId, và phương thức kiểm chứng. Template `references/OPENFILM_RUNTIME_PROFILE_TEMPLATE.json`, kiểm trước khi chấp nhận bằng `references/validate_runtime_profile.py`; validator chỉ kiểm hợp đồng/metadata, không chứng minh khả năng thực tế. Đọc lại file sau lưu. `openCanvas` chỉ cần nếu chọn Canvas; nếu không là UNSUPPORTED hoặc UNVERIFIED không chặn làm phim.
 
-**Phân công:** P06.08 profile → P06.09–P06.11 OpenFilm E2E fixture → P06.04 chốt runtime và môi trường. Khi GUI không có công cụ render tự động, cho người dùng thao tác thủ công trong phạm vi đã duyệt hoặc dừng rõ; không chuyển sang Remotion rồi ghi là OpenFilm PASS. Việc dùng Remotion Master cho phim dài là lựa chọn P08 riêng.
 
 ## B. Bootstrap project ở P09.06, trước P16
 

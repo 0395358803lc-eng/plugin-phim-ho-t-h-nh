@@ -1,3 +1,5 @@
+> v1.14.0: FINISH_FIRST_USER_REVIEW ưu tiên. Đây là công thức kỹ thuật/tham khảo; mọi đánh giá thẩm mỹ chỉ theo yêu cầu người dùng, mọi cổng QC legacy không chặn V01. OpenFilm CLI-first, GUI tùy chọn.
+
 # Hợp đồng nghiệm thu E2E OpenFilm độc lập (P06.09–P06.11)
 
 - Test video 7 giây có 1 trang cảnh `window.film.frame(t)` với vật thể di chuyển, `film.html` chứa track `<iframe>`, `<audio>` và `<track kind="captions">` + WebVTT; WAV 48kHz tạo tại chỗ không dùng TTS/service ngoài.

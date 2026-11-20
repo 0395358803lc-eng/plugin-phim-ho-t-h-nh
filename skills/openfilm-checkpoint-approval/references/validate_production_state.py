@@ -3,6 +3,10 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+import importlib.util as _iu
+_spec=_iu.spec_from_file_location('validate_completion',Path(__file__).resolve().parents[2]/'openfilm-macro-bundles/references/validate_completion.py')
+_vc=_iu.module_from_spec(_spec);_spec.loader.exec_module(_vc)
+
 
 STATES={'NOT_STARTED','PLANNED','WAITING_APPROVAL','IN_PROGRESS','READY_FOR_REVIEW','PASS','FAIL','BLOCKED','SKIPPED','INVALIDATED'}
 APPROVAL={'NOT_REQUESTED','PENDING','APPROVED','REJECTED'}
@@ -34,6 +38,7 @@ def internal_macro_gate(stage, status):
 
 
 def validate(state:dict)->list[str]:
+    if _vc.f.enabled(state):return _vc.validate_stages(state)
     errors=[]
     if state.get('schemaVersion')!=1:
         errors.append('schemaVersion must equal 1')
@@ -101,6 +106,7 @@ def validate(state:dict)->list[str]:
 
 def validate_files(state:dict,workspace:Path)->list[str]:
     """Optional file/hash check. No media playback or audio review is done."""
+    if _vc.f.enabled(state):return _vc.validate_stages({**state,'workspace':str(workspace.resolve())})
     import hashlib
     issues=[]
     root=workspace.resolve()

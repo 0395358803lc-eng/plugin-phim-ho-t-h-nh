@@ -12,15 +12,14 @@
       "requiresEvidence": true,
       "requiresAcceptance": false,
       "openfilmRuntimeProfile": "reports/openfilm/OPENFILM_RUNTIME_PROFILE.json",
-      "e2eProof": "qc/openfilm-e2e/E2E_REPORT.json",
       "requiredBefore": "P07 unless renderer genuinely blocked and user changes approved scope",
       "notes": "Installation can SKIP but runtime evidence cannot be fabricated.",
       "openFilmRuntime": "cli-required",
       "cliEvidenceRequired": true,
       "macroId": "M0",
-      "acceptanceMode": "INTERNAL_QC_UNTIL_MACRO_ACCEPTED",
-      "userAcceptanceAt": "MACRO_BOUNDARY",
-      "internalQCRequired": true
+      "acceptanceMode": "OUTPUT_READY",
+      "userAcceptanceAt": "AFTER_DELIVERY",
+      "diagnosticFixture": "first runtime verification or technical diagnosis only"
     },
     {
       "id": "P07",
@@ -35,9 +34,8 @@
       "requiresEvidence": true,
       "requiresAcceptance": false,
       "macroId": "M1",
-      "acceptanceMode": "INTERNAL_QC_UNTIL_MACRO_ACCEPTED",
-      "userAcceptanceAt": "MACRO_BOUNDARY",
-      "internalQCRequired": true
+      "acceptanceMode": "OUTPUT_READY",
+      "userAcceptanceAt": "AFTER_DELIVERY"
     },
     {
       "id": "P08",
@@ -53,10 +51,8 @@
       "requiresAcceptance": false,
       "voiceSourceLock": "reports/tts/VOICE_SOURCE_LOCK.json",
       "macroId": "M1",
-      "acceptanceMode": "INTERNAL_QC_UNTIL_MACRO_ACCEPTED",
-      "userAcceptanceAt": "MACRO_BOUNDARY",
-      "internalQCRequired": true,
-      "decisionGate": "PROFILE_CHOICE"
+      "acceptanceMode": "OUTPUT_READY",
+      "userAcceptanceAt": "AFTER_DELIVERY"
     },
     {
       "id": "P09",
@@ -75,9 +71,8 @@
       "openFilmRuntime": "cli-required",
       "cliEvidenceRequired": false,
       "macroId": "M1",
-      "acceptanceMode": "INTERNAL_QC_UNTIL_MACRO_ACCEPTED",
-      "userAcceptanceAt": "MACRO_BOUNDARY",
-      "internalQCRequired": true
+      "acceptanceMode": "OUTPUT_READY",
+      "userAcceptanceAt": "AFTER_DELIVERY"
     },
     {
       "id": "P10",
@@ -95,12 +90,8 @@
       "openFilmRuntime": "cli-required",
       "cliEvidenceRequired": false,
       "macroId": "M2",
-      "acceptanceMode": "INTERNAL_QC_UNTIL_MACRO_ACCEPTED",
-      "userAcceptanceAt": "MACRO_BOUNDARY",
-      "internalQCRequired": true,
-      "decisionGateBeforeNextStage": "VISUAL_DIRECTION",
-      "visualEvidenceContract": "openfilm-visual-inspection/SKILL.md",
-      "mandatoryVisualMacro": "M2"
+      "acceptanceMode": "OUTPUT_READY",
+      "userAcceptanceAt": "AFTER_DELIVERY"
     },
     {
       "id": "P11",
@@ -115,11 +106,8 @@
       "requiresEvidence": true,
       "requiresAcceptance": false,
       "macroId": "M2",
-      "acceptanceMode": "INTERNAL_QC_UNTIL_MACRO_ACCEPTED",
-      "userAcceptanceAt": "MACRO_BOUNDARY",
-      "internalQCRequired": true,
-      "visualEvidenceContract": "openfilm-visual-inspection/SKILL.md",
-      "mandatoryVisualMacro": "M2"
+      "acceptanceMode": "OUTPUT_READY",
+      "userAcceptanceAt": "AFTER_DELIVERY"
     },
     {
       "id": "P12",
@@ -134,10 +122,8 @@
       "requiresEvidence": true,
       "requiresAcceptance": false,
       "macroId": "M3",
-      "acceptanceMode": "INTERNAL_QC_UNTIL_MACRO_ACCEPTED",
-      "userAcceptanceAt": "MACRO_BOUNDARY",
-      "internalQCRequired": true,
-      "decisionGateBeforeNextStage": "VOICE_AUDIO_QC"
+      "acceptanceMode": "OUTPUT_READY",
+      "userAcceptanceAt": "AFTER_DELIVERY"
     },
     {
       "id": "P13",
@@ -152,9 +138,8 @@
       "requiresEvidence": true,
       "requiresAcceptance": false,
       "macroId": "M3",
-      "acceptanceMode": "INTERNAL_QC_UNTIL_MACRO_ACCEPTED",
-      "userAcceptanceAt": "MACRO_BOUNDARY",
-      "internalQCRequired": true
+      "acceptanceMode": "OUTPUT_READY",
+      "userAcceptanceAt": "AFTER_DELIVERY"
     },
     {
       "id": "P14",
@@ -176,11 +161,8 @@
       "openFilmRuntime": "cli-required",
       "cliEvidenceRequired": false,
       "macroId": "M4",
-      "acceptanceMode": "INTERNAL_QC_UNTIL_MACRO_ACCEPTED",
-      "userAcceptanceAt": "MACRO_BOUNDARY",
-      "internalQCRequired": true,
-      "visualEvidenceContract": "openfilm-visual-inspection/SKILL.md",
-      "mandatoryVisualMacro": "M4"
+      "acceptanceMode": "OUTPUT_READY",
+      "userAcceptanceAt": "AFTER_DELIVERY"
     },
     {
       "id": "P15",
@@ -201,33 +183,27 @@
       "openFilmRuntime": "cli-required",
       "cliEvidenceRequired": false,
       "macroId": "M4",
-      "acceptanceMode": "INTERNAL_QC_UNTIL_MACRO_ACCEPTED",
-      "userAcceptanceAt": "MACRO_BOUNDARY",
-      "internalQCRequired": true,
-      "visualEvidenceContract": "openfilm-visual-inspection/SKILL.md",
-      "mandatoryVisualMacro": "M4"
+      "acceptanceMode": "OUTPUT_READY",
+      "userAcceptanceAt": "AFTER_DELIVERY"
     },
     {
       "id": "P16",
-      "name": "OpenFilm previs and shot review",
+      "name": "Scene source ready",
       "dependsOn": [
         "P15"
       ],
-      "canonicalOutput": "renders/previs/",
+      "canonicalOutput": "projects/<film-id>/openfilm/film.html",
       "workUnitKey": "shot_id",
       "mayWrite": true,
       "skippable": false,
       "requiresEvidence": true,
       "requiresAcceptance": false,
-      "beforeP17": "P09 film.html exists; placeholder count zero and verified OpenFilm frame preview",
+      "beforeP17": "Actual scene code and referenced assets exist",
       "openFilmRuntime": "cli-required",
-      "cliEvidenceRequired": true,
+      "cliEvidenceRequired": false,
       "macroId": "M4",
-      "acceptanceMode": "INTERNAL_QC_UNTIL_MACRO_ACCEPTED",
-      "userAcceptanceAt": "MACRO_BOUNDARY",
-      "internalQCRequired": true,
-      "visualEvidenceContract": "openfilm-visual-inspection/SKILL.md",
-      "mandatoryVisualMacro": "M4"
+      "acceptanceMode": "OUTPUT_READY",
+      "userAcceptanceAt": "AFTER_DELIVERY"
     },
     {
       "id": "P17",
@@ -245,11 +221,8 @@
       "openFilmRuntime": "cli-required",
       "cliEvidenceRequired": false,
       "macroId": "M5",
-      "acceptanceMode": "INTERNAL_QC_UNTIL_MACRO_ACCEPTED",
-      "userAcceptanceAt": "MACRO_BOUNDARY",
-      "internalQCRequired": true,
-      "visualEvidenceContract": "openfilm-visual-inspection/SKILL.md",
-      "mandatoryVisualMacro": "M5"
+      "acceptanceMode": "OUTPUT_READY",
+      "userAcceptanceAt": "AFTER_DELIVERY"
     },
     {
       "id": "P18",
@@ -260,25 +233,23 @@
       "canonicalOutput": "renders/smoke/smoke-5s.mp4",
       "workUnitKey": "render_id",
       "mayWrite": true,
-      "skippable": false,
+      "skippable": true,
       "requiresEvidence": true,
       "requiresAcceptance": false,
       "openFilmRuntime": "cli-required",
       "cliEvidenceRequired": true,
       "macroId": "M5",
-      "acceptanceMode": "INTERNAL_QC_UNTIL_MACRO_ACCEPTED",
-      "userAcceptanceAt": "MACRO_BOUNDARY",
-      "internalQCRequired": true,
-      "visualEvidenceContract": "openfilm-visual-inspection/SKILL.md",
-      "mandatoryVisualMacro": "M5"
+      "acceptanceMode": "OUTPUT_READY",
+      "userAcceptanceAt": "AFTER_DELIVERY",
+      "optional": true
     },
     {
       "id": "P19",
-      "name": "Full draft render",
+      "name": "Render V01",
       "dependsOn": [
-        "P18"
+        "P17"
       ],
-      "canonicalOutput": "renders/draft/draft-v01.mp4",
+      "canonicalOutput": "renders/V01.mp4",
       "workUnitKey": "render_id",
       "mayWrite": true,
       "skippable": false,
@@ -287,40 +258,36 @@
       "openFilmRuntime": "cli-required",
       "cliEvidenceRequired": true,
       "macroId": "M6",
-      "acceptanceMode": "INTERNAL_QC_UNTIL_MACRO_ACCEPTED",
-      "userAcceptanceAt": "MACRO_BOUNDARY",
-      "internalQCRequired": true,
-      "visualEvidenceContract": "openfilm-visual-inspection/SKILL.md",
-      "mandatoryVisualMacro": "M6"
+      "acceptanceMode": "OUTPUT_READY",
+      "userAcceptanceAt": "AFTER_DELIVERY"
     },
     {
       "id": "P20",
-      "name": "QC20 and remediation",
+      "name": "User-requested targeted revisions",
       "dependsOn": [
         "P19"
       ],
-      "canonicalOutput": "qc/QC20_REPORT.md",
+      "canonicalOutput": "reports/revisions.json",
       "workUnitKey": "issue_id",
       "mayWrite": true,
-      "skippable": false,
+      "skippable": true,
       "requiresEvidence": true,
       "requiresAcceptance": false,
       "openFilmRuntime": "cli-required",
       "cliEvidenceRequired": true,
       "macroId": "M6",
-      "acceptanceMode": "INTERNAL_QC_UNTIL_MACRO_ACCEPTED",
-      "userAcceptanceAt": "MACRO_BOUNDARY",
-      "internalQCRequired": true,
-      "visualEvidenceContract": "openfilm-visual-inspection/SKILL.md",
-      "mandatoryVisualMacro": "M6"
+      "acceptanceMode": "OUTPUT_READY",
+      "userAcceptanceAt": "AFTER_DELIVERY",
+      "optional": true,
+      "activation": "USER_FEEDBACK_AFTER_DELIVERY"
     },
     {
       "id": "P21",
-      "name": "Final master handoff",
+      "name": "Deliver V01 for review",
       "dependsOn": [
-        "P20"
+        "P19"
       ],
-      "canonicalOutput": "renders/master/FINAL_MASTER.mp4",
+      "canonicalOutput": "reports/DELIVERY_MANIFEST.json",
       "workUnitKey": "master_id",
       "mayWrite": true,
       "skippable": false,
@@ -329,14 +296,13 @@
       "openFilmRuntime": "cli-required",
       "cliEvidenceRequired": true,
       "macroId": "M7",
-      "acceptanceMode": "INTERNAL_QC_UNTIL_MACRO_ACCEPTED",
-      "userAcceptanceAt": "FINAL_MASTER_DELIVERY",
-      "internalQCRequired": true,
-      "finalAcceptanceGate": "USER_FINAL",
-      "visualEvidenceContract": "openfilm-visual-inspection/SKILL.md",
-      "mandatoryVisualMacro": "M7"
+      "acceptanceMode": "OUTPUT_READY",
+      "userAcceptanceAt": "AFTER_DELIVERY",
+      "videoOutput": "renders/V01.mp4",
+      "reuseExistingRender": true
     }
   ],
   "openfilmExecutionPolicy": "CLI_ONLY_FOR_OPENFILM",
-  "pluginVersion": "1.12.0"
+  "pluginVersion": "1.14.0",
+  "defaultMode": "FINISH_FIRST_USER_REVIEW"
 }

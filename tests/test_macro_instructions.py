@@ -6,7 +6,7 @@ def read(p):return (ROOT/p).read_text('utf-8')
 
 def test_main_uses_eight_macro_groups_not_stage_packet_buttons():
     s=read('skills/video-hoat-hinh/SKILL.md')
-    assert 'v1.11.0' in s
+    assert 'v1.14.0' in s
     assert 'openfilm-macro-bundles/SKILL.md' in s
     assert 'Không xin duyệt riêng từng packet' in s
     assert 'P00–P05' in s and 'OpenFilm CLI' in s and 'GPU' in s
@@ -16,9 +16,9 @@ def test_all_approval_skill_entrypoints_route_new_projects_to_macro():
               'skills/openfilm-batch-approval/SKILL.md','skills/openfilm-checkpoint-approval/SKILL.md',
               'skills/openfilm-production-p06-p21/SKILL.md']:
         s=read(p)
-        assert 'v1.11.0' in s,p
-        assert 'openfilm-macro-bundles' in s,p
-        assert 'LEGACY' in s,p
+        assert 'v1.14.0' in s,p
+        assert 'FINISH_FIRST_USER_REVIEW' in s,p
+        assert 'FINISH_FIRST_USER_REVIEW' in s,p
 
 def test_decision_risks_and_cli_gpu_preserved():
     s=read('skills/openfilm-macro-bundles/SKILL.md')
@@ -30,7 +30,7 @@ def test_decision_risks_and_cli_gpu_preserved():
 
 def test_original_prompt_and_metadata_same_with_new_version():
     m=json.loads(read('plugin.json')); l=json.loads(read('.codex-plugin/plugin.json'))
-    assert m['version']==l['version']=='1.12.0'
+    assert m['version']==l['version']=='1.14.0'
     assert m['name']==l['name']=='video-hoat-hinh'
     assert m['extensions']['com.openai']['interface']==l['interface']
     assert len(l['interface']['defaultPrompt'])==3
@@ -40,4 +40,4 @@ def test_macro_source_and_existing_99_template_refs():
     defs=json.loads(read('skills/openfilm-high-workpackets/references/WORKPACKET_DEFINITIONS.json'))
     assert [x['id'] for x in policy['macros']]==[f'M{i}' for i in range(8)]
     assert sum(len(x['packets']) for x in defs['stages'])==99
-    assert len(list((ROOT/'skills').glob('*/SKILL.md')))==32
+    assert len(list((ROOT/'skills').glob('*/SKILL.md')))==33

@@ -1,6 +1,13 @@
 """Read-only exact-scope approval gate, never performs user consent or CLI action."""
 from __future__ import annotations
 from pathlib import Path
+import importlib.util as _iu
+_ffspec=_iu.spec_from_file_location('finish_first', Path(__file__).with_name('finish_first.py'))
+_ff=_iu.module_from_spec(_ffspec);_ffspec.loader.exec_module(_ff)
+
+_flowspec=_iu.spec_from_file_location('production_flow',Path(__file__).with_name('production_flow.py'))
+_flow=_iu.module_from_spec(_flowspec);_flowspec.loader.exec_module(_flow)
+
 import json,sys,re,hashlib,importlib.util
 
 ACTIONS={'APPROVE_MACRO','RESUME_APPROVED_MACRO','ACCEPT_MACRO',
@@ -51,6 +58,7 @@ def _validate_visual_accept(index:dict,event:dict,b:dict)->list[str]:
     return errors
 
 def validate(index:dict,event:dict,policy:dict)->list[str]:
+    if _ff.enabled(index):return _flow.validate_event(index,event,policy)
     err=[];action=event.get('action')
     if action not in ACTIONS:return ['unknown macro action']
     if type(index.get('stateRevision')) is not int or event.get('stateRevision')!=index.get('stateRevision'):err.append('stale stateRevision')

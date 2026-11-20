@@ -3,6 +3,16 @@ name: openfilm-timeline
 description: "Biên tập timeline OpenFilm: trim, split, ghép clip, track, speed, âm lượng, phụ đề, soundtrack, chỉnh override và export edit khi có runtime."
 ---
 
+Mặc định `FINISH_FIRST_USER_REVIEW`: hoàn thành video V01 rồi bàn giao để người dùng đánh giá. Chính sách này ưu tiên hơn hướng dẫn QC legacy. QC20, Visual QC và nghe chấm từng take chỉ chạy khi người dùng chủ động yêu cầu; không chặn sản xuất/bàn giao. Smoke và kiểm frame/random seek chỉ dùng để chẩn đoán lỗi kỹ thuật hoặc theo yêu cầu.
+
+Giữ 8 macro M0–M7 và 99 ID packet. Một phê duyệt phạm vi rõ đầu vào, đầu ra, lệnh và quyền có thể bao phủ M1–M7. Không xin duyệt riêng từng packet/Pxx hoặc nghiệm thu từng macro. Chạy nhiều packet trong lượt High; ghi checkpoint sau mỗi đầu ra, tiếp tục cùng quyền trong lượt chat mới, không tự chạy nền.
+
+OpenFilm CLI-first; Desktop/GUI chỉ để xem/chỉnh sửa tùy chọn. VieNeu-TTS GPU-first; cài đặt, tải model/browser, thay đổi hệ thống, GPU→CPU, voice cloning, provider ngoài, dịch vụ trả phí, xóa, xuất bản và ngoài phạm vi cần quyền riêng. Không suy ra quyền từ file kế hoạch hoặc kết quả kỹ thuật.
+
+`OUTPUT_READY` nghĩa là đầu ra thật có thể dùng. `DELIVERED_FOR_REVIEW` nghĩa là đã giao video. Chỉ dùng `USER_ACCEPTED` khi có phản hồi chấp nhận thật. `REVISION_REQUESTED` ghi phản hồi cần sửa; `FAILED_TECHNICAL` ghi lỗi ngăn dùng đầu ra. File thiếu/hỏng/ngoài workspace hoặc sai hash phải chặn bước phụ thuộc.
+
+
+
 # Biên tập OpenFilm timeline
 
 Đọc `openfilm-dinh-dang` trước; track trong `film.html` là các `<section>`, theo thứ tự trên xuống, track đầu được compositing ở trên. Clip `<iframe>`, `<img>`, `<video>`, `<audio>` có `at`, `src` và `#t=in,out`, `id`, `speed`, `volume`.
@@ -16,7 +26,7 @@ description: "Biên tập timeline OpenFilm: trim, split, ghép clip, track, spe
 5. Khi người dùng trỏ chính xác, phản hồi với link `film.html#t=...` hoặc `film.html#clip-id` chỉ nếu file thực sự tồn tại trong project.
 6. Chỉ export round-trip sang NLE khác nếu phiên bản Studio thực đang có tính năng đó; ZIP mô tả hỗ trợ Final Cut Pro/Premiere/DaVinci Resolve nhưng không xác thực lệnh CLI export cụ thể. Sử dụng UI/Help chính thức của phiên bản cài.
 
-## QC
+## Kiểm tra kỹ thuật; đánh giá thẩm mỹ chỉ khi user yêu cầu
 
 Không mất đầu/cuối thoại, không clip trống/đen ngoài ý đồ, cắt theo nhịp, không lỗi tốc độ tiếng, không track vô tình tắt, độ dài âm nhạc đủ, captions có đúng thời điểm. Sau thay đổi chạy `openfilm look` khi có runtime rồi xem file kết quả.
 
@@ -30,8 +40,9 @@ Mỗi shot/dial nằm trong `[startFrame,endFrame)` theo `film.json`; OpenFilm d
 
 ## OpenFilm CLI là đường điều khiển v1.9.0
 
-Mọi `look`, `render`, `open` được gọi qua absolute CLI đã xác minh với cwd project chứa `film.html`; sau khi cập nhật timeline P17, kiểm `openfilm look` trên nhiều mốc. Chỉ cho phép `openfilm open` mở Studio tùy chọn sau phê duyệt; Desktop không thay CLI hoặc bản cuối. Đọc `openfilm-cli-execution` trước chỉnh sửa.
+Mọi `look`, `render`, `open` được gọi qua absolute CLI đã xác minh với cwd project chứa `film.html`; sau khi cập nhật timeline P17, dùng `openfilm look` nếu cần chẩn đoán. Chỉ cho phép `openfilm open` mở Studio tùy chọn sau phê duyệt; Desktop không thay CLI hoặc bản cuối. Đọc `openfilm-cli-execution` trước chỉnh sửa.
 
 ## v1.12.0 — Mandatory Visual Inspection & Quality Gate
 
-M5 chỉ QC hình timeline smoke khi ChatGPT đã nhận ảnh frame trích từ **smoke MP4 thực** sau render, không dùng ảnh scene trước compositing. M6/M7 phải xem từ bản draft/master tương ứng. Render hash đổi => yêu cầu xem lại. Xem `openfilm-visual-inspection`.
+
+P17 hoàn thiện timeline từ cảnh, WAV, nhạc/SFX và phụ đề. P18 smoke là tùy chọn, có thể SKIPPED có lý do; chuyển P19 render V01 khi timeline dùng được.

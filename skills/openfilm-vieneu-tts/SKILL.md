@@ -1,7 +1,17 @@
 ---
 name: openfilm-vieneu-tts
-description: "Sử dụng khi phim hoạt hình cần giọng đọc, thuyết minh, hội thoại tiếng Việt bằng VieNeu-TTS cục bộ; kiểm tra tái sử dụng môi trường, tạo WAV và nghiệm thu audio trước khi đồng bộ với timeline OpenFilm."
+description: "Sử dụng khi phim hoạt hình cần giọng đọc, thuyết minh, hội thoại tiếng Việt bằng VieNeu-TTS cục bộ; kiểm tra tái sử dụng môi trường, tạo WAV GPU và đồng bộ timeline để người dùng đánh giá trong V01."
 ---
+
+Mặc định `FINISH_FIRST_USER_REVIEW`: hoàn thành video V01 rồi bàn giao để người dùng đánh giá. Chính sách này ưu tiên hơn hướng dẫn QC legacy. QC20, Visual QC và nghe chấm từng take chỉ chạy khi người dùng chủ động yêu cầu; không chặn sản xuất/bàn giao. Smoke và kiểm frame/random seek chỉ dùng để chẩn đoán lỗi kỹ thuật hoặc theo yêu cầu.
+
+Giữ 8 macro M0–M7 và 99 ID packet. Một phê duyệt phạm vi rõ đầu vào, đầu ra, lệnh và quyền có thể bao phủ M1–M7. Không xin duyệt riêng từng packet/Pxx hoặc nghiệm thu từng macro. Chạy nhiều packet trong lượt High; ghi checkpoint sau mỗi đầu ra, tiếp tục cùng quyền trong lượt chat mới, không tự chạy nền.
+
+OpenFilm CLI-first; Desktop/GUI chỉ để xem/chỉnh sửa tùy chọn. VieNeu-TTS GPU-first; cài đặt, tải model/browser, thay đổi hệ thống, GPU→CPU, voice cloning, provider ngoài, dịch vụ trả phí, xóa, xuất bản và ngoài phạm vi cần quyền riêng. Không suy ra quyền từ file kế hoạch hoặc kết quả kỹ thuật.
+
+`OUTPUT_READY` nghĩa là đầu ra thật có thể dùng. `DELIVERED_FOR_REVIEW` nghĩa là đã giao video. Chỉ dùng `USER_ACCEPTED` khi có phản hồi chấp nhận thật. `REVISION_REQUESTED` ghi phản hồi cần sửa; `FAILED_TECHNICAL` ghi lỗi ngăn dùng đầu ra. File thiếu/hỏng/ngoài workspace hoặc sai hash phải chặn bước phụ thuộc.
+
+
 
 # VieNeu-TTS → OpenFilm: lời thoại, giọng kể và thuyết minh tiếng Việt
 
@@ -22,7 +32,7 @@ Nguồn upstream và yêu cầu: `https://github.com/pnnbao97/VieNeu-TTS`, `READ
 
 1. Từ storyboard/beat, tạo `dialogue_manifest.json` gồm `shot_id`, `character_id`, `script_original`, `script_spoken`, `voice_id`, `style_or_emotion`, `order`, `target_duration_s` (nếu được giao), và output path. Giữ nguyên `script_original`; mọi thay đổi phát âm/viết số đọc phải được ghi nhận và duyệt nếu thay nghĩa.
 2. Chuẩn hóa tiếng Việt có kiểm tra: dấu câu, số/ngày/giờ/viết tắt/tên riêng, Việt-Anh; chia thành từng câu/nhịp ngắn để dễ sửa và đồng bộ. Không suy diễn phụ đề từ lời thoại chưa thực sự phát ra.
-3. Ưu tiên **preset voices đã được xác minh** từ runtime với `list_preset_voices()` chỉ trong pha chạy đã được duyệt. Chọn giọng theo từng nhân vật, giữ nhất quán với cùng `voice_id`, ví dụ nam/nữ hoặc sắc thái phù hợp. Emotion cues như `[cười]` là thử nghiệm, phải nghe QC, không cam kết hiệu ứng chính xác.
+3. Ưu tiên **preset voices đã được xác minh** từ runtime với `list_preset_voices()` chỉ trong pha chạy đã được duyệt. Chọn giọng theo từng nhân vật, giữ nhất quán với cùng `voice_id`, ví dụ nam/nữ hoặc sắc thái phù hợp. Emotion cues như `[cười]` là thử nghiệm; người dùng đánh giá trong V01.
 4. Voice cloning/nhân bản giọng nói chỉ khi người dùng có **quyền sử dụng bản ghi và đồng ý rõ ràng của người sở hữu giọng**. Không clone giọng người thật không được phép, không mạo danh; giữ dữ liệu giọng riêng tư, không upload ra dịch vụ khác khi chưa được duyệt. Đối với nhân vật hư cấu ưu tiên giọng preset hoặc giọng có quyền.
 
 ## Giai đoạn 3: tổng hợp theo công việc đã duyệt
@@ -35,21 +45,19 @@ Nguồn upstream và yêu cầu: `https://github.com/pnnbao97/VieNeu-TTS`, `READ
 ## Giai đoạn 4: kết hợp OpenFilm và nghiệm thu
 
 1. Chèn WAV làm `<audio>` track trong `film.html` qua asset path tương đối thuộc dự án; **không** phát audio từ `scenes/*.html` trong `window.film.frame(t)` (tránh lặp khi scrub/render). Điều chỉnh starts, transitions, shot durations theo WAV đã đo để đồng bộ chuyển cảnh/khẩu hình. Không ép voice thành một phần của timeline GSAP hoặc Remotion khi đã có audio nguồn.
-2. SRT/VTT phải căn từ thời lượng/aligner thực và đối chiếu tai nghe hoặc waveform; không tạo timestamps chính xác giả từ số lượng ký tự. Dùng caption VTT ở track OpenFilm khi định dạng hỗ trợ.
-3. QC theo mỗi đoạn: phát âm đúng dấu/tên riêng, không bỏ/thêm/lặp từ, nhịp đọc, khoảng im lặng, cân bằng âm lượng, peak/clipping, noise, tính nhất quán nhân vật, timing phụ đề và khớp hình. Báo `PASS/FAIL/BLOCKED` kèm file, logs, report, kết quả nghe thực tế.
-4. Nếu Remote Desktop Commander không đưa âm thanh về ChatGPT, xuất **đoạn WAV/MP3 QC có thật** qua đường dẫn/link tải có thật để người dùng gửi vào chat, rồi mới đánh giá bằng cách nghe. Tuyệt đối không tuyên bố "đã nghe" chỉ dựa trên waveform hoặc log. Không công bố link tưởng tượng.
-5. Chỉ sau QC đạt mới đưa vào mix cuối và xuất MP4 bằng OpenFilm. Quyền phê duyệt cài ID ≠ quyền tổng hợp giọng hoặc xuất phim; cần quyền rõ cho từng giai đoạn.
+2. SRT/VTT phải căn từ thời lượng/aligner thực; không tạo timestamps chính xác giả từ số lượng ký tự. Dùng caption VTT ở track OpenFilm khi định dạng hỗ trợ.
 
 ## Kết quả mỗi công việc
 
-- Manifest câu và giọng / engine revision / WAV có thể kiểm tra / FFprobe duration & sample rate / VTT nếu có align / bảng QC từng câu / trạng thái phê duyệt. Nếu bị BLOCKED do thiếu model, chưa có consent, hoặc chưa nghe được, trả kết quả hiện có và yêu cầu bước hợp lệ; không suy đoán.
 
 Xem `references/INTEGRATION.md`, `references/GPU_FIRST_POLICY.md` và `openfilm-moi-truong/references/VIENEU-TTS-WINDOWS.md`.
 
 ## Cập nhật luồng âm thanh nếu Remotion Master (N10–N12)
 
-Đầu ra VieNeu vẫn là từng WAV đã nghe/FFprobe, script nguyên gốc và spoken text được lưu. Chọn master tại `openfilm-hybrid-master`: OpenFilm Master import WAV vào `<audio>` track `film.html`; Remotion Master giữ WAV trong `remotion/public/audio/` và tạo `Sequence`/`Audio` theo `FilmData` integer frames. Không render/nhập cùng lời thoại hai lần, không bịa chính xác word-level align. Cập nhật shot/endFrame theo WAV duration đo thực (không dựa trên số ký tự), có phê duyệt khi phải thay thời gian đã khóa. Xem `openfilm-audio-subtitles` để kiểm font Việt, SRT/VTT và ducking.
+Đầu ra VieNeu vẫn là từng WAV đã kiểm giải mã/đo thời lượng, script nguyên gốc và spoken text được lưu. Chọn master tại `openfilm-hybrid-master`: OpenFilm Master import WAV vào `<audio>` track `film.html`; Remotion Master giữ WAV trong `remotion/public/audio/` và tạo `Sequence`/`Audio` theo `FilmData` integer frames. Không render/nhập cùng lời thoại hai lần, không bịa chính xác word-level align. Cập nhật shot/endFrame theo WAV duration đo thực (không dựa trên số ký tự), có phê duyệt khi phải thay thời gian đã khóa. Xem `openfilm-audio-subtitles` để kiểm font Việt, SRT/VTT và ducking.
 
 ## Khóa nguồn TTS v1.8.0
 
 Trước P12 tổng hợp câu nào, **P08.05 hoặc P12.08** phải có `reports/tts/VOICE_SOURCE_LOCK.json` hợp lệ theo `references/validate_voice_source_lock.py`. Mặc định `source=vieneu-local`, `backend=cuda-pytorch`; GPU runtime phải PASS theo `GPU_DECISION.json` và T06 trước khi sinh audio. Nếu CPU fallback đã được duyệt riêng T07 mới có thể `backend=onnx-cpu`. `openfilm get voice`, `openfilm canvas tts` và Studio provider TTS khác bị từ chối theo policy; không được tự gọi dù upstream OpenFilm hướng dẫn. Provider thay thế là một **thay đổi phạm vi cần duyệt riêng**, không phải silent fallback. Khóa ghi path theo workspace và lời thoại; sau đó import WAV vào OpenFilm; không phát audio hai lần.
+
+Kết quả cần WAV thực giải mã được, thời lượng/sample rate đo thực, voice manifest và phụ đề đồng bộ. Đưa WAV dùng được vào timeline ngay trong scope đã duyệt; người dùng đánh giá phát âm/nhịp/giọng trong V01. Không nghe/chấm từng câu hay chờ phê duyệt từng take. Giữ GPU-first, voice-source lock, phê duyệt riêng CPU fallback/voice cloning/provider.

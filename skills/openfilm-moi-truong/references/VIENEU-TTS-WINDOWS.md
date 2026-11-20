@@ -1,3 +1,5 @@
+> v1.14.0: FINISH_FIRST_USER_REVIEW ưu tiên. Đây là công thức kỹ thuật/tham khảo; mọi đánh giá thẩm mỹ chỉ theo yêu cầu người dùng, mọi cổng QC legacy không chặn V01. OpenFilm CLI-first, GUI tùy chọn.
+
 # VieNeu-TTS Windows — GPU-first audit, cài đặt và CPU fallback có phê duyệt (v1.7.0)
 
 Đây là hướng dẫn kỹ năng; **không phải bằng chứng máy đã được kiểm tra hoặc TTS chạy được**. User yêu cầu GPU là lựa chọn mặc định khi bật VieNeu-TTS. Ưu tiên VieNeu-TTS **v3 Turbo open-source** (thường xuất WAV 48 kHz), SDK `vieneu` của `pnnbao97/VieNeu-TTS`, không tự chuyển sang v4 proprietary. Mọi lệnh cài là **mẫu kế hoạch chờ duyệt**, tuyệt đối không chạy trong P03–P05.

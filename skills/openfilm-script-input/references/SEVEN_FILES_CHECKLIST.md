@@ -1,3 +1,5 @@
+> v1.14.0: FINISH_FIRST_USER_REVIEW ưu tiên. Đây là công thức kỹ thuật/tham khảo; mọi đánh giá thẩm mỹ chỉ theo yêu cầu người dùng, mọi cổng QC legacy không chặn V01. OpenFilm CLI-first, GUI tùy chọn.
+
 # 7 tệp đầu vào → FilmData: bảng đối chiếu P07
 
 | Kiểm tra | Tệp liên quan | Evidence / hành động nếu lỗi |

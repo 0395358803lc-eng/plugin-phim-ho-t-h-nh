@@ -3,6 +3,16 @@ name: openfilm-filmdata
 description: "Chuẩn hóa FilmData, shot/audio/timeline frame, asset manifest và kiểm tra dữ liệu giữa OpenFilm, GSAP, Three.js, Remotion, VieNeu-TTS." 
 ---
 
+Mặc định `FINISH_FIRST_USER_REVIEW`: hoàn thành video V01 rồi bàn giao để người dùng đánh giá. Chính sách này ưu tiên hơn hướng dẫn QC legacy. QC20, Visual QC và nghe chấm từng take chỉ chạy khi người dùng chủ động yêu cầu; không chặn sản xuất/bàn giao. Smoke và kiểm frame/random seek chỉ dùng để chẩn đoán lỗi kỹ thuật hoặc theo yêu cầu.
+
+Giữ 8 macro M0–M7 và 99 ID packet. Một phê duyệt phạm vi rõ đầu vào, đầu ra, lệnh và quyền có thể bao phủ M1–M7. Không xin duyệt riêng từng packet/Pxx hoặc nghiệm thu từng macro. Chạy nhiều packet trong lượt High; ghi checkpoint sau mỗi đầu ra, tiếp tục cùng quyền trong lượt chat mới, không tự chạy nền.
+
+OpenFilm CLI-first; Desktop/GUI chỉ để xem/chỉnh sửa tùy chọn. VieNeu-TTS GPU-first; cài đặt, tải model/browser, thay đổi hệ thống, GPU→CPU, voice cloning, provider ngoài, dịch vụ trả phí, xóa, xuất bản và ngoài phạm vi cần quyền riêng. Không suy ra quyền từ file kế hoạch hoặc kết quả kỹ thuật.
+
+`OUTPUT_READY` nghĩa là đầu ra thật có thể dùng. `DELIVERED_FOR_REVIEW` nghĩa là đã giao video. Chỉ dùng `USER_ACCEPTED` khi có phản hồi chấp nhận thật. `REVISION_REQUESTED` ghi phản hồi cần sửa; `FAILED_TECHNICAL` ghi lỗi ngăn dùng đầu ra. File thiếu/hỏng/ngoài workspace hoặc sai hash phải chặn bước phụ thuộc.
+
+
+
 # FilmData + timeline duy nhất + asset provenance (N03–N05)
 
 Đọc `openfilm-hybrid-master` trước. `film.json` ở `projects/<film-id>/scene-data/film.json` là **nguồn dữ liệu hợp đồng**, không phải định dạng mà OpenFilm tự sinh. Khi bắt đầu mới, tạo `schemaVersion=1`, `filmId`, `masterEngine` (`openfilm` hoặc `remotion`), `fps`, `width`, `height`, `durationInFrames`, `shots[]`, `dialogues[]`; template và kiểm tra trong `references/`.
@@ -21,12 +31,10 @@ description: "Chuẩn hóa FilmData, shot/audio/timeline frame, asset manifest v
 - Asset manifest riêng mô tả license/creator/sha256 nếu đã có thực, trạng thái `MISSING`/`VERIFIED`/`PENDING`; không đưa secret/key/cookie vào manifest. Hash chỉ được ghi khi tính từ file thật.
 - Khi tái sử dụng `node_modules` từ workspace cũ, lock/ABI/platform và resolver phải đúng; khi không phù hợp xin duyệt cài cục bộ theo P05.
 
-QC tối thiểu: validate JSON; 6 shot sample liên tục đủ 2700 frames; 7 dialogue nằm trong shot, file WAV sample chưa có => check-assets FAIL có chủ ý. Xem `openfilm-qc-advanced`.
+QC tối thiểu: validate JSON; 6 shot sample liên tục đủ 2700 frames; 7 dialogue nằm trong shot, file WAV sample chưa có => check-assets FAIL có chủ ý. Chỉ dùng `openfilm-qc-advanced` khi user yêu cầu.
 
 ## P07–P09 theo bộ 7 tệp kịch bản
 
 Trước P09, P07 phải đọc nội dung thật theo `openfilm-script-input`, xác minh header CSV và mapping scene/dialogue/person vào FilmData, giữ source bản gốc. Không lấy ảnh danh sách tệp thay cho nội dung. P09 cung cấp FilmData đã kiểm chứng cho checkpoint `openfilm-checkpoint-approval`; khi WAV thật thay thời lượng thì invalidation P13 và những scene/timeline downstream bị ảnh hưởng sau duyệt.
 
 ## v1.12.0 — Mandatory Visual Inspection & Quality Gate
-
-M6/M7 cần `visualTargets` xuất từ **tất cả `shots[].id`** của FilmData đã xác minh, không lấy số cảnh mẫu để rút ngắn QC. `sample_render_frames.py` trích START/MID/END từng shot từ đúng draft/master MP4; M4 mốc START/Q1/MID/Q3/END từ ảnh OpenFilm CLI look. Khi ảnh render đổi hash thì Visual QC cũ hết hiệu lực. Xem `openfilm-visual-inspection`.

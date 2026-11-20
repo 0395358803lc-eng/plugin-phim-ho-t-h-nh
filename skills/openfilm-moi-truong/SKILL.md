@@ -3,6 +3,16 @@ name: openfilm-moi-truong
 description: "Vận hành cổng P00–P05 trên Windows cho Video-hoạt-hình: chọn máy, hỏi đường dẫn, tạo VIDEO_HOAT_HINH_WORKSPACE, dò/tái sử dụng workspace cũ, kiểm tra OpenFilm/GSAP/Three.js/Remotion/VieNeu-TTS và chờ phê duyệt cài phần còn thiếu."
 ---
 
+Mặc định `FINISH_FIRST_USER_REVIEW`: hoàn thành video V01 rồi bàn giao để người dùng đánh giá. Chính sách này ưu tiên hơn hướng dẫn QC legacy. QC20, Visual QC và nghe chấm từng take chỉ chạy khi người dùng chủ động yêu cầu; không chặn sản xuất/bàn giao. Smoke và kiểm frame/random seek chỉ dùng để chẩn đoán lỗi kỹ thuật hoặc theo yêu cầu.
+
+Giữ 8 macro M0–M7 và 99 ID packet. Một phê duyệt phạm vi rõ đầu vào, đầu ra, lệnh và quyền có thể bao phủ M1–M7. Không xin duyệt riêng từng packet/Pxx hoặc nghiệm thu từng macro. Chạy nhiều packet trong lượt High; ghi checkpoint sau mỗi đầu ra, tiếp tục cùng quyền trong lượt chat mới, không tự chạy nền.
+
+OpenFilm CLI-first; Desktop/GUI chỉ để xem/chỉnh sửa tùy chọn. VieNeu-TTS GPU-first; cài đặt, tải model/browser, thay đổi hệ thống, GPU→CPU, voice cloning, provider ngoài, dịch vụ trả phí, xóa, xuất bản và ngoài phạm vi cần quyền riêng. Không suy ra quyền từ file kế hoạch hoặc kết quả kỹ thuật.
+
+`OUTPUT_READY` nghĩa là đầu ra thật có thể dùng. `DELIVERED_FOR_REVIEW` nghĩa là đã giao video. Chỉ dùng `USER_ACCEPTED` khi có phản hồi chấp nhận thật. `REVISION_REQUESTED` ghi phản hồi cần sửa; `FAILED_TECHNICAL` ghi lỗi ngăn dùng đầu ra. File thiếu/hỏng/ngoài workspace hoặc sai hash phải chặn bước phụ thuộc.
+
+
+
 # Cổng môi trường Windows P00–P05 — Workspace First, Reuse First
 
 **Cơ sở nguồn**: yêu cầu OpenFilm lấy từ `references/CLI.md`, `references/README.vi.md`; quy trình workspace/reuse và GSAP/Three.js/Remotion và VieNeu-TTS là phần nâng cấp riêng. Phiên bản OpenFilm runtime đã cài trên từng máy là chưa xác minh cho đến khi agent kiểm tra.
@@ -86,8 +96,9 @@ B04 khi được kích hoạt phải qua `GPU_FIRST_POLICY.md`. P03 kiểm tra r
 
 ## OpenFilm runtime gate v1.8.0
 
-P04 đọc metadata A01–A05 không ghi. **P06.08** xác định runtime `CLI_VERIFIED` / `DESKTOP_UI_VERIFIED` / `BLOCKED` bằng thao tác an toàn đã được phê duyệt và hồ sơ `OPENFILM_RUNTIME_PROFILE.json` (`openfilm-runtime-control`). Không đồng nhất tìm thấy app với CLI sẵn. **P06.09–P06.11** nghiệm thu độc lập 7s OpenFilm chuyển động + WAV tone + VTT + render MP4 thật. Không dùng `npx` hoặc UI render ngầm, P18 dự án vẫn chạy riêng. Không có rendering capability thì báo BLOCKED, không chuyển sang Remotion để giả là OpenFilm E2E PASS.
 
 ## OpenFilm CLI-first v1.9.0 — cổng bắt buộc
 
 **CLI_REQUIRED**: ở P03 dò `openfilm.cmd`/CLI đã cài qua workspace cũ, project `node_modules/.bin`, hệ thống và mọi source đã cho phép; phân biệt `package.json`/PATH metadata với entrypoint thực. P04 A02, A03 (Node>=22.2), A04 FFmpeg+FFprobe, A05 Chromium cache đều cần được đánh giá cho CLI; A01 chỉ OPTIONAL. Không được `P06 READY` nếu chỉ có Desktop hoặc không có CLI. P05 báo thiếu/tái dùng theo ID, nguồn, phiên bản, SHA256 nếu có, dung lượng bao gồm Chromium first-run, đề xuất cài **cục bộ** và dừng trước download. P06 sau duyệt xác minh CLI `--help`, command cwd, `look/render` trong đúng phim, chạy E2E 7s để nâng capability. Mỗi lệnh CLI phải tuân theo `openfilm-cli-execution/references/CLI_COMMAND_CONTRACT.md`; không đổi hệ thống và không `npx @latest` mặc định. Thêm bảng phân biệt `CLI_READY`, `CLI_BLOCKED`, `CLI_REUSE_CANDIDATE` (candidate không là PASS).
+
+P06.08 xác minh OpenFilm CLI từ binary/help và runtime profile. Desktop không thay CLI. P06.09–P06.11 chỉ là fixture tùy chọn cho runtime mới hoặc chẩn đoán. P18 không bắt buộc. Giữ P00–P05, chọn máy/workspace và quyền cài riêng; quyền production đã cấp không phải hỏi lại.

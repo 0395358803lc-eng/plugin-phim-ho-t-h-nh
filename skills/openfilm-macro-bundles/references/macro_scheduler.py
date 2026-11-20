@@ -8,6 +8,13 @@ from __future__ import annotations
 import re
 import json
 from pathlib import Path
+import importlib.util as _iu
+_ffspec=_iu.spec_from_file_location('finish_first', Path(__file__).with_name('finish_first.py'))
+_ff=_iu.module_from_spec(_ffspec);_ffspec.loader.exec_module(_ff)
+
+_flowspec=_iu.spec_from_file_location('production_flow',Path(__file__).with_name('production_flow.py'))
+_flow=_iu.module_from_spec(_flowspec);_flowspec.loader.exec_module(_flow)
+
 from collections import defaultdict
 
 ELEVATED = (' install',' download','winget','npx ','publish','delete','remove-item','rmdir',
@@ -129,6 +136,8 @@ def next_eligible_packet(index:dict, macro_bundle_id:str, policy:dict)->str|None
     Intra-macro cross-stage dependencies can use internal QC; cross-macro needs
     actual user acceptance. Never treats a plan, log, or QC as an approval.
     """
+    if _ff.enabled(index):
+        return _flow.next_packet(index,macro_bundle_id,policy,_ordered_packets(index,policy))
     b=next((b for b in index.get('macroBundles',[]) if b.get('macroBundleId')==macro_bundle_id),None)
     if not b or b.get('status') not in ('APPROVED','IN_PROGRESS') or not b.get('planApprovalId'):
         return None

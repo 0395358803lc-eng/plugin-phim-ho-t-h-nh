@@ -17,7 +17,7 @@ def test_order_fixes_and_99_packet_templates():
     for s in defs['stages']:
         for p in s['packets']:
             assert p['approvalMode'] in ('INHERIT_MACRO','SPECIAL_SEPARATE')
-            assert p['qcRequired'] is True
+            assert 'qcRequired' not in p
             assert p['requiresExplicitApproval']==(p['approvalMode']=='SPECIAL_SEPARATE')
 
 def test_stage_defs_use_internal_macro_qc_not_user_stage_acceptance():
@@ -27,12 +27,13 @@ def test_stage_defs_use_internal_macro_qc_not_user_stage_acceptance():
         assert stage['macroId'] in {f'M{i}' for i in range(8)}
         assert stage['requiresEvidence'] is True
         assert stage['requiresAcceptance'] is False
-        assert stage['acceptanceMode']=='INTERNAL_QC_UNTIL_MACRO_ACCEPTED'
-    assert next(s for s in defs['stages'] if s['id']=='P21')['finalAcceptanceGate']=='USER_FINAL'
+        assert stage['acceptanceMode']=='OUTPUT_READY'
+    assert 'finalAcceptanceGate' not in next(s for s in defs['stages'] if s['id']=='P21')
 
 def test_legacy_pass_requires_user_approval():
     val=module('skills/openfilm-checkpoint-approval/references/validate_production_state.py','state_validator')
     state=read('skills/openfilm-checkpoint-approval/references/PRODUCTION_STATUS_TEMPLATE.json')
+    state['productionMode']='LEGACY_QC'
     stage=state['stages'][0]
     stage.update(status='PASS',qcStatus='PASS',evidence=['qc/P06.md'])
     assert any('without approvals' in x for x in val.validate(state))
@@ -40,6 +41,7 @@ def test_legacy_pass_requires_user_approval():
 def test_macro_internal_pass_does_not_claim_user_acceptance():
     val=module('skills/openfilm-checkpoint-approval/references/validate_production_state.py','macro_state_validator')
     state=read('skills/openfilm-checkpoint-approval/references/PRODUCTION_STATUS_TEMPLATE.json')
+    state['productionMode']='LEGACY_QC'
     stage=state['stages'][0]
     stage.update(status='PASS',qcStatus='PASS',evidence=['qc/P06.md'],
         macroInternalGate={'macroId':'M0','planApprovalId':'real-user-macro-plan',
@@ -51,6 +53,7 @@ def test_macro_internal_pass_does_not_claim_user_acceptance():
 def test_macro_internal_missing_qc_or_real_plan_rejected():
     val=module('skills/openfilm-checkpoint-approval/references/validate_production_state.py','macro_state_validator_bad')
     state=read('skills/openfilm-checkpoint-approval/references/PRODUCTION_STATUS_TEMPLATE.json')
+    state['productionMode']='LEGACY_QC'
     stage=state['stages'][0]
     stage.update(status='PASS',qcStatus='PASS',evidence=['qc/P06.md'],macroInternalGate={'macroId':'M0','qcStatus':'PASS','evidencePaths':['qc/P06.md']})
     assert val.validate(state)
@@ -58,6 +61,7 @@ def test_macro_internal_missing_qc_or_real_plan_rejected():
 def test_P21_cannot_auto_accept_even_with_macro_internal_gate():
     val=module('skills/openfilm-checkpoint-approval/references/validate_production_state.py','macro_state_validator_final')
     state=read('skills/openfilm-checkpoint-approval/references/PRODUCTION_STATUS_TEMPLATE.json')
+    state['productionMode']='LEGACY_QC'
     for s in state['stages'][:-1]:
         s.update(status='PASS',qcStatus='PASS',evidence=['qc/stage.md'])
         s['planApproval'].update(status='APPROVED',approvalId='user-macro',scope='macro',source='chat',at='2026-11-20')
@@ -69,7 +73,7 @@ def test_P21_cannot_auto_accept_even_with_macro_internal_gate():
 
 def test_work_index_accepts_cross_stage_macro_plan_without_packet_approval():
     v=module('skills/openfilm-high-workpackets/references/validate_work_packets.py','macro_packet_validator')
-    index={'schemaVersion':1,'stateRevision':4,'packets':[
+    index={'productionMode':'LEGACY_QC','schemaVersion':1,'stateRevision':4,'packets':[
         {'packetId':'P07.01.A','stageId':'P07','status':'PLANNED','qcStatus':'NOT_TESTED'},
         {'packetId':'P08.01.A','stageId':'P08','status':'PLANNED','qcStatus':'NOT_TESTED'}],
         'macroBundles':[{'macroBundleId':'M1.B001','macroId':'M1','stageIds':['P07','P08'],
@@ -79,14 +83,14 @@ def test_work_index_accepts_cross_stage_macro_plan_without_packet_approval():
 
 def test_work_index_rejects_macro_closed_without_user_acceptance():
     v=module('skills/openfilm-high-workpackets/references/validate_work_packets.py','macro_packet_validator_bad')
-    index={'schemaVersion':1,'stateRevision':4,'packets':[{'packetId':'P07.01.A','stageId':'P07','status':'READY_FOR_REVIEW','qcStatus':'PASS'}],
+    index={'productionMode':'LEGACY_QC','schemaVersion':1,'stateRevision':4,'packets':[{'packetId':'P07.01.A','stageId':'P07','status':'READY_FOR_REVIEW','qcStatus':'PASS'}],
            'macroBundles':[{'macroBundleId':'M1.B001','macroId':'M1','stageIds':['P07'],
                             'packetIds':['P07.01.A'],'status':'PASS','allowedPaths':[],'riskClass':'NORMAL'}]}
     assert any('macro' in e.lower() and 'accept' in e.lower() for e in v.validate(index))
 
 def test_work_index_rejects_macro_scopes_outside_stage_policy():
     v=module('skills/openfilm-high-workpackets/references/validate_work_packets.py','macro_packet_validator_scope')
-    index={'schemaVersion':1,'stateRevision':4,'packets':[{'packetId':'P21.01.A','stageId':'P21','status':'PLANNED','qcStatus':'NOT_TESTED'}],
+    index={'productionMode':'LEGACY_QC','schemaVersion':1,'stateRevision':4,'packets':[{'packetId':'P21.01.A','stageId':'P21','status':'PLANNED','qcStatus':'NOT_TESTED'}],
            'macroBundles':[{'macroBundleId':'M1.B001','macroId':'M1','stageIds':['P21'],
                             'packetIds':['P21.01.A'],'status':'PLANNED','allowedPaths':[],'riskClass':'NORMAL'}]}
     assert v.validate(index)

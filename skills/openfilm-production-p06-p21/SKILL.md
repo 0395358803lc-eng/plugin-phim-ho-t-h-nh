@@ -1,79 +1,42 @@
 ---
 name: openfilm-production-p06-p21
-description: "Điều phối 16 cổng P06–P21 sau khi Video-hoạt-hình hoàn tất P00–P05: nghiệm thu môi trường, ingest 7 tệp kịch bản, storyboard, asset, VieNeu-TTS, 2D/3D, preview, smoke, draft, QC20 và master MP4 có checkpoint."
+description: "Sản xuất P06–P21 từ đầu ra thực đến bàn giao V01; P20 phản hồi tùy chọn."
 ---
 
-# Video-hoạt-hình: công đoạn sản xuất P06–P21 (v1.11.0)
+# openfilm-production-p06-p21 — v1.14.0
 
-## Điều kiện vào và thứ tự cổng
+Mặc định `FINISH_FIRST_USER_REVIEW`: hoàn thành video V01 rồi bàn giao để người dùng đánh giá. Chính sách này ưu tiên hơn hướng dẫn QC legacy. QC20, Visual QC và nghe chấm từng take chỉ chạy khi người dùng chủ động yêu cầu; không chặn sản xuất/bàn giao. Smoke và kiểm frame/random seek chỉ dùng để chẩn đoán lỗi kỹ thuật hoặc theo yêu cầu.
 
-1. **Phải hoàn thành P00–P05 trước** theo `video-hoat-hinh` và `openfilm-moi-truong`; kết nối máy, hỏi thư mục người dùng chọn, tạo/xác nhận `VIDEO_HOAT_HINH_WORKSPACE`, tìm workspace cũ, kiểm kê phần mềm, báo thiếu. P05 là cổng báo cáo và **DỪNG**; không coi phê duyệt nâng cấp skill là phê duyệt cài đặt hoặc làm phim trên máy.
-2. P06 chỉ được cài các ID **đã được duyệt rõ ràng** ở P05. Nếu không cần cài, ghi `SKIPPED` với bằng chứng xác minh môi trường, không gọi installer. Nếu còn thiếu runtime bắt buộc mà không được duyệt, `BLOCKED`.
-3. P07 phát hiện thư mục chứa **7 tệp kịch bản** mà người dùng đã đặt trong workspace. Thư mục có thể có tên khác `du-lieu-kich-ban`; không tự đặt lại tên hoặc xóa nội dung. Không có tệp thật thì `BLOCKED`, không tự dựng kịch bản giả.
-4. Mỗi Pxx: **PLAN (đã bao hàm trong macro đã duyệt) → các packet kỹ thuật → QC từng packet và Pxx → đi tiếp Pxx thuộc cùng macro khi đủ QC; chỉ xin user nghiệm thu tại ranh giới macro**, trừ cổng quyền đặc biệt/quyết định hình/âm. P07 đọc/kiểm tra trước có thể chạy read-only trong phạm vi đã cho; sửa dữ liệu nguồn vẫn phải xin duyệt riêng và ưu tiên tạo bản sửa tại thư mục project.
-5. Checkpoint theo `openfilm-checkpoint-approval`; lưu `reports/PRODUCTION_STATUS.json`, đơn vị theo shot/thoại, đầu ra hash/paths/log/QC, approval, scope đã duyệt. Lần gọi tiếp theo: đọc checkpoint + file thật, xác minh hiệu lực bằng hash trước, chỉ chạy unit chưa đạt hoặc bị invalidated, không lặp công việc PASS hợp lệ.
-6. Đọc `references/P06-P21-WORKFLOW.md` và `references/STAGE_DEFINITIONS.json`; dùng `openfilm-script-input` cho P07, `openfilm-filmdata` cho P09, `openfilm-hybrid-master` cho P08/P17, `openfilm-qc-advanced` cho P18/P20/P21.
+Giữ 8 macro M0–M7 và 99 ID packet. Một phê duyệt phạm vi rõ đầu vào, đầu ra, lệnh và quyền có thể bao phủ M1–M7. Không xin duyệt riêng từng packet/Pxx hoặc nghiệm thu từng macro. Chạy nhiều packet trong lượt High; ghi checkpoint sau mỗi đầu ra, tiếp tục cùng quyền trong lượt chat mới, không tự chạy nền.
 
-## Ma trận 16 cổng công việc
+OpenFilm CLI-first; Desktop/GUI chỉ để xem/chỉnh sửa tùy chọn. VieNeu-TTS GPU-first; cài đặt, tải model/browser, thay đổi hệ thống, GPU→CPU, voice cloning, provider ngoài, dịch vụ trả phí, xóa, xuất bản và ngoài phạm vi cần quyền riêng. Không suy ra quyền từ file kế hoạch hoặc kết quả kỹ thuật.
 
-| Cổng | Mục tiêu / đầu ra kiểm chứng | Kỹ năng liên quan |
+`OUTPUT_READY` nghĩa là đầu ra thật có thể dùng. `DELIVERED_FOR_REVIEW` nghĩa là đã giao video. Chỉ dùng `USER_ACCEPTED` khi có phản hồi chấp nhận thật. `REVISION_REQUESTED` ghi phản hồi cần sửa; `FAILED_TECHNICAL` ghi lỗi ngăn dùng đầu ra. File thiếu/hỏng/ngoài workspace hoặc sai hash phải chặn bước phụ thuộc.
+
+| Macro | Giai đoạn | Đầu ra và điều kiện tiếp tục |
 |---|---|---|
-| P06 | Cài đúng ID đã duyệt và nghiệm thu môi trường; VieNeu-TTS ưu tiên GPU CUDA, TTS GPU smoke PASS hoặc CPU fallback được duyệt; nếu không dùng TTS thì SKIPPED có lý do | `openfilm-moi-truong` |
-| P07 | Đọc đúng 7 tệp, kiểm chứng CSV/markdown, lập `INPUT_AUDIT.md` | `openfilm-script-input` |
-| P08 | Chốt style/profile và `openfilm|remotion` master, phê duyệt rõ | `openfilm-hybrid-master`, `openfilm-render-profiles` |
-| P09 | Chuẩn hoá `film.json`, `shots.json`, `dialogues.json`, asset manifest | `openfilm-filmdata` |
-| P10 | Style bible, character bible, storyboard từng cảnh được duyệt | `openfilm-kich-ban`, `openfilm-canvas` |
-| P11 | Dựng/kiểm asset hình, model, font, provenance, không bịa file | `openfilm-media`, `openfilm-threejs` |
-| P12 | VieNeu-TTS WAV từng câu **GPU CUDA/PyTorch là ưu tiên**, kiểm gate backend; chỉ CPU/ONNX nếu được duyệt riêng; nghe và FFprobe | `openfilm-vieneu-tts` |
-| P13 | Đồng bộ thời gian WAV thật và subtitles SRT/VTT, chỉ có timestamp có căn cứ | `openfilm-audio-subtitles`, `openfilm-filmdata` |
-| P14 | Dựng/chứng minh chuyển động 2D từng shot bằng GSAP/HTML hoặc React | `openfilm-gsap`, `openfilm-animation` |
-| P15 | 3D bằng Three.js/R3F/WebGL, chỉ nếu shot cần, có thể SKIPPED | `openfilm-threejs`, `openfilm-remotion-r3f` |
-| P16 | OpenFilm previs/preview từng cảnh và nghiệm thu camera/hình/chuyển động | `openfilm-qc-render`, `openfilm-canvas` |
-| P17 | Lắp ráp master timeline, audio/ducking, captions, color đúng engine | `openfilm-hybrid-master`, `openfilm-timeline`, `openfilm-color` |
-| P18 | Smoke video 5 giây có hình, tiếng khi được yêu cầu; ffprobe & xem/nghe | `openfilm-qc-advanced` |
-| P19 | Render draft toàn phim, kiểm tra metadata/duration/shot boundaries | `openfilm-render-profiles` |
-| P20 | QC20 toàn phim, báo lỗi theo scene, fix chọn lọc + re-QC | `openfilm-qc-advanced` |
-| P21 | Render master, FFprobe, phát kiểm, xuất `FINAL_MASTER.mp4` + phụ đề/source/báo cáo | `openfilm-qc-render` |
+| M0 | P00–P06 | Chọn máy/workspace, tái dùng runtime, phê duyệt thao tác đặc biệt. Fixture 7 giây chỉ dùng lần kiểm chứng runtime đầu hoặc chẩn đoán. |
+| M1 | P07–P09 | Đọc đủ 7 tệp, chốt thông số trong phạm vi đã duyệt, tạo FilmData và film.html. |
+| M2 | P10–P11 | Storyboard, nhân vật, bối cảnh, asset thật; ZIP và xác minh file sau giải nén. |
+| M3 | P12–P13 | WAV VieNeu GPU, thời lượng thực, phụ đề. Bỏ qua có lý do nếu phim không có thoại. |
+| M4 | P14–P16 | Mã cảnh 2D/3D theo FilmData, đủ tài sản và không còn placeholder cản render. |
+| M5 | P17–P18 | Timeline hoàn chỉnh. P18 smoke chỉ khi chẩn đoán hoặc user yêu cầu. |
+| M6 | P19–P20 | Render toàn phim thành V01.mp4, giải mã và kiểm stream. P20 chỉ kích hoạt sau phản hồi người dùng, không chặn P21. |
+| M7 | P21 | Bàn giao trực tiếp V01 nếu đúng định dạng, source/WAV/phụ đề/manifest. Không render lại master trùng nội dung; không tự xuất bản. |
 
-## Khác biệt giữa hai master
+## Thực thi và checkpoint
 
-- **OpenFilm Master (mặc định)**: shot là trang HTML, `window.film.frame(t)` deterministic, audio track trong `film.html`, OpenFilm render master. Remotion là công cụ render clip riêng nếu có duyệt.
-- **Remotion Master**: OpenFilm để previs/chỉnh shot; `FilmData` làm contract, React/GSAP/R3F/Remotion xử lý timeline, audio, captions và master; giao tiếp OpenFilm ↔ Remotion qua file/asset/previs có thật, không có API chuyển nguyên vẹn HTML→JSX.
-- Master được chốt tại P08; nếu đổi về sau, trình impact analysis (dependency, license, re-render, trạng thái những Pxx có ảnh hưởng) và xin duyệt, không tự đổi.
+1. Materialize packet từ FilmData, giữ ID template cũ; outputPaths phải là từng file cụ thể, không phải thư mục hay glob. Bỏ packet không cần bằng SKIPPED kèm skipReason.
+2. `macro_scheduler.propose` tạo 8 nhóm logic; có thể trình các nhóm M1–M7 trong một `APPROVE_PRODUCTION`. Tách special risk thành nhóm riêng.
+3. Event chứa deviceId, workspace, filmId, stateRevision, approvalId, source=USER_CHAT/HOST_BUTTON, at và snapshot chính xác từng bundle trong `bundles`. `validate_macro_event.validate` kiểm tra trước; `production_flow.apply_event` trả bản sao state, không tự ghi hoặc tự cấp quyền.
+4. Mỗi bundle được duyệt lưu approvedScopeSha256. Đổi input, scope hoặc lệnh phải kiểm lại quyền. Input sinh bởi packet trước được kiểm theo output hash ngay trước bước dùng; không đòi hash file chưa tạo tại lúc duyệt.
+5. Gọi `next_eligible_packet` trong từng lượt chat. Scheduler kiểm quyền, preflight, file phụ thuộc và hash thực. Sau chạy, dùng `finish_first.check_file` và lưu outputHashes trước OUTPUT_READY. Không dùng log thành công thay file.
+6. Ghi checkpoint bằng temp file trong workspace rồi atomic replace; kiểm stateRevision/hash trước ghi, giữ bản cũ. Khi hết lượt, lưu nextPacketId và tiếp tục scope cũ trong lượt sau.
+7. Khi video dùng được, ghi video.path, sha256, version, requiresAudio rồi DELIVER_VIDEO; gửi liên kết file thật. Không ghi USER_ACCEPTED từ kết quả giải mã.
+8. Sau phản hồi, `revision_history.plan_revision` phân loại scene/audio/subtitle/effect và tạo đường dẫn V02/V03 chưa tồn tại. Chỉ sửa các targetIds liên quan; giữ videoHistory và hash V01. Render với quyền hiện hành; phát sinh lệnh/quyền mới cần phê duyệt riêng. `register_revision` kiểm cả phiên bản trước và đầu ra mới.
 
-## Công việc kỹ thuật vẫn chia để kiểm chứng, nhưng không bắt duyệt lẻ
+## Tương thích
 
-P11 theo asset_id, P12 dialogue_id, P14/P15/P16 shot_id, P17 sequence, P20 issue. `openfilm-macro-bundles/SKILL.md` gộp nhiều Pxx trong một macro đã được duyệt; kết thúc mỗi packet chỉ ghi QC/checkpoint nội bộ. Không cần click sau từng packet hoặc Pxx nội bộ. Chỉ khi hết lượt High, blocker, cổng người dùng hoặc xong macro mới hiển thị một nút chính.
+`migrate_checkpoint.py CHECKPOINT --workspace WORKSPACE` sao lưu byte gốc trước khi thay checkpoint. QC_PASS/READY_FOR_REVIEW/PASS chỉ đổi OUTPUT_READY khi file tồn tại, dùng được và đúng hash; thiếu file đổi FAILED_TECHNICAL. BLOCKED kỹ thuật được giữ; VISUAL_BLOCKED đổi PLANNED để tiếp tục sản xuất, không tự hoàn thành. ID và dữ liệu cũ được giữ. Quyền cũ cần đối chiếu lại snapshot, không tự tạo approval. LEGACY_QC chỉ phục vụ đọc/kiểm thử checkpoint cũ, không chọn cho dự án mới.
 
-## Điều kiện dừng
-
-- Người dùng chưa duyệt giai đoạn hoặc sửa: `WAITING_APPROVAL`/`BLOCKED`; nếu không có nút phê duyệt thật, đưa câu xác nhận theo ID trong chat. Không tạo nút giả.
-- Thiếu/khác dữ liệu 7 tệp: dừng P07; không tự điền nhân vật, lời thoại, shot chưa có.
-- TTS chưa có WAV/không nghe được: P12/P13 chưa PASS. Nếu remote không chuyển âm thanh, đưa đường dẫn/file mẫu có thật để user tải/gửi lên chat; không giả nói đã nghe.
-- P18 hoặc P20 FAIL thì dừng trước master, báo hạng mục lỗi + phương án sửa + xin duyệt; chỉ chạy lại phần bị ảnh hưởng.
-- Chỉ P21 PASS khi master MP4 tồn tại và **kiểm tra phát được**; không biến việc tạo JSON, render log hay ffprobe đơn lẻ thành bằng chứng đã hoàn thành phim.
-
-Plugin là kỹ năng điều phối, không nhúng runtime/engine, không tự thực thi Windows nếu không có kết nối/ủy quyền.
-
-## Phân công High v1.11.0 — ưu tiên macro
-
-99 packet là checklist; sử dụng `openfilm-macro-bundles/references/macro_scheduler.py` để lên thứ tự đúng, stage QC và special boundaries. **LEGACY:** mọi câu cũ kiểu "một packet một lượt/một nút" chỉ áp dụng checkpoint cũ, không áp dụng dự án mới. Khi không thể chạy hết nhóm trong lượt High thì tiếp tục cùng macro sau một nút, không đòi lại phê duyệt.
-
-## Chính sách GPU TTS v1.7.0
-
-P06 cần phân gói preflight GPU read-only T06, cài T05 trong venv chỉ sau duyệt, test torch CUDA và WAV smoke GPU đã được duyệt, lưu `reports/tts/GPU_DECISION.json`; khi GPU không đáp ứng chỉ trình đề xuất ONNX T07 kèm nguyên nhân/evidence và approval ID CPU riêng. P12 phải kiểm lại backend khi chạy từng batch, từ chối silent fallback sang ONNX. Không đánh dấu `P06 PASS` vì package CUDA hiện diện; cần thực chạy GPU kiểm chứng hoặc gói `CPU_FALLBACK_APPROVED` có chứng cứ. Chỉ hỏi duyệt CPU fallback riêng; packet TTS kiểm chứng GPU thông thường kế thừa macro M0/M3 v1.11.0, không phát nút riêng sau từng packet.
-
-## Trình tự sửa OpenFilm v1.8.0
-
-P06: Sau cài/reuse kiểm kê capability Desktop/CLI và ghi `OPENFILM_RUNTIME_PROFILE.json` (P06.08); trước smoke có thể đánh dấu renderClip=UNVERIFIED, đây là phép thử đầu tiên, tạo E2E fixture 7s có WAV+VTT được duyệt (P06.09), chạy OpenFilm render thật (P06.10), FFprobe và xem/nghe xác nhận (P06.11), rồi mới chốt P06.04. Nếu OpenFilm CLI không tồn tại nhưng Desktop GUI verified thì thực hiện trong GUI sau duyệt; không có renderer được điều khiển → BLOCKED, không PASS ảo. P08.05: khóa nguồn `vieneu-local` nếu dùng lời thoại. P09.06: bootstrap `film.html` + scene placeholders từ FilmData đã validate; chưa QC hình. P10.06–P10.07: Canvas optional, default FILE_STORYBOARD; Canvas làm board không tạo TTS/provider. P12.08: xác minh source-lock + backend GPU-first trước WAV. P14.06: thay placeholder bằng scene đã hoàn thiện, giữ edits. P16.06: kiểm placeholder=0 và preview scene từ runtime verified; P17.07: hoàn thiện file timeline đã tạo từ P09, không dựng mới từ đầu. Chia từng công việc High và nút phê duyệt/kiểm tra theo `openfilm-oneclick-approval`. Bản cập nhật plugin chỉ là **hướng dẫn/mã kiểm tra**, chưa phải lần chạy thực trên Windows.
-
-## Đường thực thi OpenFilm CLI-first v1.9.0
-
-Bất kỳ Pxx dùng OpenFilm bắt buộc đọc `openfilm-cli-execution/SKILL.md` và profile mode `cli`, xác minh CLI A02 từ P04/P05/P06 trước. P09 tạo film.html sớm offline, P14–P16 check bằng `look`, P17 hoàn thiện timeline, P18/P19/P21 nếu OpenFilm Master render bằng CLI; Remotion Master OpenFilm CLI chỉ làm previs/ảnh QC và Remotion CLI final. P06 CLI 7 giây có log stdout/stderr, exitCode và MP4 thật; không dùng Desktop UI-only, không tự tải qua npx. Mỗi CLI run là một work packet có approval, cwd cố định trong workspace và chứng cứ.
-
-## v1.11.0 — 8 macro-bundle M0–M7
-
-P00–P05 cổng chuẩn bị; P06 trong M0. M1 P07–09, M2 P10–11, M3 P12–13, M4 P14–16, M5 P17–18, M6 P19–20, M7 P21. **Không duyệt từng packet hay từng stage**. Điểm P08 profile, P10 visual, P12 voice, P13 listening (nếu có thoại), render đầu tiên, cài/tải/CPU fallback và final acceptance vẫn có phê duyệt riêng. Đọc `openfilm-macro-bundles/SKILL.md` + OPERATIONS trước khi thực thi.
-
-## v1.12.0 — Mandatory Visual Inspection & Quality Gate
-Ràng buộc P10/P11 (`M2`), P14/P15/P16 (`M4`), P17/P18 (`M5`), P19/P20 (`M6`), P21 (`M7`): `VISUAL_PASS` từ hình ảnh **nhận trong ngữ cảnh thị giác của ChatGPT** là điều kiện nghiệm thu macro độc lập với technical QC. Dùng OpenFilm CLI `look` cho scene (M4), FFmpeg trích chính MP4 đã render cho smoke/draft/master; thiếu image delivery thì `VISUAL_BLOCKED`. Chi tiết `openfilm-visual-inspection/SKILL.md`. Bất kỳ hướng dẫn cũ nói chỉ xem ảnh có trong workspace, hoặc cho PASS từ FFprobe/log, đều không còn đủ.
+QC nâng cao là công cụ tùy chọn khi user yêu cầu; các báo cáo không được thay trạng thái đầu ra. Bộ kiểm tra kỹ thuật không đánh giá thẩm mỹ.

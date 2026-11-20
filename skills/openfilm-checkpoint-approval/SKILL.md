@@ -1,31 +1,31 @@
 ---
 name: openfilm-checkpoint-approval
-description: "Bảo toàn checkpoint và QC theo packet/Pxx nhưng nghiệm thu ở cấp macro M0–M7; hỗ trợ khôi phục lô đã duyệt, chặn nghiệm thu giả và quy trình LEGACY."
+description: "Lưu checkpoint, xác minh đầu ra và migration bảo toàn dữ liệu."
 ---
 
-# Checkpoint và nghiệm thu v1.11.0 — macro user approval, packet nội bộ
+# openfilm-checkpoint-approval — v1.14.0
 
-**Nguồn điều phối mặc định:** `openfilm-macro-bundles/SKILL.md`. Không nhầm QC PASS với người dùng phê duyệt. 99 packet là chứng cứ kỹ thuật, không có nút sau mỗi packet hoặc stage. **LEGACY:** `STATE_CONTRACT.md`, `PRODUCTION_STATUS_TEMPLATE.json` và `approvalBundles[]` giữ tương thích các hồ sơ v1.10, không được tự đánh dấu lại nghiệm thu.
+Mặc định `FINISH_FIRST_USER_REVIEW`: hoàn thành video V01 rồi bàn giao để người dùng đánh giá. Chính sách này ưu tiên hơn hướng dẫn QC legacy. QC20, Visual QC và nghe chấm từng take chỉ chạy khi người dùng chủ động yêu cầu; không chặn sản xuất/bàn giao. Smoke và kiểm frame/random seek chỉ dùng để chẩn đoán lỗi kỹ thuật hoặc theo yêu cầu.
 
-## File trạng thái có thật trên workspace
+Giữ 8 macro M0–M7 và 99 ID packet. Một phê duyệt phạm vi rõ đầu vào, đầu ra, lệnh và quyền có thể bao phủ M1–M7. Không xin duyệt riêng từng packet/Pxx hoặc nghiệm thu từng macro. Chạy nhiều packet trong lượt High; ghi checkpoint sau mỗi đầu ra, tiếp tục cùng quyền trong lượt chat mới, không tự chạy nền.
 
-- `reports/PRODUCTION_STATUS.json`: 16 stage P06–P21, QC/evidence, status và workUnits; `macroInternalGate` là marker **QC nội bộ** khi có planApprovalId macro thật. Không được ghi `acceptanceApproval.status=APPROVED` khi user mới chỉ duyệt kế hoạch macro.
-- `reports/WORK_UNIT_INDEX.json`: `packets[]`, `macroBundles[]`, `approvalBundles[]` (**LEGACY**), `stageStates{}`, `preflightGates{}`, `decisionGates{}`, stateRevision, deviceId, workspace, filmId. Giữ nguyên packet IDs/checkpoints đã QC; không chạy lại PASS nếu hashes còn đúng.
-- `reports/APPROVAL_LOG.jsonl`: ghi các sự kiện user click thật + đúng scope, không bịa approval. Ghi state atomic và đọc lại sau mỗi packet đã thực hiện trên máy cho phép; nếu không có quyền ghi báo BLOCKED.
+OpenFilm CLI-first; Desktop/GUI chỉ để xem/chỉnh sửa tùy chọn. VieNeu-TTS GPU-first; cài đặt, tải model/browser, thay đổi hệ thống, GPU→CPU, voice cloning, provider ngoài, dịch vụ trả phí, xóa, xuất bản và ngoài phạm vi cần quyền riêng. Không suy ra quyền từ file kế hoạch hoặc kết quả kỹ thuật.
 
-## Transition
+`OUTPUT_READY` nghĩa là đầu ra thật có thể dùng. `DELIVERED_FOR_REVIEW` nghĩa là đã giao video. Chỉ dùng `USER_ACCEPTED` khi có phản hồi chấp nhận thật. `REVISION_REQUESTED` ghi phản hồi cần sửa; `FAILED_TECHNICAL` ghi lỗi ngăn dùng đầu ra. File thiếu/hỏng/ngoài workspace hoặc sai hash phải chặn bước phụ thuộc.
 
-Một packet bình thường thuộc macro đã duyệt: `PLANNED → IN_PROGRESS → READY_FOR_REVIEW` khi QC/evidence có thật. Dependency packet **trong cùng macro** có thể tiếp tục trên `READY_FOR_REVIEW qcStatus=PASS`, sau khi stage trước trong macro đã `QC_PASS` và các decision gates cần thiết được xác nhận. Không được tự chuyển packet thành `PASS` chỉ vì QC. Khi user nghiệm thu macro với evidence thật, các packet được gắn `acceptanceApprovalId` của macro và chuyển `PASS`, macro chuyển `PASS`. Để chuyển sang macro khác: macro trước phải có acceptanceApprovalId; special packet giữa chừng cần phê duyệt riêng.
+## Thực thi và checkpoint
 
-Giai đoạn Pxx có thể `PASS` theo kỹ thuật **chỉ khi** có `macroInternalGate` hợp lệ/approved plan/evidence (validator `validate_production_state.py`), không được gọi là *user acceptance*. Stage P21 dù QC đạt vẫn đòi người dùng nghiệm thu final; không tự `PASS` bằng marker nội bộ. Các stage `SKIPPED` chỉ khi được policy cho phép, ghi lý do/evidence, không fake hoàn thành.
+1. Materialize packet từ FilmData, giữ ID template cũ; outputPaths phải là từng file cụ thể, không phải thư mục hay glob. Bỏ packet không cần bằng SKIPPED kèm skipReason.
+2. `macro_scheduler.propose` tạo 8 nhóm logic; có thể trình các nhóm M1–M7 trong một `APPROVE_PRODUCTION`. Tách special risk thành nhóm riêng.
+3. Event chứa deviceId, workspace, filmId, stateRevision, approvalId, source=USER_CHAT/HOST_BUTTON, at và snapshot chính xác từng bundle trong `bundles`. `validate_macro_event.validate` kiểm tra trước; `production_flow.apply_event` trả bản sao state, không tự ghi hoặc tự cấp quyền.
+4. Mỗi bundle được duyệt lưu approvedScopeSha256. Đổi input, scope hoặc lệnh phải kiểm lại quyền. Input sinh bởi packet trước được kiểm theo output hash ngay trước bước dùng; không đòi hash file chưa tạo tại lúc duyệt.
+5. Gọi `next_eligible_packet` trong từng lượt chat. Scheduler kiểm quyền, preflight, file phụ thuộc và hash thực. Sau chạy, dùng `finish_first.check_file` và lưu outputHashes trước OUTPUT_READY. Không dùng log thành công thay file.
+6. Ghi checkpoint bằng temp file trong workspace rồi atomic replace; kiểm stateRevision/hash trước ghi, giữ bản cũ. Khi hết lượt, lưu nextPacketId và tiếp tục scope cũ trong lượt sau.
+7. Khi video dùng được, ghi video.path, sha256, version, requiresAudio rồi DELIVER_VIDEO; gửi liên kết file thật. Không ghi USER_ACCEPTED từ kết quả giải mã.
+8. Sau phản hồi, `revision_history.plan_revision` phân loại scene/audio/subtitle/effect và tạo đường dẫn V02/V03 chưa tồn tại. Chỉ sửa các targetIds liên quan; giữ videoHistory và hash V01. Render với quyền hiện hành; phát sinh lệnh/quyền mới cần phê duyệt riêng. `register_revision` kiểm cả phiên bản trước và đầu ra mới.
 
-## Điều kiện dừng
+## Tương thích
 
-Dừng theo lỗi thật, kết quả chưa nghe/nhìn, thiếu chứng cứ file, ngoại phạm vi, hash hoặc revision thay đổi, gói đặc biệt chưa duyệt, runtime OpenFilm CLI chưa được chứng minh, hoặc VieNeu GPU chưa đạt. Nếu hết lượt High khi vẫn đang trong macro, lưu điểm dừng, hiện **Tiếp tục nhóm đã duyệt** (không đòi duyệt lại) với event host thật. Nếu nguồn thay đổi hoặc scope mới, trình replan minh bạch. Chỉ invalidation các packet + downstream liên quan, không xóa hay ghi đè bừa.
+`migrate_checkpoint.py CHECKPOINT --workspace WORKSPACE` sao lưu byte gốc trước khi thay checkpoint. QC_PASS/READY_FOR_REVIEW/PASS chỉ đổi OUTPUT_READY khi file tồn tại, dùng được và đúng hash; thiếu file đổi FAILED_TECHNICAL. BLOCKED kỹ thuật được giữ; VISUAL_BLOCKED đổi PLANNED để tiếp tục sản xuất, không tự hoàn thành. ID và dữ liệu cũ được giữ. Quyền cũ cần đối chiếu lại snapshot, không tự tạo approval. LEGACY_QC chỉ phục vụ đọc/kiểm thử checkpoint cũ, không chọn cho dự án mới.
 
-## Trình xác thực
-
-`validate_production_state.py` đọc schema cũ và marker macro khi có; `validate_work_packets.py` đọc cả `approvalBundles` LEGACY và `macroBundles` mới; `openfilm-macro-bundles/references/validate_macro_event.py` kiểm callback metadata. Đọc/so file SHA256 trên máy đã cấp quyền trước khi thực thi/nhận nghiệm thu, không coi validator metadata là giấy phép chạy.
-
-## v1.12.0 — Mandatory Visual Inspection & Quality Gate
-Khi nghiệm thu macro M2/M4/M5/M6/M7, ngoài QC kỹ thuật, yêu cầu `visualTargets[Mx]` và `visualGates[Mx]` trỏ `qc/visual/Mx/VISUAL_QC_REPORT.json` có ảnh **đã thực sự xem qua công cụ multimodal** và hash của ảnh/nguồn. Thay sourceHash/render revision hoặc sửa shot → invalidate visual report, không dùng report cũ. Metadata validator không xác nhận mắt mô hình; phải thấy image content ở lượt thật. Không tạo nút duyệt cho từng ảnh.
+QC nâng cao là công cụ tùy chọn khi user yêu cầu; các báo cáo không được thay trạng thái đầu ra. Bộ kiểm tra kỹ thuật không đánh giá thẩm mỹ.

@@ -1,21 +1,31 @@
 ---
 name: openfilm-high-workpackets
-description: "Dùng 99 packet nhỏ để chia việc và QC/checkpoint nội bộ nhưng điều phối thực thi theo 8 macro M0–M7 cho dự án Video-hoạt-hình mới."
+description: "Materialize và tiếp tục 99 packet kỹ thuật trong phạm vi sản xuất đã duyệt."
 ---
 
-# High work packets v1.11.0 — QC nội bộ, **không phải nút duyệt**
+# openfilm-high-workpackets — v1.14.0
 
-**Mặc định** phải đọc `openfilm-macro-bundles/SKILL.md` và `references/WORKPACKET_DEFINITIONS.json` trước tiên. 99 mẫu vẫn giữ nguyên ID và chức năng, nhưng `requiresExplicitApproval=false` ở packet bình thường và `approvalMode=INHERIT_MACRO`. Chỉ packet `SPECIAL_SEPARATE` đòi phê duyệt đặc biệt. Mọi chính sách một packet/một click đời cũ được coi là **LEGACY** cho checkpoint v1.6–v1.10, không dùng cho dự án mới.
+Mặc định `FINISH_FIRST_USER_REVIEW`: hoàn thành video V01 rồi bàn giao để người dùng đánh giá. Chính sách này ưu tiên hơn hướng dẫn QC legacy. QC20, Visual QC và nghe chấm từng take chỉ chạy khi người dùng chủ động yêu cầu; không chặn sản xuất/bàn giao. Smoke và kiểm frame/random seek chỉ dùng để chẩn đoán lỗi kỹ thuật hoặc theo yêu cầu.
 
-- Phân giải mỗi template từ ID thực xác minh: shot/dialogue/asset/source/issue/render. Chưa biết ID/file thì báo NEEDS_INPUT, không tạo giả. Nguồn 7 tệp kịch bản gốc bất biến. Đường dẫn workspace relative + SHA256 thật.
-- Trong **một macro user duyệt**, thực hiện nhiều packet liên tiếp khi cùng scope/permissions và QC trước đó PASS; không dừng sau từng packet. `READY_FOR_REVIEW + qcStatus=PASS` là đủ cho dependency **cùng macro**; chưa phải người dùng nghiệm thu. Sang macro khác yêu cầu macro trước được người dùng ACCEPT và packet PASS hợp lệ.
-- Phân chia kỹ thuật hữu ích: P09 1–2 shot hoặc tối đa 4 dialogue/packet; P10 1 shot; P11 1 asset; P12 ≤3 câu thoại ngắn/packet GPU, nhưng macro có thể chạy nhiều packet; P14–P16 1 shot/packet; P18 smoke render/probe/listen trong M5; P21 render/probe/handoff trong M7. Nếu phức tạp, chia thêm *packet nội bộ* không sinh thêm nút.
-- Sau **mỗi packet** phải ghi checkpoint/hash/QC trong workspace khi được phép. Nếu FAIL/BLOCKED dừng các phụ thuộc và trình sửa ở cấp issue/scope; không tự chấp nhận QA sáng tạo. Khi hết lượt High trả `RESUME_APPROVED_MACRO` để mở turn mới theo phê duyệt trước, không yêu cầu user nhập prompt hay phê duyệt lại.
-- P06 CLI first, VieNeu CUDA/PyTorch GPU-first. Không âm thầm fallback CPU/ONNX, tải model/Chromium, chi phí hoặc gọi provider ngoài. M0 phải qua P00–P05 trước; M7 phải có MP4 thật và người dùng nghiệm thu.
+Giữ 8 macro M0–M7 và 99 ID packet. Một phê duyệt phạm vi rõ đầu vào, đầu ra, lệnh và quyền có thể bao phủ M1–M7. Không xin duyệt riêng từng packet/Pxx hoặc nghiệm thu từng macro. Chạy nhiều packet trong lượt High; ghi checkpoint sau mỗi đầu ra, tiếp tục cùng quyền trong lượt chat mới, không tự chạy nền.
 
-## LEGACY (chỉ đọc state cũ)
+OpenFilm CLI-first; Desktop/GUI chỉ để xem/chỉnh sửa tùy chọn. VieNeu-TTS GPU-first; cài đặt, tải model/browser, thay đổi hệ thống, GPU→CPU, voice cloning, provider ngoài, dịch vụ trả phí, xóa, xuất bản và ngoài phạm vi cần quyền riêng. Không suy ra quyền từ file kế hoạch hoặc kết quả kỹ thuật.
 
-`openfilm-batch-approval` cùng `ONE_CLICK_CONTRACT.md` chứa lịch sử một bundle mỗi stage và packet-level actions. Không xóa lịch sử `approvalBundles[]`; quy trình mới dùng `macroBundles[]`, `MACRO_POLICY.json`, `macro_scheduler.py` và `validate_macro_event.py`. Trong trường hợp chưa được phép chuyển workflow, dừng/đề xuất kế hoạch, không âm thầm sửa trạng thái.
+`OUTPUT_READY` nghĩa là đầu ra thật có thể dùng. `DELIVERED_FOR_REVIEW` nghĩa là đã giao video. Chỉ dùng `USER_ACCEPTED` khi có phản hồi chấp nhận thật. `REVISION_REQUESTED` ghi phản hồi cần sửa; `FAILED_TECHNICAL` ghi lỗi ngăn dùng đầu ra. File thiếu/hỏng/ngoài workspace hoặc sai hash phải chặn bước phụ thuộc.
 
-## v1.12.0 — Mandatory Visual Inspection & Quality Gate
-M2/M4/M5/M6/M7 thêm công việc **trích ảnh thật → nhận ảnh trong ChatGPT vision → nhận xét từng shot/role → lưu Visual QC → sửa & nhìn lại** làm packet nội bộ trong cùng macro; **không thêm nút từng frame/packet**. Không tự ghi `VISUAL_PASS` chỉ từ file tồn tại/FFprobe, thiếu image input thì BLOCKED. Giữ 99 template IDs; các packet có `visualEvidenceRequired` gọi skill `openfilm-visual-inspection`.
+## Thực thi và checkpoint
+
+1. Materialize packet từ FilmData, giữ ID template cũ; outputPaths phải là từng file cụ thể, không phải thư mục hay glob. Bỏ packet không cần bằng SKIPPED kèm skipReason.
+2. `macro_scheduler.propose` tạo 8 nhóm logic; có thể trình các nhóm M1–M7 trong một `APPROVE_PRODUCTION`. Tách special risk thành nhóm riêng.
+3. Event chứa deviceId, workspace, filmId, stateRevision, approvalId, source=USER_CHAT/HOST_BUTTON, at và snapshot chính xác từng bundle trong `bundles`. `validate_macro_event.validate` kiểm tra trước; `production_flow.apply_event` trả bản sao state, không tự ghi hoặc tự cấp quyền.
+4. Mỗi bundle được duyệt lưu approvedScopeSha256. Đổi input, scope hoặc lệnh phải kiểm lại quyền. Input sinh bởi packet trước được kiểm theo output hash ngay trước bước dùng; không đòi hash file chưa tạo tại lúc duyệt.
+5. Gọi `next_eligible_packet` trong từng lượt chat. Scheduler kiểm quyền, preflight, file phụ thuộc và hash thực. Sau chạy, dùng `finish_first.check_file` và lưu outputHashes trước OUTPUT_READY. Không dùng log thành công thay file.
+6. Ghi checkpoint bằng temp file trong workspace rồi atomic replace; kiểm stateRevision/hash trước ghi, giữ bản cũ. Khi hết lượt, lưu nextPacketId và tiếp tục scope cũ trong lượt sau.
+7. Khi video dùng được, ghi video.path, sha256, version, requiresAudio rồi DELIVER_VIDEO; gửi liên kết file thật. Không ghi USER_ACCEPTED từ kết quả giải mã.
+8. Sau phản hồi, `revision_history.plan_revision` phân loại scene/audio/subtitle/effect và tạo đường dẫn V02/V03 chưa tồn tại. Chỉ sửa các targetIds liên quan; giữ videoHistory và hash V01. Render với quyền hiện hành; phát sinh lệnh/quyền mới cần phê duyệt riêng. `register_revision` kiểm cả phiên bản trước và đầu ra mới.
+
+## Tương thích
+
+`migrate_checkpoint.py CHECKPOINT --workspace WORKSPACE` sao lưu byte gốc trước khi thay checkpoint. QC_PASS/READY_FOR_REVIEW/PASS chỉ đổi OUTPUT_READY khi file tồn tại, dùng được và đúng hash; thiếu file đổi FAILED_TECHNICAL. BLOCKED kỹ thuật được giữ; VISUAL_BLOCKED đổi PLANNED để tiếp tục sản xuất, không tự hoàn thành. ID và dữ liệu cũ được giữ. Quyền cũ cần đối chiếu lại snapshot, không tự tạo approval. LEGACY_QC chỉ phục vụ đọc/kiểm thử checkpoint cũ, không chọn cho dự án mới.
+
+QC nâng cao là công cụ tùy chọn khi user yêu cầu; các báo cáo không được thay trạng thái đầu ra. Bộ kiểm tra kỹ thuật không đánh giá thẩm mỹ.

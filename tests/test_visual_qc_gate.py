@@ -112,7 +112,7 @@ def test_macro_accept_requires_actual_visual_report_not_only_normal_qc(tmp_path)
     bundle={'macroBundleId':'M5.B001','macroId':'M5','stageIds':['P18'],'packetIds':[packet['packetId']],
             'scopeIds':['SMOKE'],'allowedPaths':[],'allowedCommands':[],'riskClass':'NORMAL','inputHashes':{},
             'specialApprovalRequired':False,'status':'READY_FOR_REVIEW','planApprovalId':'user-approve','evidencePaths':['qc/fine.json']}
-    index={'stateRevision':7,'deviceId':'pc1','workspace':str(tmp_path),'filmId':'a','packets':[packet],
+    index={'productionMode':'LEGACY_QC','stateRevision':7,'deviceId':'pc1','workspace':str(tmp_path),'filmId':'a','packets':[packet],
            'macroBundles':[bundle],'stageStates':{'P18':{'status':'QC_PASS','qcStatus':'PASS','evidencePaths':['qc/fine.json']}}}
     event={'action':'ACCEPT_MACRO','stateRevision':7,'deviceId':'pc1','workspace':str(tmp_path),'filmId':'a','macroBundleId':'M5.B001',
            **{k:bundle[k] for k in ('macroId','stageIds','packetIds','scopeIds','allowedPaths','allowedCommands','riskClass','inputHashes')}}

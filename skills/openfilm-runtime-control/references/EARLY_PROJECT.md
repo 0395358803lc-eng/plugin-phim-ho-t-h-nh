@@ -1,3 +1,5 @@
+> v1.14.0: FINISH_FIRST_USER_REVIEW ưu tiên. Đây là công thức kỹ thuật/tham khảo; mọi đánh giá thẩm mỹ chỉ theo yêu cầu người dùng, mọi cổng QC legacy không chặn V01. OpenFilm CLI-first, GUI tùy chọn.
+
 # P09.06 → P16.06 → P17.07: Một project OpenFilm duy nhất
 
 FilmData ở `projects/<film-id>/scene-data/film.json` là *nguồn quy ước của plugin*, không phải OpenFilm tự sinh. P09.06 chuyển dữ liệu đã kiểm chứng thành:

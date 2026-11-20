@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pluginVersion": "1.11.0",
+  "pluginVersion": "1.14.0",
   "stateRevision": 0,
   "deviceId": null,
   "workspace": null,
@@ -10,5 +10,6 @@
   "macroBundles": [],
   "stageStates": {},
   "decisionGates": {},
-  "note": "Template not an approval. Never populate macroBundles with inferred shot IDs. All scope, allowed paths, input hashes, exact commands and user decisions must come from real checked input and host click. approvalBundles is legacy history only."
+  "note": "Finish First: verify actual outputs; user review after delivery; retain old checkpoint data.",
+  "productionMode": "FINISH_FIRST_USER_REVIEW"
 }

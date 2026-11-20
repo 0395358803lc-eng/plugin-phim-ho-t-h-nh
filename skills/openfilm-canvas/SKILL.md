@@ -3,6 +3,16 @@ name: openfilm-canvas
 description: "Thiết kế storyboard, khung hình, nhân vật nhất quán, voice-over trên OpenFilm Canvas khi chuẩn bị video hoạt hình."
 ---
 
+Mặc định `FINISH_FIRST_USER_REVIEW`: hoàn thành video V01 rồi bàn giao để người dùng đánh giá. Chính sách này ưu tiên hơn hướng dẫn QC legacy. QC20, Visual QC và nghe chấm từng take chỉ chạy khi người dùng chủ động yêu cầu; không chặn sản xuất/bàn giao. Smoke và kiểm frame/random seek chỉ dùng để chẩn đoán lỗi kỹ thuật hoặc theo yêu cầu.
+
+Giữ 8 macro M0–M7 và 99 ID packet. Một phê duyệt phạm vi rõ đầu vào, đầu ra, lệnh và quyền có thể bao phủ M1–M7. Không xin duyệt riêng từng packet/Pxx hoặc nghiệm thu từng macro. Chạy nhiều packet trong lượt High; ghi checkpoint sau mỗi đầu ra, tiếp tục cùng quyền trong lượt chat mới, không tự chạy nền.
+
+OpenFilm CLI-first; Desktop/GUI chỉ để xem/chỉnh sửa tùy chọn. VieNeu-TTS GPU-first; cài đặt, tải model/browser, thay đổi hệ thống, GPU→CPU, voice cloning, provider ngoài, dịch vụ trả phí, xóa, xuất bản và ngoài phạm vi cần quyền riêng. Không suy ra quyền từ file kế hoạch hoặc kết quả kỹ thuật.
+
+`OUTPUT_READY` nghĩa là đầu ra thật có thể dùng. `DELIVERED_FOR_REVIEW` nghĩa là đã giao video. Chỉ dùng `USER_ACCEPTED` khi có phản hồi chấp nhận thật. `REVISION_REQUESTED` ghi phản hồi cần sửa; `FAILED_TECHNICAL` ghi lỗi ngăn dùng đầu ra. File thiếu/hỏng/ngoài workspace hoặc sai hash phải chặn bước phụ thuộc.
+
+
+
 > Kỹ năng OpenFilm gốc, được giữ nội dung và đổi tên kỹ năng để tích hợp vào plugin Video-hoạt-hình. Chỉ chạy các lệnh khi CLI OpenFilm thực sự tồn tại trên máy có quyền truy cập. Tên và nhãn lệnh trong nội dung dưới đây thuộc OpenFilm, không phải lệnh có sẵn của ChatGPT.
 
 # The canvas
@@ -46,4 +56,3 @@ Trước lệnh Canvas ở P10 đọc `openfilm-runtime-control/references/CANVA
 Khi user chọn Canvas tại P10 và capability `openCanvas=VERIFIED` của **CLI** (không phải UI-only), dùng `openfilm canvas`/`canvas apply` bản CLI đã xác minh, cwd đúng project và có phê duyệt ghi board. Nếu thiếu CLI/canvas subcommand hoặc permission, dùng `FILE_STORYBOARD`, báo `SKIPPED_CANVAS` có bằng chứng; không bật GUI Desktop để thay CLI. Nút Make/Make all/provider/TTS bị chặn theo voice-source lock.
 
 ## v1.12.0 — Mandatory Visual Inspection & Quality Gate
-M2 chỉ PASS khi ảnh storyboard/nhân vật/bối cảnh thực sự chuyển đến ChatGPT dưới dạng hình ảnh và được quan sát/ghi nhận; text Canvas node, note/JSON và success code chưa đủ. Nếu Canvas không xuất PNG được, dùng file storyboard với ảnh PNG; vẫn áp dụng `openfilm-visual-inspection`.

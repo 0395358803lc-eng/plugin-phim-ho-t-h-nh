@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pluginVersion": "1.12.0",
+  "pluginVersion": "1.14.0",
   "stateRevision": 0,
   "deviceId": null,
   "workspace": null,
@@ -8,12 +8,13 @@
   "currentPacketId": null,
   "nextPacketId": null,
   "packets": [],
-  "note": "M2/M4/M5/M6/M7 must have validated real multimodal visual reports and exact target coverage before acceptance; macro approval still one per group.",
+  "note": "Finish First: verify actual outputs; user review after delivery; retain old checkpoint data.",
   "approvalBundles": [],
   "macroBundles": [],
   "stageStates": {},
   "preflightGates": {},
   "decisionGates": {},
   "visualGates": {},
-  "visualTargets": {}
+  "visualTargets": {},
+  "productionMode": "FINISH_FIRST_USER_REVIEW"
 }

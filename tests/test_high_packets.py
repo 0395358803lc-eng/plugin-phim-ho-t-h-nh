@@ -14,7 +14,7 @@ spec.loader.exec_module(m)
 class PacketTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls): cls.defs=json.loads(DEF.read_text(encoding='utf-8'))
-    def fresh(self): return {'schemaVersion':1,'stateRevision':0,'packets':[],'currentPacketId':None,'nextPacketId':None}
+    def fresh(self): return {'productionMode':'LEGACY_QC','schemaVersion':1,'stateRevision':0,'packets':[],'currentPacketId':None,'nextPacketId':None}
     def test_all_16_stages_present(self):
         self.assertEqual([s['stageId'] for s in self.defs['stages']],[f'P{i:02d}' for i in range(6,22)])
     def test_all_have_bound_packets(self):
@@ -23,7 +23,7 @@ class PacketTests(unittest.TestCase):
             for p in s['packets']:
                 self.assertGreaterEqual(p['batchMax'],1)
                 self.assertLessEqual(p['batchMax'],12)
-                self.assertTrue(p['qcRequired'])
+                self.assertNotIn('qcRequired',p)
                 self.assertEqual(p['requiresExplicitApproval'],p['approvalMode']=='SPECIAL_SEPARATE')
                 self.assertIn(p['approvalMode'], ('INHERIT_MACRO','SPECIAL_SEPARATE'))
     def test_unique_templates(self):

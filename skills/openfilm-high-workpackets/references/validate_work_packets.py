@@ -2,6 +2,10 @@
 from __future__ import annotations
 import argparse, json, re
 from pathlib import Path
+import importlib.util as _iu
+_spec=_iu.spec_from_file_location('validate_completion',Path(__file__).resolve().parents[2]/'openfilm-macro-bundles/references/validate_completion.py')
+_vc=_iu.module_from_spec(_spec);_spec.loader.exec_module(_vc)
+
 
 STATUSES={'PLANNED','WAITING_APPROVAL','IN_PROGRESS','READY_FOR_REVIEW','PASS','FAIL','BLOCKED','SKIPPED','INVALIDATED'}
 QCS={'NOT_TESTED','PASS','FAIL','BLOCKED','NOT_APPLICABLE'}
@@ -10,6 +14,7 @@ def relative_path(p):
     return isinstance(p,str) and bool(p) and not p.startswith(('/', '\\')) and ':' not in p and '..' not in p.replace('\\','/').split('/')
 
 def validate(index, definitions=None):
+    if _vc.f.enabled(index):return _vc.validate_packets(index,definitions)
     errors=[]
     if index.get('schemaVersion')!=1: errors.append('schemaVersion must be 1')
     if type(index.get('stateRevision')) is not int or index['stateRevision']<0: errors.append('stateRevision invalid')
@@ -116,6 +121,7 @@ def validate(index, definitions=None):
     return errors
 
 def check_files(index,root:Path):
+    if _vc.f.enabled(index):return _vc.validate_packets({**index,'workspace':str(root.resolve())})
     import hashlib
     issues=[];root=root.resolve()
     for p in index.get('packets',[]):

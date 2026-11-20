@@ -3,6 +3,16 @@ name: openfilm-hybrid-master
 description: "Chọn OpenFilm Master hoặc Remotion Master sau P00–P05; tổ chức handoff dựa trên file, giữ một timeline và không tự cài hoặc đổi engine." 
 ---
 
+Mặc định `FINISH_FIRST_USER_REVIEW`: hoàn thành video V01 rồi bàn giao để người dùng đánh giá. Chính sách này ưu tiên hơn hướng dẫn QC legacy. QC20, Visual QC và nghe chấm từng take chỉ chạy khi người dùng chủ động yêu cầu; không chặn sản xuất/bàn giao. Smoke và kiểm frame/random seek chỉ dùng để chẩn đoán lỗi kỹ thuật hoặc theo yêu cầu.
+
+Giữ 8 macro M0–M7 và 99 ID packet. Một phê duyệt phạm vi rõ đầu vào, đầu ra, lệnh và quyền có thể bao phủ M1–M7. Không xin duyệt riêng từng packet/Pxx hoặc nghiệm thu từng macro. Chạy nhiều packet trong lượt High; ghi checkpoint sau mỗi đầu ra, tiếp tục cùng quyền trong lượt chat mới, không tự chạy nền.
+
+OpenFilm CLI-first; Desktop/GUI chỉ để xem/chỉnh sửa tùy chọn. VieNeu-TTS GPU-first; cài đặt, tải model/browser, thay đổi hệ thống, GPU→CPU, voice cloning, provider ngoài, dịch vụ trả phí, xóa, xuất bản và ngoài phạm vi cần quyền riêng. Không suy ra quyền từ file kế hoạch hoặc kết quả kỹ thuật.
+
+`OUTPUT_READY` nghĩa là đầu ra thật có thể dùng. `DELIVERED_FOR_REVIEW` nghĩa là đã giao video. Chỉ dùng `USER_ACCEPTED` khi có phản hồi chấp nhận thật. `REVISION_REQUESTED` ghi phản hồi cần sửa; `FAILED_TECHNICAL` ghi lỗi ngăn dùng đầu ra. File thiếu/hỏng/ngoài workspace hoặc sai hash phải chặn bước phụ thuộc.
+
+
+
 # Hai chế độ master (N01–N02)
 
 **Trước hết** chạy `video-hoat-hinh` P00–P05 theo đúng thứ tự máy → thư mục → workspace → reuse → audit → danh sách phê duyệt. Không dùng yêu cầu hybrid làm lý do tự mở Remotion, chạy `npx` hoặc cài môi trường. Chỉ chọn chế độ khi đã có dữ liệu dự án và sự đồng ý riêng cho giai đoạn sản xuất; nếu chưa rõ, mặc định **OpenFilm Master** vì tương thích với các dự án cũ.
@@ -23,7 +33,7 @@ description: "Chọn OpenFilm Master hoặc Remotion Master sau P00–P05; tổ 
 4. **PREVIS:** OpenFilm render preview có kiểm chứng khi cần; `previs.mp4` là reference, không là dependency bắt buộc của final.
 5. **HANDOFF:** adapter kiểm tra đường dẫn relative, file tồn tại/codec/FPS và mapping từ time(s) sang frame trước khi import. Chỉ chuyển audio/media qua một timeline master để tránh tiếng lặp.
 6. **FAILOVER:** Remotion thiếu điều kiện → không tự sửa cài, có thể đề xuất chuyển về OpenFilm Master **sau khi được chấp thuận**.
-7. **QC:** so sánh thời lượng, cut/shot, voice/subtitles, frame ngẫu nhiên, ảnh trước/sau handoff; báo PASS/FAIL/BLOCKED dựa trên bằng chứng.
+7. **Đầu ra:** kiểm file, thời lượng và giải mã; bàn giao V01. Đánh giá chất lượng khi người dùng yêu cầu.
 
 Tham chiếu `references/ADAPTER.md` và `openfilm-filmdata/SKILL.md`. Nguồn khái niệm: báo cáo `deep-research-report (1).md`, phần kiến trúc và ranh giới file adapter. Kỹ năng không tuyên bố một tích hợp engine tự động đã tồn tại.
 

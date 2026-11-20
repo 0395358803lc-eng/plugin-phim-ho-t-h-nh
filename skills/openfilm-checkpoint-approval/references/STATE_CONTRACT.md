@@ -1,32 +1,37 @@
-# `PRODUCTION_STATUS.json` — hợp đồng dữ liệu trạng thái
+# Finish First — v1.14.0
 
-Vị trí: `VIDEO_HOAT_HINH_WORKSPACE/reports/PRODUCTION_STATUS.json`; không chứa token API, credentials, voice reference raw, dữ liệu nhận dạng nhạy cảm. Schema version `1`, chỉ điều phối 16 stage P06–P21, P00–P05 là gate môi trường độc lập.
+Mặc định `FINISH_FIRST_USER_REVIEW`: hoàn thành video V01 rồi bàn giao để người dùng đánh giá. Chính sách này ưu tiên hơn hướng dẫn QC legacy. QC20, Visual QC và nghe chấm từng take chỉ chạy khi người dùng chủ động yêu cầu; không chặn sản xuất/bàn giao. Smoke và kiểm frame/random seek chỉ dùng để chẩn đoán lỗi kỹ thuật hoặc theo yêu cầu.
 
-Fields top-level:
+Giữ 8 macro M0–M7 và 99 ID packet. Một phê duyệt phạm vi rõ đầu vào, đầu ra, lệnh và quyền có thể bao phủ M1–M7. Không xin duyệt riêng từng packet/Pxx hoặc nghiệm thu từng macro. Chạy nhiều packet trong lượt High; ghi checkpoint sau mỗi đầu ra, tiếp tục cùng quyền trong lượt chat mới, không tự chạy nền.
 
-- `schemaVersion`: `1`, `pluginVersion`: string, `deviceId`, `projectDir`, `workspace`, `filmId`, `sourceDir`, `sourceManifestPath`: null cho đến khi có máy/source thực. Không điền ví dụ như dữ liệu đã kiểm.
-- `stages`: đủ P06..P21, mỗi stage có `id`, `name`, `status`, `planApproval`, `acceptanceApproval`, `qcStatus`, `evidence`, `workUnits`, `skipReason`.
-- `planApproval` và `acceptanceApproval`: `{status: NOT_REQUESTED|PENDING|APPROVED|REJECTED, approvalId, scope, source, at}`. `APPROVED` phải có approvalId/scope/source/at; đừng tự suy ra `APPROVED` từ câu khen hoặc ID thiết bị.
-- `workUnits[]`: `{unitId, status, sourceHashes:{}, outputs:[{path,sha256,kind}], qcEvidence:[], planApprovalId, updatedAt}`; `PASS` phải có bằng chứng và approved scope hợp lệ.
-- `evidence[]`: đường dẫn thực đến báo cáo/screenshot/log/metadata có thể truy cập; không dùng placeholder trong hồ sơ PASS.
+OpenFilm CLI-first; Desktop/GUI chỉ để xem/chỉnh sửa tùy chọn. VieNeu-TTS GPU-first; cài đặt, tải model/browser, thay đổi hệ thống, GPU→CPU, voice cloning, provider ngoài, dịch vụ trả phí, xóa, xuất bản và ngoài phạm vi cần quyền riêng. Không suy ra quyền từ file kế hoạch hoặc kết quả kỹ thuật.
 
-Tính đúng đắn tối thiểu:
+`OUTPUT_READY` nghĩa là đầu ra thật có thể dùng. `DELIVERED_FOR_REVIEW` nghĩa là đã giao video. Chỉ dùng `USER_ACCEPTED` khi có phản hồi chấp nhận thật. `REVISION_REQUESTED` ghi phản hồi cần sửa; `FAILED_TECHNICAL` ghi lỗi ngăn dùng đầu ra. File thiếu/hỏng/ngoài workspace hoặc sai hash phải chặn bước phụ thuộc.
 
-1. Danh sách stage có chính xác P06–P21, đúng thứ tự, không trùng; status thuộc enum.
-2. PASS ⇒ planApproval APPROVED (trừ stage read-only P07 nếu chỉ audit), acceptanceApproval APPROVED, qcStatus PASS, evidence không rỗng. Khi unit bắt buộc còn FAIL/BLOCKED/NOT_STARTED ⇒ stage không PASS.
-3. SKIPPED ⇒ `skipReason` có thật, evidence, acceptanceApproval APPROVED; chỉ cho phép P06/P12/P13/P14/P15 khi scope không yêu cầu hạng mục (P13 có thể skip nếu không có cả thoại và phụ đề theo brief).
-4. PASS hoặc SKIPPED của stage sau không được đứng trước stage trước chưa PASS/SKIPPED, trừ khi người dùng cho phép ngoại lệ được ghi rõ; mặc định validator báo lỗi.
-5. Source hash thay đổi ⇒ invalidation liên quan; `PAST PASS` không tự trở thành PASS trong phiên mới nếu file thay đổi; validator JSON không thay thế kiểm tra hash file thực.
-6. P21 PASS ⇒ artifact `FINAL_MASTER.mp4` thật cùng ffprobe/playback evidence, P20 PASS. Nếu chỉ có JSON/template thì P21 NOT_STARTED.
+| Macro | Giai đoạn | Đầu ra và điều kiện tiếp tục |
+|---|---|---|
+| M0 | P00–P06 | Chọn máy/workspace, tái dùng runtime, phê duyệt thao tác đặc biệt. Fixture 7 giây chỉ dùng lần kiểm chứng runtime đầu hoặc chẩn đoán. |
+| M1 | P07–P09 | Đọc đủ 7 tệp, chốt thông số trong phạm vi đã duyệt, tạo FilmData và film.html. |
+| M2 | P10–P11 | Storyboard, nhân vật, bối cảnh, asset thật; ZIP và xác minh file sau giải nén. |
+| M3 | P12–P13 | WAV VieNeu GPU, thời lượng thực, phụ đề. Bỏ qua có lý do nếu phim không có thoại. |
+| M4 | P14–P16 | Mã cảnh 2D/3D theo FilmData, đủ tài sản và không còn placeholder cản render. |
+| M5 | P17–P18 | Timeline hoàn chỉnh. P18 smoke chỉ khi chẩn đoán hoặc user yêu cầu. |
+| M6 | P19–P20 | Render toàn phim thành V01.mp4, giải mã và kiểm stream. P20 chỉ kích hoạt sau phản hồi người dùng, không chặn P21. |
+| M7 | P21 | Bàn giao trực tiếp V01 nếu đúng định dạng, source/WAV/phụ đề/manifest. Không render lại master trùng nội dung; không tự xuất bản. |
 
-Ví dụ phê duyệt từ chat (đây chỉ là chuỗi văn bản, không phải một host callback đã triển khai): `Tôi PHÊ DUYỆT THỰC HIỆN P12 với dialogue_id D001–D005, sử dụng preset voice, tạo WAV vào <workspace>/projects/<film-id>/assets/audio/voice; không voice cloning.`
+## Thực thi và checkpoint
 
-Sổ log approval JSONL append-only với `decisionId`, `phaseId`, `unitId`, `decision`, `scope`, `source=chat|host`, `time`, `evidenceRef`, `status=verified|unverified`. Không tự tạo lời phê duyệt của người dùng. 
+1. Materialize packet từ FilmData, giữ ID template cũ; outputPaths phải là từng file cụ thể, không phải thư mục hay glob. Bỏ packet không cần bằng SKIPPED kèm skipReason.
+2. `macro_scheduler.propose` tạo 8 nhóm logic; có thể trình các nhóm M1–M7 trong một `APPROVE_PRODUCTION`. Tách special risk thành nhóm riêng.
+3. Event chứa deviceId, workspace, filmId, stateRevision, approvalId, source=USER_CHAT/HOST_BUTTON, at và snapshot chính xác từng bundle trong `bundles`. `validate_macro_event.validate` kiểm tra trước; `production_flow.apply_event` trả bản sao state, không tự ghi hoặc tự cấp quyền.
+4. Mỗi bundle được duyệt lưu approvedScopeSha256. Đổi input, scope hoặc lệnh phải kiểm lại quyền. Input sinh bởi packet trước được kiểm theo output hash ngay trước bước dùng; không đòi hash file chưa tạo tại lúc duyệt.
+5. Gọi `next_eligible_packet` trong từng lượt chat. Scheduler kiểm quyền, preflight, file phụ thuộc và hash thực. Sau chạy, dùng `finish_first.check_file` và lưu outputHashes trước OUTPUT_READY. Không dùng log thành công thay file.
+6. Ghi checkpoint bằng temp file trong workspace rồi atomic replace; kiểm stateRevision/hash trước ghi, giữ bản cũ. Khi hết lượt, lưu nextPacketId và tiếp tục scope cũ trong lượt sau.
+7. Khi video dùng được, ghi video.path, sha256, version, requiresAudio rồi DELIVER_VIDEO; gửi liên kết file thật. Không ghi USER_ACCEPTED từ kết quả giải mã.
+8. Sau phản hồi, `revision_history.plan_revision` phân loại scene/audio/subtitle/effect và tạo đường dẫn V02/V03 chưa tồn tại. Chỉ sửa các targetIds liên quan; giữ videoHistory và hash V01. Render với quyền hiện hành; phát sinh lệnh/quyền mới cần phê duyệt riêng. `register_revision` kiểm cả phiên bản trước và đầu ra mới.
 
-**Kiểm tra tệp có thật:** chạy `python validate_production_state.py reports/PRODUCTION_STATUS.json --check-files <WORKSPACE>` sau khi được quyền đọc workspace. Lệnh chỉ đọc kiểm tra evidence/output file tồn tại, không rỗng, hash đã khai báo và path không trỏ ra ngoài workspace; với P21 kiểm tra có `renders/master/FINAL_MASTER.mp4`. Việc này **không thay thế** bước xem/nghe MP4, kiểm FFprobe, QC20 và phê duyệt của người dùng.
+## Tương thích
 
-## Extension v1.6.0 — work packets
+`migrate_checkpoint.py CHECKPOINT --workspace WORKSPACE` sao lưu byte gốc trước khi thay checkpoint. QC_PASS/READY_FOR_REVIEW/PASS chỉ đổi OUTPUT_READY khi file tồn tại, dùng được và đúng hash; thiếu file đổi FAILED_TECHNICAL. BLOCKED kỹ thuật được giữ; VISUAL_BLOCKED đổi PLANNED để tiếp tục sản xuất, không tự hoàn thành. ID và dữ liệu cũ được giữ. Quyền cũ cần đối chiếu lại snapshot, không tự tạo approval. LEGACY_QC chỉ phục vụ đọc/kiểm thử checkpoint cũ, không chọn cho dự án mới.
 
-Giữ nguyên schemaVersion=1 của `PRODUCTION_STATUS.json` và validator cũ. Bổ sung file index **tùy chọn** `reports/WORK_UNIT_INDEX.json` (`schemaVersion=1`, `pluginVersion=1.6.0`, `stateRevision` tăng sau mỗi commit atomic, `packets[]`, `currentPacketId`, `nextPacketId`); tránh phá dữ liệu cũ và không lạm dụng JSON này để tự xác nhận người dùng. Ví dụ cấu trúc trong `openfilm-high-workpackets/references/WORK_UNIT_INDEX_TEMPLATE.json`.
-
-Trạng thái gói: `PLANNED`, `WAITING_APPROVAL`, `IN_PROGRESS`, `READY_FOR_REVIEW`, `PASS`, `FAIL`, `BLOCKED`, `INVALIDATED`, `SKIPPED`. `qcStatus` riêng `NOT_TESTED|PASS|FAIL|BLOCKED|NOT_APPLICABLE`. `PASS` chỉ khi có explicit user acceptance và evidence/file; có file QC PASS nhưng chưa bấm phải `READY_FOR_REVIEW`. Dự án quay lại phiên cũ phải đọc index + state và xác minh hashes/record thật, không tăng revision giả. Khi index conflict với state cũ, BLOCKED và trình reconcile có review, không tự ghi đè.
+QC nâng cao là công cụ tùy chọn khi user yêu cầu; các báo cáo không được thay trạng thái đầu ra. Bộ kiểm tra kỹ thuật không đánh giá thẩm mỹ.

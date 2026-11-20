@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "pluginVersion": "1.12.0",
-  "approvalUnit": "MACRO_BUNDLE",
+  "pluginVersion": "1.14.0",
+  "approvalUnit": "PRODUCTION_SCOPE",
   "microPacketsRemainInternal": true,
   "fixedPacketTemplateCount": 99,
   "macros": [
@@ -60,7 +60,7 @@
     },
     {
       "id": "M5",
-      "name": "Lắp timeline và smoke 5 giây",
+      "name": "Timeline và chẩn đoán tùy chọn",
       "stages": [
         "P17",
         "P18"
@@ -69,7 +69,7 @@
     },
     {
       "id": "M6",
-      "name": "Render bản nháp và QC20",
+      "name": "Render V01 và phản hồi tùy chọn",
       "stages": [
         "P19",
         "P20"
@@ -78,7 +78,7 @@
     },
     {
       "id": "M7",
-      "name": "Render Master và bàn giao",
+      "name": "Bàn giao video để người dùng đánh giá",
       "stages": [
         "P21"
       ],
@@ -87,16 +87,8 @@
   ],
   "specialApprovalSeparate": true,
   "highTurnPolicy": "Run several internal packets with checkpoint; when turn ends resume same approved macro; no background turns",
-  "stageQC": "Internal stage QC_PASS is not user acceptance; only macro acceptance click closes the macro",
-  "humanDecisionGates": {
-    "P08": "PROFILE_CHOICE",
-    "P11": "VISUAL_DIRECTION",
-    "P12": "VOICE_CONFIGURATION",
-    "P13": "VOICE_AUDIO_QC"
-  },
-  "gateWaivers": {
-    "VOICE_AUDIO_QC": "NO_DIALOGUE_VERIFIED"
-  },
+  "humanDecisionGates": {},
+  "gateWaivers": {},
   "specialRiskClasses": [
     "PACKAGE_INSTALL",
     "MODEL_DOWNLOAD",
@@ -115,10 +107,12 @@
     "P12",
     "P13",
     "P14",
-    "P15"
+    "P15",
+    "P18",
+    "P20"
   ],
-  "finalHumanAcceptanceRequired": true,
-  "defaultMacroApprovals": "one presented user approval per macro group when ready; special actions/decision gates can add approvals",
+  "finalHumanAcceptanceRequired": false,
+  "defaultMacroApprovals": "One explicit exact production scope may cover M1-M7; separate special actions",
   "noAutonomousTurns": true,
   "allowedInternalActions": [
     "read approved inputs",
@@ -128,13 +122,8 @@
     "checkpoint and QC"
   ],
   "planChangesRequireNewApproval": true,
-  "visualInspectionRequiredForAcceptance": [
-    "M2",
-    "M4",
-    "M5",
-    "M6",
-    "M7"
-  ],
-  "visualEvidenceContract": "openfilm-visual-inspection/references/VISUAL_QC_POLICY.json",
-  "rejectMetadataOnlyVisualPass": true
+  "defaultMode": "FINISH_FIRST_USER_REVIEW",
+  "completionGate": "EXISTING_USABLE_OUTPUTS",
+  "userAcceptanceRequiredFor": "USER_ACCEPTED only; never blocks delivery",
+  "optionalQualityMode": "EXPLICIT_USER_REQUEST_ONLY"
 }

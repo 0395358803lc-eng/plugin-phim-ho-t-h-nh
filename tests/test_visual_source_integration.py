@@ -9,7 +9,8 @@ def test_five_macros_are_mandatory_not_packet_approval():
     p=json.loads(read('skills/openfilm-macro-bundles/references/MACRO_POLICY.json'))
     v=json.loads(read('skills/openfilm-visual-inspection/references/VISUAL_QC_POLICY.json'))
     assert [m['id'] for m in p['macros']]==[f'M{i}' for i in range(8)]
-    assert p['visualInspectionRequiredForAcceptance']==v['mandatoryMacroIds']==['M2','M4','M5','M6','M7']
+    assert 'visualInspectionRequiredForAcceptance' not in p
+    assert p['defaultMode']=='FINISH_FIRST_USER_REVIEW'
     assert p['microPacketsRemainInternal']
 
 def test_all_ninety_nine_packet_ids_unchanged_with_visual_entries():
@@ -18,15 +19,15 @@ def test_all_ninety_nine_packet_ids_unchanged_with_visual_entries():
     assert len(ids)==len(set(ids))==99
     for pid in ['P10.05','P11.05','P14.05','P15.05','P16.05','P18.04','P19.04','P20.06','P21.03','P21.05']:
         found=next(p for s in packet_spec['stages'] for p in s['packets'] if p['templateId']==pid)
-        assert found['visualEvidenceRequired']
+        assert 'visualEvidenceRequired' not in found
 
 def test_m2_m4_m5_m6_m7_skill_routes_to_real_images():
     for rel in ['skills/video-hoat-hinh/SKILL.md', 'skills/openfilm-macro-bundles/SKILL.md',
                 'skills/openfilm-qc-advanced/SKILL.md','skills/openfilm-qc-render/SKILL.md',
                 'skills/openfilm-oneclick-approval/SKILL.md']:
-        assert 'openfilm-visual-inspection' in read(rel)
+        assert 'FINISH_FIRST_USER_REVIEW' in read(rel)
     text=read('skills/openfilm-visual-inspection/SKILL.md')
-    for signal in ['read_file','read_multiple_files','VISUAL_BLOCKED','MP4','ChatGPT','M2','M4','M5','M6','M7']:
+    for signal in ['tùy chọn','người dùng','V01','OUTPUT_READY','DELIVERED_FOR_REVIEW']:
         assert signal in text
 
 def test_validator_is_enforced_by_macro_accept_events():
@@ -38,11 +39,11 @@ def test_validator_is_enforced_by_macro_accept_events():
 
 def test_root_and_legacy_manifest_remain_in_sync_with_prompt_and_private_identity():
     root=json.loads(read('plugin.json'));leg=json.loads(read('.codex-plugin/plugin.json'))
-    assert root['version']==leg['version']=='1.12.0'
+    assert root['version']==leg['version']=='1.14.0'
     assert root['name']==leg['name']=='video-hoat-hinh'
     assert root['extensions']['com.openai']['interface']==leg['interface']
     assert len(root['extensions']['com.openai']['interface']['defaultPrompt'])==3
-    assert len(list((ROOT/'skills').glob('*/SKILL.md')))==32
+    assert len(list((ROOT/'skills').glob('*/SKILL.md')))==33
 
 def test_no_download_or_cpu_fallback_from_visual_qc():
     content=read('skills/openfilm-visual-inspection/SKILL.md')

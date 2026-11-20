@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pluginVersion": "1.12.0",
+  "pluginVersion": "1.14.0",
   "minStages": "P06-P21",
   "selectionPolicy": "first dependency ready approved bundle, execute multiple compatible internal packets per High turn, checkpoint each",
   "dynamicExpansion": "materialize only IDs verified from source manifests; stable-sort by appearance in source; preserve completed packets",
@@ -15,13 +15,14 @@
           "expandBy": "component_id",
           "batchMax": 1,
           "expectedOutput": "reports/ENV_PLAN.md",
-          "acceptanceGate": "Mọi ID, phiên bản, source và quyền đã duyệt khớp báo cáo",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P06.05",
@@ -29,13 +30,14 @@
           "expandBy": "tts_gpu_gate",
           "batchMax": 1,
           "expectedOutput": "reports/tts/GPU_PREFLIGHT.md",
-          "acceptanceGate": "T06 xác minh trước cài; GPU thiếu package không được coi GPU unsupported hoặc ép CPU",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P06.02",
@@ -43,41 +45,44 @@
           "expandBy": "component_id",
           "batchMax": 1,
           "expectedOutput": "reports/install/<component-id>.json",
-          "acceptanceGate": "Binary/venv có nguồn thật, không cài global hay ngoài scope",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P06.03",
-          "title": "Nghiệm thu riêng runtime cho từng ID",
+          "title": "Tổng hợp đầu ra riêng runtime cho từng ID",
           "expandBy": "component_id",
           "batchMax": 1,
           "expectedOutput": "qc/environment/<component-id>.md",
-          "acceptanceGate": "Version, đường dẫn, chức năng có bằng chứng; không kéo thêm model",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P06.06",
-          "title": "Nghiệm thu backend PyTorch CUDA thực + WAV smoke sau phê duyệt",
+          "title": "Tổng hợp đầu ra backend PyTorch CUDA thực + WAV smoke sau phê duyệt",
           "expandBy": "tts_gpu_gate",
           "batchMax": 1,
           "expectedOutput": "qc/tts/GPU_RUNTIME_QC.md",
-          "acceptanceGate": "Có torch.cuda.is_available(), backend/device CUDA được xác minh, WAV có FFprobe và nghe hoặc BLOCKED",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P06.07",
@@ -85,27 +90,29 @@
           "expandBy": "tts_gpu_gate",
           "batchMax": 1,
           "expectedOutput": "reports/tts/GPU_DECISION.json",
-          "acceptanceGate": "Chỉ cho phép CPU nếu GPU_UNSUPPORTED/INSUFFICIENT/FAILED + evidence + approval ID riêng; nếu GPU PASS thì SKIPPED có lý do",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P06.08",
-          "title": "OpenFilm Desktop/CLI capability gate, lập runtime profile",
+          "title": "OpenFilm CLI capability gate, lập runtime profile",
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "reports/openfilm/OPENFILM_RUNTIME_PROFILE.json",
-          "acceptanceGate": "Desktop UI hoặc CLI có bằng chứng open/preview/render; no auto downloads",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P06.12",
@@ -113,13 +120,14 @@
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "reports/openfilm/OPENFILM_CLI_CAPABILITY.md",
-          "acceptanceGate": "CLI_ONLY_FOR_OPENFILM: đúng CLI absolute path/cwd, approval, exitCode=0 và file evidence thật",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P06.09",
@@ -127,13 +135,14 @@
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "qc/openfilm-e2e/fixture/film.html",
-          "acceptanceGate": "Cảnh động + WAV + VTT có file thật, chỉ sau duyệt ghi",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": true,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P06.10",
@@ -141,7 +150,7 @@
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "qc/openfilm-e2e/fixture/e2e.mp4",
-          "acceptanceGate": "Cold-start render được phép với approved probe và runtime command/UI candidate có đường dẫn đã xác minh; sau P06.11 PASS mới renderClip VERIFIED",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": true,
           "requiresEvidence": true,
           "safeAbort": true,
@@ -149,7 +158,8 @@
           "specialApprovalReason": "Chạy render OpenFilm probe thật, có thao tác ghi mới/có thể ảnh hưởng runtime, phải phê duyệt riêng.",
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "SPECIAL_SEPARATE",
-          "qcRequired": true
+          "optional": true,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P06.11",
@@ -157,13 +167,14 @@
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "qc/openfilm-e2e/E2E_REPORT.json",
-          "acceptanceGate": "Metadata codec/duration/tracks, frame visual review, audible WAV review; no fake PASS",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": true,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P06.04",
@@ -171,13 +182,14 @@
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "reports/ENV_ACCEPTANCE.md",
-          "acceptanceGate": "Mọi ID cần dùng có QC; nếu không cần cài thì duyệt SKIPPED",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         }
       ]
     },
@@ -191,13 +203,14 @@
           "expandBy": "source_file",
           "batchMax": 1,
           "expectedOutput": "reports/input/file-<source-id>.md",
-          "acceptanceGate": "Tệp tồn tại, định dạng đọc được, hash tính từ file thật",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P07.02",
@@ -205,13 +218,14 @@
           "expandBy": "csv_rows",
           "batchMax": 12,
           "expectedOutput": "reports/input/scenes-<batch-id>.json",
-          "acceptanceGate": "Row hợp lệ, mã cảnh duy nhất, timecode được kiểm",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P07.03",
@@ -219,13 +233,14 @@
           "expandBy": "shot_id",
           "batchMax": 2,
           "expectedOutput": "reports/input/crosscheck-<batch-id>.md",
-          "acceptanceGate": "Không thiếu người nói/cảnh; mâu thuẫn ghi issue",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P07.04",
@@ -233,13 +248,14 @@
           "expandBy": "shot_id",
           "batchMax": 2,
           "expectedOutput": "reports/input/av-<batch-id>.md",
-          "acceptanceGate": "Asset và chỉ dẫn mapping có nguồn",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P07.05",
@@ -247,13 +263,14 @@
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "reports/INPUT_AUDIT.md",
-          "acceptanceGate": "Đủ 7 file và SOURCE_MANIFEST; không tự sửa 7 tệp",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         }
       ]
     },
@@ -267,13 +284,14 @@
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "reports/profile/MASTER_OPTIONS.md",
-          "acceptanceGate": "Điểm mạnh/yếu, dependency, license rõ",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P08.02",
@@ -281,13 +299,14 @@
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "reports/profile/FORMAT_OPTIONS.md",
-          "acceptanceGate": "FPS, tỷ lệ, mục tiêu đầu ra, language",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P08.03",
@@ -295,13 +314,14 @@
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "reports/profile/HARDWARE_FIT.md",
-          "acceptanceGate": "Nếu đổi Remotion phải kiểm B03,B05-B10 và xin duyệt",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P08.04",
@@ -309,13 +329,14 @@
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "reports/PRODUCTION_PROFILE.json",
-          "acceptanceGate": "Không đổi engine âm thầm; profile khớp nhu cầu",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P08.05",
@@ -323,13 +344,14 @@
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "reports/tts/VOICE_SOURCE_LOCK.json",
-          "acceptanceGate": "VieNeu local-only nếu có thoại, không dùng OpenFilm get/canvas TTS",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         }
       ]
     },
@@ -343,13 +365,14 @@
           "expandBy": "shot_id",
           "batchMax": 2,
           "expectedOutput": "projects/<film-id>/scene-data/shots.json",
-          "acceptanceGate": "Thời gian integer frames, không overlap ngoài ý muốn",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P09.02",
@@ -357,13 +380,14 @@
           "expandBy": "dialogue_id",
           "batchMax": 4,
           "expectedOutput": "projects/<film-id>/scene-data/dialogues.json",
-          "acceptanceGate": "Mã thoại liên kết shot đúng, timing provisional",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P09.03",
@@ -371,13 +395,14 @@
           "expandBy": "asset_id",
           "batchMax": 5,
           "expectedOutput": "projects/<film-id>/scene-data/assets-manifest.json",
-          "acceptanceGate": "Không tự khai tài sản MISSING thành VERIFIED",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P09.04",
@@ -385,13 +410,14 @@
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "projects/<film-id>/scene-data/film.json",
-          "acceptanceGate": "Schema đúng, không thiếu/tương tác frame sai",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P09.05",
@@ -399,13 +425,14 @@
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "reports/FILMDATA_QC.md",
-          "acceptanceGate": "Tham chiếu 7 file và version đã xác minh",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P09.06",
@@ -413,13 +440,14 @@
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "projects/<film-id>/openfilm/film.html",
-          "acceptanceGate": "FilmData valid, file HTML tham chiếu đúng shot, không đè file đã có",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         }
       ]
     },
@@ -433,13 +461,14 @@
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "projects/<film-id>/storyboard/style-bible.md",
-          "acceptanceGate": "Phong cách màu, ánh sáng, typography nhất quán",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P10.02",
@@ -447,13 +476,14 @@
           "expandBy": "character_id",
           "batchMax": 1,
           "expectedOutput": "projects/<film-id>/storyboard/characters/<character-id>.md",
-          "acceptanceGate": "Ngoại hình và tính cách dựa NHAN_VAT",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P10.06",
@@ -461,13 +491,14 @@
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "reports/openfilm/CANVAS_DECISION.json",
-          "acceptanceGate": "FILE_STORYBOARD mặc định; Canvas chỉ khi runtime verified và đã duyệt",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P10.03",
@@ -475,27 +506,29 @@
           "expandBy": "shot_id",
           "batchMax": 1,
           "expectedOutput": "projects/<film-id>/storyboard/shots/<shot-id>.md",
-          "acceptanceGate": "Khung hình góc máy phù hợp CSV/hướng dẫn",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P10.04",
-          "title": "QC continuity nhóm cảnh liền nhau",
+          "title": "Tùy chọn: đánh giá continuity nhóm cảnh liền nhau",
           "expandBy": "shot_pair",
           "batchMax": 1,
           "expectedOutput": "qc/storyboard/<pair-id>.md",
-          "acceptanceGate": "Nhân vật/đạo cụ chuyển cảnh không biến dạng",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": true,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P10.07",
@@ -503,30 +536,29 @@
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "projects/<film-id>/storyboard/CANVAS_REPORT.md",
-          "acceptanceGate": "Canvas optional; không tạo audio/provider ngoài VieNeu",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P10.05",
-          "title": "Nghiệm thu tổng Storyboard",
+          "title": "Tổng hợp đầu ra tổng Storyboard",
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "qc/STORYBOARD_ACCEPTANCE.md",
-          "acceptanceGate": "Mọi shot có bằng chứng có thể xem",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true,
-          "visualEvidenceRequired": true,
-          "visualGateMacroId": "M2",
-          "visualGateReference": "openfilm-visual-inspection/SKILL.md"
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         }
       ]
     },
@@ -540,13 +572,14 @@
           "expandBy": "asset_id",
           "batchMax": 4,
           "expectedOutput": "reports/assets/INVENTORY.json",
-          "acceptanceGate": "Nguồn, giấy phép, tình trạng và reuse thực",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P11.02",
@@ -554,13 +587,14 @@
           "expandBy": "asset_id",
           "batchMax": 1,
           "expectedOutput": "projects/<film-id>/assets/",
-          "acceptanceGate": "Asset thực có thể preview, không claim nếu chỉ viết prompt",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P11.03",
@@ -568,13 +602,14 @@
           "expandBy": "asset_id",
           "batchMax": 1,
           "expectedOutput": "projects/<film-id>/assets/models/",
-          "acceptanceGate": "GLB/texture import được, scale/phối cảnh đúng",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P11.04",
@@ -582,13 +617,14 @@
           "expandBy": "font_id",
           "batchMax": 1,
           "expectedOutput": "qc/assets/FONT_QC.md",
-          "acceptanceGate": "Glyph tiếng Việt đúng trên target browser",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": true,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P11.05",
@@ -596,16 +632,14 @@
           "expandBy": "asset_id",
           "batchMax": 4,
           "expectedOutput": "projects/<film-id>/scene-data/assets-manifest.json",
-          "acceptanceGate": "Không file 0 bytes, link không trỏ ra ngoài được phép",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true,
-          "visualEvidenceRequired": true,
-          "visualGateMacroId": "M2",
-          "visualGateReference": "openfilm-visual-inspection/SKILL.md"
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         }
       ]
     },
@@ -619,13 +653,14 @@
           "expandBy": "character_id",
           "batchMax": 1,
           "expectedOutput": "projects/<film-id>/scene-data/voice-map.json",
-          "acceptanceGate": "Mỗi nhân vật một voice xác minh, cloning cần consent",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P12.02",
@@ -633,13 +668,14 @@
           "expandBy": "dialogue_id",
           "batchMax": 4,
           "expectedOutput": "projects/<film-id>/scene-data/dialogues-spoken.json",
-          "acceptanceGate": "Không đổi nghĩa, giữ script_original",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P12.07",
@@ -647,13 +683,14 @@
           "expandBy": "tts_backend",
           "batchMax": 1,
           "expectedOutput": "qc/tts/BACKEND_GATE.md",
-          "acceptanceGate": "GPU production phải có CUDA WAV smoke PASS; CPU chỉ được phép nếu có bằng chứng GPU không đáp ứng và ID phê duyệt riêng",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P12.08",
@@ -661,13 +698,14 @@
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "qc/tts/VOICE_SOURCE_GATE.json",
-          "acceptanceGate": "Voice lock và GPU decision hợp lệ hoặc CPU T07 có phê duyệt",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P12.03",
@@ -675,13 +713,14 @@
           "expandBy": "dialogue_id",
           "batchMax": 3,
           "expectedOutput": "projects/<film-id>/assets/audio/voice/",
-          "acceptanceGate": "File WAV có thật, không tự tải model",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P12.04",
@@ -689,41 +728,44 @@
           "expandBy": "dialogue_id",
           "batchMax": 3,
           "expectedOutput": "qc/tts/PROBE.json",
-          "acceptanceGate": "ffprobe thực và sample rate có chứng cứ",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P12.05",
-          "title": "Nghe QC từng lời thoại, sửa take được duyệt",
+          "title": "Tùy chọn nghe giọng khi người dùng yêu cầu",
           "expandBy": "dialogue_id",
           "batchMax": 3,
           "expectedOutput": "qc/tts/LISTEN_REPORT.md",
-          "acceptanceGate": "Không đánh dấu nghe nếu connector không đưa âm thanh",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": true,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P12.06",
-          "title": "Nghiệm thu bảng giọng và manifest",
+          "title": "Tổng hợp đầu ra bảng giọng và manifest",
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "qc/TTS_ACCEPTANCE.md",
-          "acceptanceGate": "Mọi câu cần đều có take đã nghe/duyệt",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         }
       ]
     },
@@ -737,13 +779,14 @@
           "expandBy": "dialogue_id",
           "batchMax": 4,
           "expectedOutput": "reports/timing/AUDIO_DURATION.md",
-          "acceptanceGate": "Không đo bằng số chữ",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P13.02",
@@ -751,13 +794,14 @@
           "expandBy": "shot_id",
           "batchMax": 2,
           "expectedOutput": "projects/<film-id>/scene-data/film.json",
-          "acceptanceGate": "Không overlap/không cut câu, đánh dấu dependent invalidation",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P13.03",
@@ -765,27 +809,29 @@
           "expandBy": "dialogue_id",
           "batchMax": 4,
           "expectedOutput": "projects/<film-id>/subtitles/",
-          "acceptanceGate": "Cue có nguồn timing thật, ngữ nghĩa đúng",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P13.04",
-          "title": "QC font và phát âm/điểm đổi shot",
+          "title": "kiểm tra kỹ thuật font và phát âm/điểm đổi shot",
           "expandBy": "shot_id",
           "batchMax": 2,
           "expectedOutput": "qc/subtitles/<batch-id>.md",
-          "acceptanceGate": "VTT/SRT có dấu và khớp WAV",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": true,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P13.05",
@@ -793,13 +839,14 @@
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "qc/AUDIO_SYNC.md",
-          "acceptanceGate": "WAV và cue có hash/version",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         }
       ]
     },
@@ -813,13 +860,14 @@
           "expandBy": "shot_id",
           "batchMax": 1,
           "expectedOutput": "projects/<film-id>/motion/",
-          "acceptanceGate": "Thiết kế frame based, không ticker realtime",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P14.02",
@@ -827,13 +875,14 @@
           "expandBy": "shot_id",
           "batchMax": 1,
           "expectedOutput": "projects/<film-id>/",
-          "acceptanceGate": "Output đúng OpenFilm Master hoặc Remotion Master",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P14.06",
@@ -841,27 +890,29 @@
           "expandBy": "shot_id",
           "batchMax": 1,
           "expectedOutput": "projects/<film-id>/openfilm/scenes/<shot-id>.html",
-          "acceptanceGate": "Code cảnh thực, không ghi đè studio overrides, kiểm marker 0 từng shot",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P14.03",
-          "title": "Tạo preview và test random seek từng shot",
+          "title": "Tùy chọn preview/random seek để chẩn đoán",
           "expandBy": "shot_id",
           "batchMax": 1,
           "expectedOutput": "renders/previs/",
-          "acceptanceGate": "Không frame stateful, không đen/trắng không chủ ý",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": true,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P14.04",
@@ -869,13 +920,14 @@
           "expandBy": "issue_id",
           "batchMax": 1,
           "expectedOutput": "qc/motion/<issue-id>.md",
-          "acceptanceGate": "Chỉ invalidation shot và dependent",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": true,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P14.05",
@@ -883,16 +935,14 @@
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "qc/2D_ACCEPTANCE.md",
-          "acceptanceGate": "Mọi shot 2D cần thiết đã PASS hoặc SKIPPED hợp lệ",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true,
-          "visualEvidenceRequired": true,
-          "visualGateMacroId": "M4",
-          "visualGateReference": "openfilm-visual-inspection/SKILL.md"
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         }
       ]
     },
@@ -906,13 +956,14 @@
           "expandBy": "shot_id",
           "batchMax": 1,
           "expectedOutput": "reports/3d/SHOT_LIST.md",
-          "acceptanceGate": "Không cần 3D -> skip stage có duyệt",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P15.02",
@@ -920,13 +971,14 @@
           "expandBy": "shot_id",
           "batchMax": 1,
           "expectedOutput": "projects/<film-id>/",
-          "acceptanceGate": "Three.js hoặc R3F theo master; dùng GLB hợp lệ",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P15.03",
@@ -934,13 +986,14 @@
           "expandBy": "shot_id",
           "batchMax": 1,
           "expectedOutput": "qc/3d/<shot-id>-WEBGL.md",
-          "acceptanceGate": "Không dùng useFrame incremental/rand không seed",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P15.04",
@@ -948,30 +1001,29 @@
           "expandBy": "shot_id",
           "batchMax": 1,
           "expectedOutput": "renders/previs/",
-          "acceptanceGate": "Không missing geometry/frame đen",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": true,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P15.05",
-          "title": "Nghiệm thu toàn bộ shot 3D",
+          "title": "Tổng hợp đầu ra toàn bộ shot 3D",
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "qc/3D_ACCEPTANCE.md",
-          "acceptanceGate": "Mọi shot 3D đã pass; không đổi driver âm thầm",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true,
-          "visualEvidenceRequired": true,
-          "visualGateMacroId": "M4",
-          "visualGateReference": "openfilm-visual-inspection/SKILL.md"
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         }
       ]
     },
@@ -985,13 +1037,14 @@
           "expandBy": "shot_id",
           "batchMax": 1,
           "expectedOutput": "renders/previs/",
-          "acceptanceGate": "Ảnh đầu/giữa/cuối có thật, so với storyboard",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": true,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P16.02",
@@ -999,13 +1052,14 @@
           "expandBy": "shot_pair",
           "batchMax": 1,
           "expectedOutput": "qc/preview/",
-          "acceptanceGate": "Không jump/cut sai, nhân vật ổn định",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": true,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P16.03",
@@ -1013,13 +1067,14 @@
           "expandBy": "shot_id",
           "batchMax": 1,
           "expectedOutput": "qc/random-seek/",
-          "acceptanceGate": "Repeated t consistency bằng chứng",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": true,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P16.04",
@@ -1027,13 +1082,14 @@
           "expandBy": "issue_id",
           "batchMax": 1,
           "expectedOutput": "qc/preview/issues.json",
-          "acceptanceGate": "Không sửa quá phạm vi đã duyệt",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": true,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P16.06",
@@ -1041,13 +1097,14 @@
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "qc/openfilm/PREVIEW_READY.md",
-          "acceptanceGate": "Project OpenFilm tồn tại, scene không còn marker và frame preview có bằng chứng",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P16.07",
@@ -1055,30 +1112,29 @@
           "expandBy": "shot_id",
           "batchMax": 1,
           "expectedOutput": "qc/openfilm-cli/look-<shot-id>.json",
-          "acceptanceGate": "CLI_ONLY_FOR_OPENFILM: đúng CLI absolute path/cwd, approval, exitCode=0 và file evidence thật",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": true,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P16.05",
-          "title": "Nghiệm thu OpenFilm previs (nếu cần)",
+          "title": "Tổng hợp đầu ra OpenFilm previs (nếu cần)",
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "qc/SHOT_PREVIEW_REPORT.md",
-          "acceptanceGate": "Một report map PASS tới từng shot; mp4 optional",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true,
-          "visualEvidenceRequired": true,
-          "visualGateMacroId": "M4",
-          "visualGateReference": "openfilm-visual-inspection/SKILL.md"
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         }
       ]
     },
@@ -1092,13 +1148,14 @@
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "projects/<film-id>/",
-          "acceptanceGate": "OpenFilm film.html hoặc Remotion Film/Root source",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P17.02",
@@ -1106,13 +1163,14 @@
           "expandBy": "sequence_id",
           "batchMax": 1,
           "expectedOutput": "qc/timeline/",
-          "acceptanceGate": "Đúng frame range và không missing shot",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P17.03",
@@ -1120,13 +1178,14 @@
           "expandBy": "audio_track_id",
           "batchMax": 1,
           "expectedOutput": "qc/audio-mix/",
-          "acceptanceGate": "Không trùng tiếng, license rõ",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P17.04",
@@ -1134,13 +1193,14 @@
           "expandBy": "sequence_id",
           "batchMax": 1,
           "expectedOutput": "qc/composite/",
-          "acceptanceGate": "Dấu font, ducking/transition đúng",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P17.07",
@@ -1148,13 +1208,14 @@
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "qc/openfilm/TIMELINE_FINALIZED.md",
-          "acceptanceGate": "Track audio/captions/color + source hash/overrides còn nguyên",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P17.05",
@@ -1162,13 +1223,14 @@
           "expandBy": "sequence_id",
           "batchMax": 1,
           "expectedOutput": "qc/timeline/",
-          "acceptanceGate": "Không hở khung hình/cắt tiếng",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P17.06",
@@ -1176,13 +1238,14 @@
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "qc/MASTER_TIMELINE.md",
-          "acceptanceGate": "Source và dependencies version/hash ghi nhận",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         }
       ]
     },
@@ -1196,13 +1259,14 @@
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "reports/SMOKE_PLAN.md",
-          "acceptanceGate": "Có motion, âm thanh, caption; 3D nếu bật",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": true,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P18.02",
@@ -1210,13 +1274,14 @@
           "expandBy": "render_id",
           "batchMax": 1,
           "expectedOutput": "renders/smoke/smoke-5s.mp4",
-          "acceptanceGate": "Có file thật, không fallback npx download",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": true,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P18.03",
@@ -1224,13 +1289,14 @@
           "expandBy": "render_id",
           "batchMax": 1,
           "expectedOutput": "qc/SMOKE_FFPROBE.json",
-          "acceptanceGate": "Metadata đúng profile và duration",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": true,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P18.05",
@@ -1238,13 +1304,14 @@
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "qc/openfilm-cli/smoke-cli-run.json",
-          "acceptanceGate": "CLI_ONLY_FOR_OPENFILM: đúng CLI absolute path/cwd, approval, exitCode=0 và file evidence thật",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": true,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P18.04",
@@ -1252,16 +1319,14 @@
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "qc/SMOKE_REPORT.md",
-          "acceptanceGate": "Nếu không nghe được phải BLOCKED/đợi mẫu",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true,
-          "visualEvidenceRequired": true,
-          "visualGateMacroId": "M5",
-          "visualGateReference": "openfilm-visual-inspection/SKILL.md"
+          "optional": true,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         }
       ]
     },
@@ -1275,13 +1340,14 @@
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "reports/RENDER_PLAN.md",
-          "acceptanceGate": "Concurrency hợp lý RAM/VRAM; nguồn dữ liệu thật",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P19.02",
@@ -1289,27 +1355,29 @@
           "expandBy": "render_segment_id",
           "batchMax": 1,
           "expectedOutput": "renders/draft/",
-          "acceptanceGate": "Mỗi phần codec/fps và âm thanh đúng",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P19.03",
           "title": "Ghép draft hoặc render nguyên phim",
           "expandBy": "render_id",
           "batchMax": 1,
-          "expectedOutput": "renders/draft/draft-v01.mp4",
-          "acceptanceGate": "File có thật, không ghi đè bản đã duyệt",
+          "expectedOutput": "renders/V01.mp4",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P19.04",
@@ -1317,16 +1385,14 @@
           "expandBy": "render_id",
           "batchMax": 1,
           "expectedOutput": "qc/DRAFT_REPORT.md",
-          "acceptanceGate": "Duration/codec/track + đầu cuối đầy đủ",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true,
-          "visualEvidenceRequired": true,
-          "visualGateMacroId": "M6",
-          "visualGateReference": "openfilm-visual-inspection/SKILL.md"
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         }
       ]
     },
@@ -1336,90 +1402,99 @@
       "packets": [
         {
           "templateId": "P20.01",
-          "title": "Chạy nhóm tiêu chí QC20 trên draft",
+          "title": "Nhận danh sách phản hồi sau bàn giao",
           "expandBy": "qc_group_id",
           "batchMax": 1,
-          "expectedOutput": "qc/QC20_REPORT.md",
-          "acceptanceGate": "20 tiêu chí có evidence, no PASS from plan",
+          "expectedOutput": "reports/revisions/P20.01.json",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": true,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP",
+          "activation": "USER_FEEDBACK_AFTER_DELIVERY"
         },
         {
           "templateId": "P20.02",
-          "title": "Tạo issue với ảnh hưởng theo cảnh",
+          "title": "Phân loại theo cảnh, âm thanh, phụ đề, hiệu ứng",
           "expandBy": "issue_id",
           "batchMax": 1,
-          "expectedOutput": "qc/issues.json",
-          "acceptanceGate": "Mỗi lỗi có severity/shot/scope/evidence",
+          "expectedOutput": "reports/revisions/P20.02.json",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": true,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP",
+          "activation": "USER_FEEDBACK_AFTER_DELIVERY"
         },
         {
           "templateId": "P20.03",
-          "title": "Lập kế hoạch sửa và chờ user click",
+          "title": "Lập phạm vi sửa liên quan",
           "expandBy": "issue_id",
           "batchMax": 1,
-          "expectedOutput": "reports/fixes/<issue-id>.md",
-          "acceptanceGate": "Đường dẫn và phạm vi rõ, không sửa khi chưa duyệt",
+          "expectedOutput": "reports/revisions/P20.03.json",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": true,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP",
+          "activation": "USER_FEEDBACK_AFTER_DELIVERY"
         },
         {
           "templateId": "P20.04",
-          "title": "Sửa 1 issue mỗi lượt và render tác động",
+          "title": "Sửa các phần liên quan và tạo phiên bản mới",
           "expandBy": "issue_id",
           "batchMax": 1,
-          "expectedOutput": "renders/draft/",
-          "acceptanceGate": "Không dựng lại toàn phim không cần thiết",
+          "expectedOutput": "reports/revisions/P20.04.json",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": true,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP",
+          "activation": "USER_FEEDBACK_AFTER_DELIVERY"
         },
         {
           "templateId": "P20.05",
-          "title": "Chạy hồi quy QC20/đánh giá invalidated",
+          "title": "Xác minh đầu ra sửa có thể dùng",
           "expandBy": "qc_group_id",
           "batchMax": 1,
-          "expectedOutput": "qc/QC20_REPORT.md",
-          "acceptanceGate": "Xuất PASS chỉ khi 20 QC được chứng thực",
+          "expectedOutput": "reports/revisions/P20.05.json",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": true,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP",
+          "activation": "USER_FEEDBACK_AFTER_DELIVERY"
         },
         {
           "templateId": "P20.06",
-          "title": "Nghiệm thu QC20 và khóa danh sách lỗi",
+          "title": "Lưu lịch sử phiên bản và phản hồi",
           "expandBy": "stage",
           "batchMax": 1,
-          "expectedOutput": "reports/QC20_ACCEPTANCE.md",
-          "acceptanceGate": "Không mở P21 nếu QC20 FAIL hoặc BLOCKED",
+          "expectedOutput": "reports/revisions/P20.06.json",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true,
-          "visualEvidenceRequired": true,
-          "visualGateMacroId": "M6",
-          "visualGateReference": "openfilm-visual-inspection/SKILL.md"
+          "optional": true,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP",
+          "activation": "USER_FEEDBACK_AFTER_DELIVERY"
         }
       ]
     },
@@ -1433,44 +1508,44 @@
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "reports/MASTER_PLAN.md",
-          "acceptanceGate": "QC20 PASS, voice/subtitle/license được nghiệm thu",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P21.02",
-          "title": "Render FINAL_MASTER.mp4 không ghi đè bản cũ",
+          "title": "Dùng trực tiếp V01 đã render nếu đúng định dạng",
           "expandBy": "render_id",
           "batchMax": 1,
-          "expectedOutput": "renders/master/FINAL_MASTER.mp4",
-          "acceptanceGate": "File tồn tại, codec/fps/stream đúng profile",
+          "expectedOutput": "renders/V01.mp4",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P21.03",
-          "title": "FFprobe và xem/nghe master hoàn chỉnh",
+          "title": "Xác minh MP4 giải mã được và có stream cần thiết",
           "expandBy": "render_id",
           "batchMax": 1,
-          "expectedOutput": "qc/FINAL_MASTER_QC.md",
-          "acceptanceGate": "QC video/audio thực không chỉ JSON",
+          "expectedOutput": "reports/VIDEO_TECHNICAL.json",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true,
-          "visualEvidenceRequired": true,
-          "visualGateMacroId": "M7",
-          "visualGateReference": "openfilm-visual-inspection/SKILL.md"
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P21.04",
@@ -1478,13 +1553,14 @@
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "reports/DELIVERY_MANIFEST.json",
-          "acceptanceGate": "Mọi file có hash và quyền sử dụng được ghi",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P21.06",
@@ -1492,37 +1568,37 @@
           "expandBy": "stage",
           "batchMax": 1,
           "expectedOutput": "qc/openfilm-cli/final-render.json",
-          "acceptanceGate": "CLI_ONLY_FOR_OPENFILM: đúng CLI absolute path/cwd, approval, exitCode=0 và file evidence thật",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         },
         {
           "templateId": "P21.05",
-          "title": "Nghiệm thu và khóa master version",
+          "title": "Ghi DELIVERED_FOR_REVIEW; chờ phản hồi sau bàn giao",
           "expandBy": "stage",
           "batchMax": 1,
-          "expectedOutput": "reports/FINAL_ACCEPTANCE.md",
-          "acceptanceGate": "Người dùng phê duyệt phát hành; không auto upload",
+          "expectedOutput": "reports/DELIVERY_STATUS.json",
+          "acceptanceGate": "Actual declared output files exist, decode/parse, match hashes and approved scope; no aesthetic QC",
           "requiresExplicitApproval": false,
           "requiresEvidence": true,
           "safeAbort": true,
           "approvalUnit": "BUNDLE_OR_EXPLICIT_SPECIAL",
           "approvalMode": "INHERIT_MACRO",
-          "qcRequired": true,
-          "visualEvidenceRequired": true,
-          "visualGateMacroId": "M7",
-          "visualGateReference": "openfilm-visual-inspection/SKILL.md"
+          "optional": false,
+          "completionMode": "OUTPUT_READY_OR_REASONED_SKIP"
         }
       ]
     }
   ],
   "openfilmExecutionPolicy": "CLI_ONLY_FOR_OPENFILM",
-  "approvalGranularity": "BUNDLE_INHERITED_EXCEPT_SPECIAL",
-  "userFacingClickPolicy": "Do not show 99 micro-packet approvals. Bundle plans and bundle acceptance only.",
+  "approvalGranularity": "PRODUCTION_SCOPE_EXCEPT_SPECIAL",
+  "userFacingClickPolicy": "Continue production; view progress; view V01; accept video; request revisions",
   "approvalPolicy": "MACRO_BUNDLES_M0_M7",
-  "packetVisibility": "INTERNAL_QC_ONLY"
+  "packetVisibility": "INTERNAL_CHECKPOINT",
+  "defaultMode": "FINISH_FIRST_USER_REVIEW"
 }

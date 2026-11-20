@@ -1,3 +1,5 @@
+> v1.14.0: FINISH_FIRST_USER_REVIEW ưu tiên. Đây là công thức kỹ thuật/tham khảo; mọi đánh giá thẩm mỹ chỉ theo yêu cầu người dùng, mọi cổng QC legacy không chặn V01. OpenFilm CLI-first, GUI tùy chọn.
+
 # Đồng bộ WAV, phụ đề và nhạc nền — ví dụ thiết kế
 
 **Nguồn thời gian**: FilmData.frames, không tính thời gian bằng số chữ. OpenFilm Master dùng `<audio>` trong `film.html` và WebVTT; Remotion Master dùng `Sequence`/`Audio` đọc từ `public/` qua `staticFile()`. Ở cả hai chế độ, lời đọc đã được VieNeu sinh từ đúng text và đã đo FFprobe trước khi định timing cuối.

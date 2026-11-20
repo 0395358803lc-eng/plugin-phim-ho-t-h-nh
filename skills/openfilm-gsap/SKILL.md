@@ -3,6 +3,16 @@ name: openfilm-gsap
 description: "Dùng khi xây dựng chuyển động nhân vật 2D, kinetic typography, camera pan/zoom và timeline tween bằng GSAP bên trong trang cảnh OpenFilm, với frame(t) tất định và phụ thuộc được kiểm kê trước."
 ---
 
+Mặc định `FINISH_FIRST_USER_REVIEW`: hoàn thành video V01 rồi bàn giao để người dùng đánh giá. Chính sách này ưu tiên hơn hướng dẫn QC legacy. QC20, Visual QC và nghe chấm từng take chỉ chạy khi người dùng chủ động yêu cầu; không chặn sản xuất/bàn giao. Smoke và kiểm frame/random seek chỉ dùng để chẩn đoán lỗi kỹ thuật hoặc theo yêu cầu.
+
+Giữ 8 macro M0–M7 và 99 ID packet. Một phê duyệt phạm vi rõ đầu vào, đầu ra, lệnh và quyền có thể bao phủ M1–M7. Không xin duyệt riêng từng packet/Pxx hoặc nghiệm thu từng macro. Chạy nhiều packet trong lượt High; ghi checkpoint sau mỗi đầu ra, tiếp tục cùng quyền trong lượt chat mới, không tự chạy nền.
+
+OpenFilm CLI-first; Desktop/GUI chỉ để xem/chỉnh sửa tùy chọn. VieNeu-TTS GPU-first; cài đặt, tải model/browser, thay đổi hệ thống, GPU→CPU, voice cloning, provider ngoài, dịch vụ trả phí, xóa, xuất bản và ngoài phạm vi cần quyền riêng. Không suy ra quyền từ file kế hoạch hoặc kết quả kỹ thuật.
+
+`OUTPUT_READY` nghĩa là đầu ra thật có thể dùng. `DELIVERED_FOR_REVIEW` nghĩa là đã giao video. Chỉ dùng `USER_ACCEPTED` khi có phản hồi chấp nhận thật. `REVISION_REQUESTED` ghi phản hồi cần sửa; `FAILED_TECHNICAL` ghi lỗi ngăn dùng đầu ra. File thiếu/hỏng/ngoài workspace hoặc sai hash phải chặn bước phụ thuộc.
+
+
+
 # GSAP + OpenFilm · chuyển động 2D/timeline
 
 ## Điều kiện sử dụng
@@ -27,5 +37,3 @@ Nguồn kỹ thuật GSAP: https://gsap.com/docs/v3/GSAP/Timeline/seek%28%29/ .
 Cùng nguyên tắc paused + seek nhưng timeline gốc là frame Remotion: `const frame=useCurrentFrame(); const {fps}=useVideoConfig(); tl.seek(frame/fps)` khi DOM đã mount và các tween `fromTo` có start/end xác định. Với hiệu ứng đơn giản ưu tiên `interpolate` để tránh effect/state của GSAP gây lệch frame trong SSR. Không để timeline tự play/ticker; không truy cập `window` ở module scope khi SSR. Xem `openfilm-audio-subtitles` để xử lý phần audio nằm ngoài scene GSAP.
 
 ## v1.12.0 — Mandatory Visual Inspection & Quality Gate
-
-M4 khi dựng chuyển động GSAP không chỉ đánh giá `.seek(t)` về mã nguồn: phải dùng OpenFilm CLI look tạo **frame PNG thật** và chuyển vào ChatGPT vision tại các mốc START/Q1/MID/Q3/END cho từng shot. Visual QC không thay test determinism và continuity. Chi tiết `openfilm-visual-inspection`.

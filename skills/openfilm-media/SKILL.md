@@ -3,6 +3,16 @@ name: openfilm-media
 description: "Tra cứu và nhập ảnh, video, nhạc, SFX, thuyết minh, transcript và VTT bằng OpenFilm get khi làm video."
 ---
 
+Mặc định `FINISH_FIRST_USER_REVIEW`: hoàn thành video V01 rồi bàn giao để người dùng đánh giá. Chính sách này ưu tiên hơn hướng dẫn QC legacy. QC20, Visual QC và nghe chấm từng take chỉ chạy khi người dùng chủ động yêu cầu; không chặn sản xuất/bàn giao. Smoke và kiểm frame/random seek chỉ dùng để chẩn đoán lỗi kỹ thuật hoặc theo yêu cầu.
+
+Giữ 8 macro M0–M7 và 99 ID packet. Một phê duyệt phạm vi rõ đầu vào, đầu ra, lệnh và quyền có thể bao phủ M1–M7. Không xin duyệt riêng từng packet/Pxx hoặc nghiệm thu từng macro. Chạy nhiều packet trong lượt High; ghi checkpoint sau mỗi đầu ra, tiếp tục cùng quyền trong lượt chat mới, không tự chạy nền.
+
+OpenFilm CLI-first; Desktop/GUI chỉ để xem/chỉnh sửa tùy chọn. VieNeu-TTS GPU-first; cài đặt, tải model/browser, thay đổi hệ thống, GPU→CPU, voice cloning, provider ngoài, dịch vụ trả phí, xóa, xuất bản và ngoài phạm vi cần quyền riêng. Không suy ra quyền từ file kế hoạch hoặc kết quả kỹ thuật.
+
+`OUTPUT_READY` nghĩa là đầu ra thật có thể dùng. `DELIVERED_FOR_REVIEW` nghĩa là đã giao video. Chỉ dùng `USER_ACCEPTED` khi có phản hồi chấp nhận thật. `REVISION_REQUESTED` ghi phản hồi cần sửa; `FAILED_TECHNICAL` ghi lỗi ngăn dùng đầu ra. File thiếu/hỏng/ngoài workspace hoặc sai hash phải chặn bước phụ thuộc.
+
+
+
 > Kỹ năng OpenFilm gốc, được giữ nội dung và đổi tên kỹ năng để tích hợp vào plugin Video-hoạt-hình. Chỉ chạy các lệnh khi CLI OpenFilm thực sự tồn tại trên máy có quyền truy cập. Tên và nhãn lệnh trong nội dung dưới đây thuộc OpenFilm, không phải lệnh có sẵn của ChatGPT.
 
 # Media
@@ -21,7 +31,7 @@ A paid run that timed out or did not download is recovered by running the exact 
 
 ## Nhánh giọng đọc tiếng Việt VieNeu-TTS trong Video-hoạt-hình
 
-Khi người dùng yêu cầu lời thoại/thuyết minh bằng tiếng Việt và đã chọn VieNeu-TTS cục bộ, đọc `openfilm-vieneu-tts/SKILL.md` trước. Không giả định `openfilm get` có provider VieNeu-TTS tích hợp: dùng runtime Python đã được duyệt, tạo file WAV trong assets của dự án, sau đó thêm track audio OpenFilm; không dùng dịch vụ ngoài hoặc model tải ngầm. Đồng bộ VTT theo đo đạc/aligner thực và QC nghe. Nếu chỉ muốn media từ OpenFilm thì tiếp tục quy trình gốc.
+Khi người dùng yêu cầu lời thoại/thuyết minh bằng tiếng Việt và đã chọn VieNeu-TTS cục bộ, đọc `openfilm-vieneu-tts/SKILL.md` trước. Không giả định `openfilm get` có provider VieNeu-TTS tích hợp: dùng runtime Python đã được duyệt, tạo file WAV trong assets của dự án, sau đó thêm track audio OpenFilm; không dùng dịch vụ ngoài hoặc model tải ngầm. Đồng bộ VTT theo đo đạc/aligner thực. Nếu chỉ muốn media từ OpenFilm thì tiếp tục quy trình gốc.
 
 ## Hai chế độ master và provenance (v1.4)
 

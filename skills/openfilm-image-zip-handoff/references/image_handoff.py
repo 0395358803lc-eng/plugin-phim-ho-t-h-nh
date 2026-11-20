@@ -126,7 +126,7 @@ def build(spec_path, output_path):
         'userMacroAcceptance': False,
         'notes': 'No remote PNG or image receipt is implied. ImageGen chat previews are not remote evidence.',
     }
-    instructions = f'''VIDEO-HOAT-HINH: HUONG DAN GIAI NEN ANH\n\n1. Tai ZIP tu tin nhan ChatGPT.\n2. Giai nen NOI DUNG ZIP (khong them thu muc long nhau) tai:\n   {target_workspace}\n3. Sau giai nen, duong dan anh se la:\n''' + ''.join(f'   {target_workspace}\\{row["targetRelativePath"].replace("/", chr(92))}\n' for row in records) + f'''\n4. Khong doi ten file. Khong ghi de anh cu neu chua duoc phe duyet.\n5. Quay lai ChatGPT, bao "Da giai nen {handoff_id}".\n6. ChatGPT se doi chieu SHA-256 va doc lai PNG tu Windows de QC thi giac.\n   ZIP duoc tao KHONG co nghia da QC VISUAL_PASS.\n\nManifest: {target_workspace}\\{manifest_rel.replace('/', chr(92))}\n'''
+    instructions = f'''VIDEO-HOAT-HINH: HUONG DAN GIAI NEN ANH\n\n1. Tai ZIP tu tin nhan ChatGPT.\n2. Giai nen NOI DUNG ZIP (khong them thu muc long nhau) tai:\n   {target_workspace}\n3. Sau giai nen, duong dan anh se la:\n''' + ''.join(f'   {target_workspace}\\{row["targetRelativePath"].replace("/", chr(92))}\n' for row in records) + f'''\n4. Khong doi ten file. Khong ghi de anh cu neu chua duoc phe duyet.\n5. Quay lai ChatGPT, bao "Da giai nen {handoff_id}".\n6. ChatGPT se doi chieu SHA-256 va kiem PNG dung duoc tren Windows.\n   ZIP duoc tao KHONG co nghia PNG da nam tren Windows. Danh gia tham my chi khi user yeu cau.\n\nManifest: {target_workspace}\\{manifest_rel.replace('/', chr(92))}\n'''
     out = Path(output_path)
     if out.exists():
         raise FileExistsError('OUTPUT_ZIP_ALREADY_EXISTS')

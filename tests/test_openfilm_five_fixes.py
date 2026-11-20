@@ -65,11 +65,11 @@ class OpenFilmFiveFixTests(unittest.TestCase):
    with self.assertRaises(ValueError):bs.build(r,Path(outside),data,True)
  def test_bootstrap_reject_symlink_to_outside(self):
   with tempfile.TemporaryDirectory() as tmp, tempfile.TemporaryDirectory() as outside:
-   r,p,data=self.film_setup(tmp);(p/'openfilm').symlink_to(Path(outside),target_is_directory=True)
+   r,p,data=self.film_setup(tmp);make_link(self,p/'openfilm',Path(outside))
    with self.assertRaises(ValueError):bs.build(r,p,data,True)
  def test_e2e_fixture_reject_symlink_to_outside(self):
   with tempfile.TemporaryDirectory() as tmp, tempfile.TemporaryDirectory() as outside:
-   root=Path(tmp)/'qc/openfilm-e2e/fixture';root.mkdir(parents=True);(root/'scenes').symlink_to(Path(outside),target_is_directory=True)
+   root=Path(tmp)/'qc/openfilm-e2e/fixture';root.mkdir(parents=True);make_link(self,root/'scenes',Path(outside))
    with self.assertRaises(ValueError):fx.build(tmp,True)
  def test_bootstrap_check_ready_after_scene_replaced(self):
   with tempfile.TemporaryDirectory() as tmp:
@@ -92,15 +92,15 @@ class OpenFilmFiveFixTests(unittest.TestCase):
    fx.build(tmp,True)
    with self.assertRaises(FileExistsError):fx.build(tmp,True)
  def test_e2e_template_cannot_falsely_pass(self):
-  x=json.loads((ROOT/'skills/openfilm-smoke-e2e/references/E2E_REPORT_TEMPLATE.json').read_text());self.assertEqual(eq.validate(x),[])
+  x=json.loads((ROOT/'skills/openfilm-smoke-e2e/references/E2E_REPORT_TEMPLATE.json').read_text(encoding='utf-8'));self.assertEqual(eq.validate(x),[])
   x['status']='PASS';self.assertTrue(eq.validate(x))
  def test_e2e_remotion_output_cannot_claim_openfilm(self):
-  x=json.loads((ROOT/'skills/openfilm-smoke-e2e/references/E2E_REPORT_TEMPLATE.json').read_text());x['engine']='remotion';self.assertTrue(eq.validate(x))
+  x=json.loads((ROOT/'skills/openfilm-smoke-e2e/references/E2E_REPORT_TEMPLATE.json').read_text(encoding='utf-8'));x['engine']='remotion';self.assertTrue(eq.validate(x))
  def test_e2e_false_pass_media_missing(self):
-  x=json.loads((ROOT/'skills/openfilm-smoke-e2e/references/E2E_REPORT_TEMPLATE.json').read_text());x.update(status='PASS',planApprovalId='A',acceptanceApprovalId='B',visualReview='PASS',audioReview='PASS',captionReview='PASS',reviewEvidencePaths=['qc/review.txt'])
+  x=json.loads((ROOT/'skills/openfilm-smoke-e2e/references/E2E_REPORT_TEMPLATE.json').read_text(encoding='utf-8'));x.update(status='PASS',planApprovalId='A',acceptanceApprovalId='B',visualReview='PASS',audioReview='PASS',captionReview='PASS',reviewEvidencePaths=['qc/review.txt'])
   with tempfile.TemporaryDirectory() as tmp:self.assertTrue(eq.check_files(x,tmp))
  def test_packet_templates_integrated_and_ordered(self):
-  defs=json.loads((ROOT/'skills/openfilm-high-workpackets/references/WORKPACKET_DEFINITIONS.json').read_text());stages={s['stageId']:s['packets'] for s in defs['stages']};ids=[p['templateId'] for s in defs['stages'] for p in s['packets']]
+  defs=json.loads((ROOT/'skills/openfilm-high-workpackets/references/WORKPACKET_DEFINITIONS.json').read_text(encoding='utf-8'));stages={s['stageId']:s['packets'] for s in defs['stages']};ids=[p['templateId'] for s in defs['stages'] for p in s['packets']]
   for stage,seq in {'P06':[f'P06.{n:02}' for n in (8,9,10,11,4)],'P08':['P08.05'],'P09':['P09.06'],'P10':['P10.06','P10.07'],'P12':['P12.08','P12.03'],'P16':['P16.06','P16.05'],'P17':['P17.07']}.items():
    tpl=[p['templateId'] for p in stages[stage]]
    for item in seq:self.assertIn(item,tpl)
@@ -108,11 +108,18 @@ class OpenFilmFiveFixTests(unittest.TestCase):
   self.assertTrue(next(p for p in stages['P06'] if p['templateId']=='P06.10')['specialApprovalRequired'])
   self.assertEqual(len(ids),len(set(ids)))
  def test_p16_before_p17_and_p09_scaffold(self):
-  x=json.loads((ROOT/'skills/openfilm-production-p06-p21/references/STAGE_DEFINITIONS.json').read_text());d={s['id']:s for s in x['stages']}
+  x=json.loads((ROOT/'skills/openfilm-production-p06-p21/references/STAGE_DEFINITIONS.json').read_text(encoding='utf-8'));d={s['id']:s for s in x['stages']}
   self.assertTrue(d['P17']['existingTimelineOnly']);self.assertEqual(d['P09']['earlyOpenFilmProject'],'projects/<film-id>/openfilm/film.html')
-  self.assertIn('placeholder',d['P16']['beforeP17'])
+  self.assertIn('Actual scene code',d['P16']['beforeP17'])
  def test_all_skill_files_have_yaml_frontmatter(self):
   files=list((ROOT/'skills').glob('*/SKILL.md'));self.assertGreaterEqual(len(files),28)
   for p in files:self.assertTrue(p.read_text(encoding='utf8').startswith('---\n'),p)
 
 if __name__=='__main__':unittest.main()
+
+
+def make_link(test, link, target):
+ try: link.symlink_to(target,target_is_directory=True)
+ except OSError as exc:
+  if getattr(exc,"winerror",None)==1314:test.skipTest("Windows symlink privilege unavailable; no system change authorized")
+  raise
