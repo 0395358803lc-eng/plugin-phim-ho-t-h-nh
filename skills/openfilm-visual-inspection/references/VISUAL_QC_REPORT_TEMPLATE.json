@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "macroId": null,
+  "filmId": null,
+  "reviewId": null,
+  "reviewer": "CHATGPT_VISION",
+  "source": {
+    "kind": null,
+    "path": null,
+    "sha256": null
+  },
+  "requiredTargets": [],
+  "reviewScope": "SAMPLED_FRAMES_NOT_FULL_PLAYBACK",
+  "observations": [],
+  "extractionEvidencePath": null,
+  "extractionEvidenceSha256": null,
+  "status": "VISUAL_PENDING",
+  "note": "TEMPLATE ONLY. Never mark modelReceived image true or visual PASS unless actual multimodal images were viewed. Read source and image hashes on the approved Windows machine."
+}

@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "pluginVersion": "1.10.0",
+  "stateRevision": 0,
+  "deviceId": null,
+  "workspace": null,
+  "filmId": null,
+  "approvalBundles": [
+    {
+      "bundleId": "EXAMPLE_NOT_ACTIVE",
+      "stageId": "P07",
+      "packetIds": [],
+      "scopeIds": [],
+      "allowedPaths": [],
+      "allowedCommands": [],
+      "riskClass": "NORMAL",
+      "status": "PLANNED",
+      "presentedToUserRevision": null,
+      "planApprovalId": null,
+      "acceptanceApprovalId": null,
+      "evidencePaths": [],
+      "inputHashes": {},
+      "updatedAt": null
+    }
+  ],
+  "note": "Illustrative only. Remove example before use. Bundle scope must be materialized from real inputs and explicitly presented to the user."
+}

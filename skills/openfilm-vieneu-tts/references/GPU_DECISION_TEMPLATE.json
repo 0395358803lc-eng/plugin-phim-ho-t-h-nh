@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "ttsRequired": true,
+  "desiredBackend": "cuda-pytorch",
+  "selectedBackend": "undecided",
+  "gpuAssessment": "NOT_VERIFIED",
+  "gpuEvidencePaths": [],
+  "runtimeGpuWavEvidence": null,
+  "cpuFallbackApprovalId": null,
+  "reason": null,
+  "deviceId": null,
+  "workspace": null,
+  "sdkVersion": null,
+  "modelRevision": null
+}

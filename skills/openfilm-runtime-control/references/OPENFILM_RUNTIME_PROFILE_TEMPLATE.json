@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "deviceId": null,
+  "workspace": null,
+  "mode": "unverified",
+  "status": "NOT_TESTED",
+  "openFilmVersion": null,
+  "executablePath": null,
+  "invocationMethod": null,
+  "approvalId": null,
+  "capabilities": {
+    "openProject": {
+      "status": "UNVERIFIED",
+      "evidencePaths": []
+    },
+    "inspectFrame": {
+      "status": "UNVERIFIED",
+      "evidencePaths": []
+    },
+    "renderClip": {
+      "status": "UNVERIFIED",
+      "evidencePaths": []
+    },
+    "openCanvas": {
+      "status": "UNVERIFIED",
+      "evidencePaths": []
+    }
+  },
+  "notes": [],
+  "verifiedAt": null,
+  "workingDirectory": null,
+  "nodeVersion": null,
+  "ffmpegExecutable": null,
+  "headlessBrowserStatus": "UNVERIFIED",
+  "cliOnlyPolicy": "CLI_ONLY_FOR_OPENFILM"
+}

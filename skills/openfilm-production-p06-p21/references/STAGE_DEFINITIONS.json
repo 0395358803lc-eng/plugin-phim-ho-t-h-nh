@@ -1,0 +1,342 @@
+{
+  "schemaVersion": 2,
+  "stages": [
+    {
+      "id": "P06",
+      "name": "Environment acceptance",
+      "dependsOn": [],
+      "canonicalOutput": "reports/ENV_ACCEPTANCE.md",
+      "workUnitKey": "component_id",
+      "mayWrite": true,
+      "skippable": true,
+      "requiresEvidence": true,
+      "requiresAcceptance": false,
+      "openfilmRuntimeProfile": "reports/openfilm/OPENFILM_RUNTIME_PROFILE.json",
+      "e2eProof": "qc/openfilm-e2e/E2E_REPORT.json",
+      "requiredBefore": "P07 unless renderer genuinely blocked and user changes approved scope",
+      "notes": "Installation can SKIP but runtime evidence cannot be fabricated.",
+      "openFilmRuntime": "cli-required",
+      "cliEvidenceRequired": true,
+      "macroId": "M0",
+      "acceptanceMode": "INTERNAL_QC_UNTIL_MACRO_ACCEPTED",
+      "userAcceptanceAt": "MACRO_BOUNDARY",
+      "internalQCRequired": true
+    },
+    {
+      "id": "P07",
+      "name": "Seven-source input audit",
+      "dependsOn": [
+        "P06"
+      ],
+      "canonicalOutput": "reports/INPUT_AUDIT.md",
+      "workUnitKey": "source_file",
+      "mayWrite": false,
+      "skippable": false,
+      "requiresEvidence": true,
+      "requiresAcceptance": false,
+      "macroId": "M1",
+      "acceptanceMode": "INTERNAL_QC_UNTIL_MACRO_ACCEPTED",
+      "userAcceptanceAt": "MACRO_BOUNDARY",
+      "internalQCRequired": true
+    },
+    {
+      "id": "P08",
+      "name": "Master engine and profile",
+      "dependsOn": [
+        "P07"
+      ],
+      "canonicalOutput": "reports/PRODUCTION_PROFILE.json",
+      "workUnitKey": "decision",
+      "mayWrite": true,
+      "skippable": false,
+      "requiresEvidence": true,
+      "requiresAcceptance": false,
+      "voiceSourceLock": "reports/tts/VOICE_SOURCE_LOCK.json",
+      "macroId": "M1",
+      "acceptanceMode": "INTERNAL_QC_UNTIL_MACRO_ACCEPTED",
+      "userAcceptanceAt": "MACRO_BOUNDARY",
+      "internalQCRequired": true,
+      "decisionGate": "PROFILE_CHOICE"
+    },
+    {
+      "id": "P09",
+      "name": "FilmData and scene mapping",
+      "dependsOn": [
+        "P08"
+      ],
+      "canonicalOutput": "projects/<film-id>/scene-data/film.json",
+      "workUnitKey": "shot_id",
+      "mayWrite": true,
+      "skippable": false,
+      "requiresEvidence": true,
+      "requiresAcceptance": false,
+      "earlyOpenFilmProject": "projects/<film-id>/openfilm/film.html",
+      "requireFilmDataValid": true,
+      "openFilmRuntime": "cli-required",
+      "cliEvidenceRequired": false,
+      "macroId": "M1",
+      "acceptanceMode": "INTERNAL_QC_UNTIL_MACRO_ACCEPTED",
+      "userAcceptanceAt": "MACRO_BOUNDARY",
+      "internalQCRequired": true
+    },
+    {
+      "id": "P10",
+      "name": "Style and storyboard",
+      "dependsOn": [
+        "P09"
+      ],
+      "canonicalOutput": "projects/<film-id>/storyboard/",
+      "workUnitKey": "shot_id",
+      "mayWrite": true,
+      "skippable": false,
+      "requiresEvidence": true,
+      "requiresAcceptance": false,
+      "canvasMode": "FILE_STORYBOARD(default)|OPENFILM_CANVAS(verified+approved)",
+      "openFilmRuntime": "cli-required",
+      "cliEvidenceRequired": false,
+      "macroId": "M2",
+      "acceptanceMode": "INTERNAL_QC_UNTIL_MACRO_ACCEPTED",
+      "userAcceptanceAt": "MACRO_BOUNDARY",
+      "internalQCRequired": true,
+      "decisionGateBeforeNextStage": "VISUAL_DIRECTION",
+      "visualEvidenceContract": "openfilm-visual-inspection/SKILL.md",
+      "mandatoryVisualMacro": "M2"
+    },
+    {
+      "id": "P11",
+      "name": "Media assets",
+      "dependsOn": [
+        "P10"
+      ],
+      "canonicalOutput": "projects/<film-id>/assets/",
+      "workUnitKey": "asset_id",
+      "mayWrite": true,
+      "skippable": false,
+      "requiresEvidence": true,
+      "requiresAcceptance": false,
+      "macroId": "M2",
+      "acceptanceMode": "INTERNAL_QC_UNTIL_MACRO_ACCEPTED",
+      "userAcceptanceAt": "MACRO_BOUNDARY",
+      "internalQCRequired": true,
+      "visualEvidenceContract": "openfilm-visual-inspection/SKILL.md",
+      "mandatoryVisualMacro": "M2"
+    },
+    {
+      "id": "P12",
+      "name": "VieNeu-TTS dialogue",
+      "dependsOn": [
+        "P11"
+      ],
+      "canonicalOutput": "projects/<film-id>/assets/audio/voice/",
+      "workUnitKey": "dialogue_id",
+      "mayWrite": true,
+      "skippable": true,
+      "requiresEvidence": true,
+      "requiresAcceptance": false,
+      "macroId": "M3",
+      "acceptanceMode": "INTERNAL_QC_UNTIL_MACRO_ACCEPTED",
+      "userAcceptanceAt": "MACRO_BOUNDARY",
+      "internalQCRequired": true,
+      "decisionGateBeforeNextStage": "VOICE_AUDIO_QC"
+    },
+    {
+      "id": "P13",
+      "name": "Timing and captions",
+      "dependsOn": [
+        "P12"
+      ],
+      "canonicalOutput": "projects/<film-id>/subtitles/",
+      "workUnitKey": "dialogue_id",
+      "mayWrite": true,
+      "skippable": true,
+      "requiresEvidence": true,
+      "requiresAcceptance": false,
+      "macroId": "M3",
+      "acceptanceMode": "INTERNAL_QC_UNTIL_MACRO_ACCEPTED",
+      "userAcceptanceAt": "MACRO_BOUNDARY",
+      "internalQCRequired": true
+    },
+    {
+      "id": "P14",
+      "name": "2D animation",
+      "dependsOn": [
+        "P13"
+      ],
+      "canonicalOutput": "projects/<film-id>/",
+      "workUnitKey": "shot_id",
+      "mayWrite": true,
+      "skippable": true,
+      "requiresEvidence": true,
+      "requiresAcceptance": false,
+      "engineOutputs": {
+        "openfilm": "openfilm/scenes/*.html",
+        "remotion": "remotion/src/scenes/*.tsx"
+      },
+      "placeholderClearing": "Real scene pages only, one shot at a time",
+      "openFilmRuntime": "cli-required",
+      "cliEvidenceRequired": false,
+      "macroId": "M4",
+      "acceptanceMode": "INTERNAL_QC_UNTIL_MACRO_ACCEPTED",
+      "userAcceptanceAt": "MACRO_BOUNDARY",
+      "internalQCRequired": true,
+      "visualEvidenceContract": "openfilm-visual-inspection/SKILL.md",
+      "mandatoryVisualMacro": "M4"
+    },
+    {
+      "id": "P15",
+      "name": "3D animation",
+      "dependsOn": [
+        "P14"
+      ],
+      "canonicalOutput": "projects/<film-id>/",
+      "workUnitKey": "shot_id",
+      "mayWrite": true,
+      "skippable": true,
+      "requiresEvidence": true,
+      "requiresAcceptance": false,
+      "engineOutputs": {
+        "openfilm": "openfilm/scenes/*.html",
+        "remotion": "remotion/src/scenes/*.tsx"
+      },
+      "openFilmRuntime": "cli-required",
+      "cliEvidenceRequired": false,
+      "macroId": "M4",
+      "acceptanceMode": "INTERNAL_QC_UNTIL_MACRO_ACCEPTED",
+      "userAcceptanceAt": "MACRO_BOUNDARY",
+      "internalQCRequired": true,
+      "visualEvidenceContract": "openfilm-visual-inspection/SKILL.md",
+      "mandatoryVisualMacro": "M4"
+    },
+    {
+      "id": "P16",
+      "name": "OpenFilm previs and shot review",
+      "dependsOn": [
+        "P15"
+      ],
+      "canonicalOutput": "renders/previs/",
+      "workUnitKey": "shot_id",
+      "mayWrite": true,
+      "skippable": false,
+      "requiresEvidence": true,
+      "requiresAcceptance": false,
+      "beforeP17": "P09 film.html exists; placeholder count zero and verified OpenFilm frame preview",
+      "openFilmRuntime": "cli-required",
+      "cliEvidenceRequired": true,
+      "macroId": "M4",
+      "acceptanceMode": "INTERNAL_QC_UNTIL_MACRO_ACCEPTED",
+      "userAcceptanceAt": "MACRO_BOUNDARY",
+      "internalQCRequired": true,
+      "visualEvidenceContract": "openfilm-visual-inspection/SKILL.md",
+      "mandatoryVisualMacro": "M4"
+    },
+    {
+      "id": "P17",
+      "name": "Master timeline assembly",
+      "dependsOn": [
+        "P16"
+      ],
+      "canonicalOutput": "projects/<film-id>/",
+      "workUnitKey": "sequence_id",
+      "mayWrite": true,
+      "skippable": false,
+      "requiresEvidence": true,
+      "requiresAcceptance": false,
+      "existingTimelineOnly": true,
+      "openFilmRuntime": "cli-required",
+      "cliEvidenceRequired": false,
+      "macroId": "M5",
+      "acceptanceMode": "INTERNAL_QC_UNTIL_MACRO_ACCEPTED",
+      "userAcceptanceAt": "MACRO_BOUNDARY",
+      "internalQCRequired": true,
+      "visualEvidenceContract": "openfilm-visual-inspection/SKILL.md",
+      "mandatoryVisualMacro": "M5"
+    },
+    {
+      "id": "P18",
+      "name": "Five-second smoke",
+      "dependsOn": [
+        "P17"
+      ],
+      "canonicalOutput": "renders/smoke/smoke-5s.mp4",
+      "workUnitKey": "render_id",
+      "mayWrite": true,
+      "skippable": false,
+      "requiresEvidence": true,
+      "requiresAcceptance": false,
+      "openFilmRuntime": "cli-required",
+      "cliEvidenceRequired": true,
+      "macroId": "M5",
+      "acceptanceMode": "INTERNAL_QC_UNTIL_MACRO_ACCEPTED",
+      "userAcceptanceAt": "MACRO_BOUNDARY",
+      "internalQCRequired": true,
+      "visualEvidenceContract": "openfilm-visual-inspection/SKILL.md",
+      "mandatoryVisualMacro": "M5"
+    },
+    {
+      "id": "P19",
+      "name": "Full draft render",
+      "dependsOn": [
+        "P18"
+      ],
+      "canonicalOutput": "renders/draft/draft-v01.mp4",
+      "workUnitKey": "render_id",
+      "mayWrite": true,
+      "skippable": false,
+      "requiresEvidence": true,
+      "requiresAcceptance": false,
+      "openFilmRuntime": "cli-required",
+      "cliEvidenceRequired": true,
+      "macroId": "M6",
+      "acceptanceMode": "INTERNAL_QC_UNTIL_MACRO_ACCEPTED",
+      "userAcceptanceAt": "MACRO_BOUNDARY",
+      "internalQCRequired": true,
+      "visualEvidenceContract": "openfilm-visual-inspection/SKILL.md",
+      "mandatoryVisualMacro": "M6"
+    },
+    {
+      "id": "P20",
+      "name": "QC20 and remediation",
+      "dependsOn": [
+        "P19"
+      ],
+      "canonicalOutput": "qc/QC20_REPORT.md",
+      "workUnitKey": "issue_id",
+      "mayWrite": true,
+      "skippable": false,
+      "requiresEvidence": true,
+      "requiresAcceptance": false,
+      "openFilmRuntime": "cli-required",
+      "cliEvidenceRequired": true,
+      "macroId": "M6",
+      "acceptanceMode": "INTERNAL_QC_UNTIL_MACRO_ACCEPTED",
+      "userAcceptanceAt": "MACRO_BOUNDARY",
+      "internalQCRequired": true,
+      "visualEvidenceContract": "openfilm-visual-inspection/SKILL.md",
+      "mandatoryVisualMacro": "M6"
+    },
+    {
+      "id": "P21",
+      "name": "Final master handoff",
+      "dependsOn": [
+        "P20"
+      ],
+      "canonicalOutput": "renders/master/FINAL_MASTER.mp4",
+      "workUnitKey": "master_id",
+      "mayWrite": true,
+      "skippable": false,
+      "requiresEvidence": true,
+      "requiresAcceptance": false,
+      "openFilmRuntime": "cli-required",
+      "cliEvidenceRequired": true,
+      "macroId": "M7",
+      "acceptanceMode": "INTERNAL_QC_UNTIL_MACRO_ACCEPTED",
+      "userAcceptanceAt": "FINAL_MASTER_DELIVERY",
+      "internalQCRequired": true,
+      "finalAcceptanceGate": "USER_FINAL",
+      "visualEvidenceContract": "openfilm-visual-inspection/SKILL.md",
+      "mandatoryVisualMacro": "M7"
+    }
+  ],
+  "openfilmExecutionPolicy": "CLI_ONLY_FOR_OPENFILM",
+  "pluginVersion": "1.12.0"
+}

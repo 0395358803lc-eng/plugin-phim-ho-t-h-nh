@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "filmId": "hat-mam-anh-sang",
+  "status": "FIXTURE_ONLY_NOT_RENDERED",
+  "note": "Danh sách nhu cầu asset. Không có WAV, SVG hay GLB thật trong gói kỹ năng này; không ghi Verified hoặc SHA256 giả.",
+  "assets": [
+    {"id":"robot-an", "path":"assets/characters/robot_an.svg", "kind":"image/svg+xml", "status":"MISSING", "license":"PENDING", "sha256":null},
+    {"id":"seed", "path":"assets/characters/seed.svg", "kind":"image/svg+xml", "status":"MISSING", "license":"PENDING", "sha256":null},
+    {"id":"lab", "path":"assets/images/lab-bg.svg", "kind":"image/svg+xml", "status":"MISSING", "license":"PENDING", "sha256":null},
+    {"id":"garden", "path":"assets/models/garden.glb", "kind":"model/gltf-binary", "status":"MISSING", "license":"PENDING", "sha256":null},
+    {"id":"plant", "path":"assets/models/plant.glb", "kind":"model/gltf-binary", "status":"MISSING", "license":"PENDING", "sha256":null},
+    {"id":"music-bed", "path":"assets/audio/music/music-bed.wav", "kind":"audio/wav", "status":"MISSING", "license":"PENDING", "sha256":null},
+    {"id":"sfx-sparkle", "path":"assets/audio/sfx/sfx-sparkle.wav", "kind":"audio/wav", "status":"MISSING", "license":"PENDING", "sha256":null}
+  ]
+}

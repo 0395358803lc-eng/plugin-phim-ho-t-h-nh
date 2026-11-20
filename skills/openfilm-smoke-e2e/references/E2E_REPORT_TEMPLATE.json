@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "status": "NOT_TESTED",
+  "engine": "openfilm",
+  "runtimeProfilePath": "reports/openfilm/OPENFILM_RUNTIME_PROFILE.json",
+  "mp4Path": "qc/openfilm-e2e/fixture/e2e.mp4",
+  "ffprobePath": "qc/openfilm-e2e/ffprobe.json",
+  "renderLogPath": "logs/openfilm-e2e-render.log",
+  "visualReview": "NOT_TESTED",
+  "audioReview": "NOT_TESTED",
+  "captionReview": "NOT_TESTED",
+  "reviewEvidencePaths": [],
+  "planApprovalId": null,
+  "acceptanceApprovalId": null,
+  "notes": "A tone WAV probes audio path; not VieNeu speech quality.",
+  "executionMode": "unverified",
+  "cliRunEvidencePath": null
+}

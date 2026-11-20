@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "source": "vieneu-local",
+  "backend": "cuda-pytorch",
+  "modelRevision": null,
+  "voicePresetIds": [],
+  "origin": "WAV_LOCAL",
+  "openFilmTtsAllowed": false,
+  "alternateProviderApprovalId": null,
+  "gpuDecisionPath": "reports/tts/GPU_DECISION.json",
+  "approvalId": null,
+  "evidencePaths": [],
+  "status": "PLANNED"
+}

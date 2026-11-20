@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "pluginVersion": "1.12.0",
+  "stateRevision": 0,
+  "deviceId": null,
+  "workspace": null,
+  "filmId": null,
+  "currentPacketId": null,
+  "nextPacketId": null,
+  "packets": [],
+  "note": "M2/M4/M5/M6/M7 must have validated real multimodal visual reports and exact target coverage before acceptance; macro approval still one per group.",
+  "approvalBundles": [],
+  "macroBundles": [],
+  "stageStates": {},
+  "preflightGates": {},
+  "decisionGates": {},
+  "visualGates": {},
+  "visualTargets": {}
+}

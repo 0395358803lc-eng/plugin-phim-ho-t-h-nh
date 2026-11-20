@@ -1,0 +1,15 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><style>
+body{margin:0;width:1080px;height:1920px;overflow:hidden;background:#171232;color:white;font-family:sans-serif}
+#orb{position:absolute;width:260px;height:260px;border-radius:50%;background:#8f6efa;left:410px;top:700px;box-shadow:0 0 100px #7358cb}
+#title{position:absolute;left:90px;top:1080px;font-size:76px;font-weight:700;letter-spacing:1px}
+</style></head><body><div id="orb"></div><div id="title">Câu chuyện bắt đầu</div>
+<script>
+const orb=document.getElementById('orb'), title=document.getElementById('title');
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const ease=x=>{x=clamp(x,0,1);return x*x*(3-2*x)};
+window.film={duration:6, frame(t){
+ const p=ease(t/2); const bob=Math.sin(t*2*Math.PI*.4)*18;
+ orb.style.transform=`translate(${p*150-75}px,${bob}px) scale(${0.8+0.2*p})`;
+ title.style.opacity=String(ease((t-1)/1.2));
+}};
+</script></body></html>

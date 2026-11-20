@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "pluginVersion": "1.12.0",
+  "approvalUnit": "MACRO_BUNDLE",
+  "microPacketsRemainInternal": true,
+  "fixedPacketTemplateCount": 99,
+  "macros": [
+    {
+      "id": "M0",
+      "name": "Môi trường và kiểm chứng runtime",
+      "stages": [
+        "P06"
+      ],
+      "preflightStages": [
+        "P00",
+        "P01",
+        "P02",
+        "P03",
+        "P04",
+        "P05"
+      ]
+    },
+    {
+      "id": "M1",
+      "name": "Đọc kịch bản, quyết định profile và FilmData",
+      "stages": [
+        "P07",
+        "P08",
+        "P09"
+      ],
+      "preflightStages": []
+    },
+    {
+      "id": "M2",
+      "name": "Phong cách, storyboard và tài sản",
+      "stages": [
+        "P10",
+        "P11"
+      ],
+      "preflightStages": []
+    },
+    {
+      "id": "M3",
+      "name": "VieNeu-TTS và đồng bộ phụ đề",
+      "stages": [
+        "P12",
+        "P13"
+      ],
+      "preflightStages": []
+    },
+    {
+      "id": "M4",
+      "name": "Hoạt hình 2D/3D và OpenFilm preview",
+      "stages": [
+        "P14",
+        "P15",
+        "P16"
+      ],
+      "preflightStages": []
+    },
+    {
+      "id": "M5",
+      "name": "Lắp timeline và smoke 5 giây",
+      "stages": [
+        "P17",
+        "P18"
+      ],
+      "preflightStages": []
+    },
+    {
+      "id": "M6",
+      "name": "Render bản nháp và QC20",
+      "stages": [
+        "P19",
+        "P20"
+      ],
+      "preflightStages": []
+    },
+    {
+      "id": "M7",
+      "name": "Render Master và bàn giao",
+      "stages": [
+        "P21"
+      ],
+      "preflightStages": []
+    }
+  ],
+  "specialApprovalSeparate": true,
+  "highTurnPolicy": "Run several internal packets with checkpoint; when turn ends resume same approved macro; no background turns",
+  "stageQC": "Internal stage QC_PASS is not user acceptance; only macro acceptance click closes the macro",
+  "humanDecisionGates": {
+    "P08": "PROFILE_CHOICE",
+    "P11": "VISUAL_DIRECTION",
+    "P12": "VOICE_CONFIGURATION",
+    "P13": "VOICE_AUDIO_QC"
+  },
+  "gateWaivers": {
+    "VOICE_AUDIO_QC": "NO_DIALOGUE_VERIFIED"
+  },
+  "specialRiskClasses": [
+    "PACKAGE_INSTALL",
+    "MODEL_DOWNLOAD",
+    "BROWSER_DOWNLOAD",
+    "SYSTEM_CHANGE",
+    "GPU_TO_CPU_FALLBACK",
+    "VOICE_CLONING",
+    "EXTERNAL_PROVIDER",
+    "PAID_ACTION",
+    "DELETE",
+    "PUBLISH",
+    "OUT_OF_SCOPE"
+  ],
+  "optionalStages": [
+    "P06",
+    "P12",
+    "P13",
+    "P14",
+    "P15"
+  ],
+  "finalHumanAcceptanceRequired": true,
+  "defaultMacroApprovals": "one presented user approval per macro group when ready; special actions/decision gates can add approvals",
+  "noAutonomousTurns": true,
+  "allowedInternalActions": [
+    "read approved inputs",
+    "write approved project artifacts",
+    "offline validation",
+    "CLI commands explicitly allowed in approved scope",
+    "checkpoint and QC"
+  ],
+  "planChangesRequireNewApproval": true,
+  "visualInspectionRequiredForAcceptance": [
+    "M2",
+    "M4",
+    "M5",
+    "M6",
+    "M7"
+  ],
+  "visualEvidenceContract": "openfilm-visual-inspection/references/VISUAL_QC_POLICY.json",
+  "rejectMetadataOnlyVisualPass": true
+}

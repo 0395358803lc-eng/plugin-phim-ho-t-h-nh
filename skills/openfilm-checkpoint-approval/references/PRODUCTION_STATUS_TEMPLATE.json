@@ -1,0 +1,396 @@
+{
+  "schemaVersion": 1,
+  "pluginVersion": "1.11.0",
+  "deviceId": null,
+  "projectDir": null,
+  "workspace": null,
+  "filmId": null,
+  "sourceDir": null,
+  "sourceManifestPath": null,
+  "stages": [
+    {
+      "id": "P06",
+      "name": "Environment acceptance",
+      "status": "NOT_STARTED",
+      "planApproval": {
+        "status": "NOT_REQUESTED",
+        "approvalId": null,
+        "scope": null,
+        "source": null,
+        "at": null
+      },
+      "acceptanceApproval": {
+        "status": "NOT_REQUESTED",
+        "approvalId": null,
+        "scope": null,
+        "source": null,
+        "at": null
+      },
+      "qcStatus": "NOT_TESTED",
+      "evidence": [],
+      "workUnits": [],
+      "skipReason": null,
+      "macroInternalGate": null
+    },
+    {
+      "id": "P07",
+      "name": "Seven-source input audit",
+      "status": "NOT_STARTED",
+      "planApproval": {
+        "status": "NOT_REQUESTED",
+        "approvalId": null,
+        "scope": null,
+        "source": null,
+        "at": null
+      },
+      "acceptanceApproval": {
+        "status": "NOT_REQUESTED",
+        "approvalId": null,
+        "scope": null,
+        "source": null,
+        "at": null
+      },
+      "qcStatus": "NOT_TESTED",
+      "evidence": [],
+      "workUnits": [],
+      "skipReason": null,
+      "macroInternalGate": null
+    },
+    {
+      "id": "P08",
+      "name": "Master engine and profile",
+      "status": "NOT_STARTED",
+      "planApproval": {
+        "status": "NOT_REQUESTED",
+        "approvalId": null,
+        "scope": null,
+        "source": null,
+        "at": null
+      },
+      "acceptanceApproval": {
+        "status": "NOT_REQUESTED",
+        "approvalId": null,
+        "scope": null,
+        "source": null,
+        "at": null
+      },
+      "qcStatus": "NOT_TESTED",
+      "evidence": [],
+      "workUnits": [],
+      "skipReason": null,
+      "macroInternalGate": null
+    },
+    {
+      "id": "P09",
+      "name": "FilmData and scene mapping",
+      "status": "NOT_STARTED",
+      "planApproval": {
+        "status": "NOT_REQUESTED",
+        "approvalId": null,
+        "scope": null,
+        "source": null,
+        "at": null
+      },
+      "acceptanceApproval": {
+        "status": "NOT_REQUESTED",
+        "approvalId": null,
+        "scope": null,
+        "source": null,
+        "at": null
+      },
+      "qcStatus": "NOT_TESTED",
+      "evidence": [],
+      "workUnits": [],
+      "skipReason": null,
+      "macroInternalGate": null
+    },
+    {
+      "id": "P10",
+      "name": "Style and storyboard",
+      "status": "NOT_STARTED",
+      "planApproval": {
+        "status": "NOT_REQUESTED",
+        "approvalId": null,
+        "scope": null,
+        "source": null,
+        "at": null
+      },
+      "acceptanceApproval": {
+        "status": "NOT_REQUESTED",
+        "approvalId": null,
+        "scope": null,
+        "source": null,
+        "at": null
+      },
+      "qcStatus": "NOT_TESTED",
+      "evidence": [],
+      "workUnits": [],
+      "skipReason": null,
+      "macroInternalGate": null
+    },
+    {
+      "id": "P11",
+      "name": "Media assets",
+      "status": "NOT_STARTED",
+      "planApproval": {
+        "status": "NOT_REQUESTED",
+        "approvalId": null,
+        "scope": null,
+        "source": null,
+        "at": null
+      },
+      "acceptanceApproval": {
+        "status": "NOT_REQUESTED",
+        "approvalId": null,
+        "scope": null,
+        "source": null,
+        "at": null
+      },
+      "qcStatus": "NOT_TESTED",
+      "evidence": [],
+      "workUnits": [],
+      "skipReason": null,
+      "macroInternalGate": null
+    },
+    {
+      "id": "P12",
+      "name": "VieNeu-TTS dialogue",
+      "status": "NOT_STARTED",
+      "planApproval": {
+        "status": "NOT_REQUESTED",
+        "approvalId": null,
+        "scope": null,
+        "source": null,
+        "at": null
+      },
+      "acceptanceApproval": {
+        "status": "NOT_REQUESTED",
+        "approvalId": null,
+        "scope": null,
+        "source": null,
+        "at": null
+      },
+      "qcStatus": "NOT_TESTED",
+      "evidence": [],
+      "workUnits": [],
+      "skipReason": null,
+      "macroInternalGate": null
+    },
+    {
+      "id": "P13",
+      "name": "Timing and captions",
+      "status": "NOT_STARTED",
+      "planApproval": {
+        "status": "NOT_REQUESTED",
+        "approvalId": null,
+        "scope": null,
+        "source": null,
+        "at": null
+      },
+      "acceptanceApproval": {
+        "status": "NOT_REQUESTED",
+        "approvalId": null,
+        "scope": null,
+        "source": null,
+        "at": null
+      },
+      "qcStatus": "NOT_TESTED",
+      "evidence": [],
+      "workUnits": [],
+      "skipReason": null,
+      "macroInternalGate": null
+    },
+    {
+      "id": "P14",
+      "name": "2D animation",
+      "status": "NOT_STARTED",
+      "planApproval": {
+        "status": "NOT_REQUESTED",
+        "approvalId": null,
+        "scope": null,
+        "source": null,
+        "at": null
+      },
+      "acceptanceApproval": {
+        "status": "NOT_REQUESTED",
+        "approvalId": null,
+        "scope": null,
+        "source": null,
+        "at": null
+      },
+      "qcStatus": "NOT_TESTED",
+      "evidence": [],
+      "workUnits": [],
+      "skipReason": null,
+      "macroInternalGate": null
+    },
+    {
+      "id": "P15",
+      "name": "3D animation",
+      "status": "NOT_STARTED",
+      "planApproval": {
+        "status": "NOT_REQUESTED",
+        "approvalId": null,
+        "scope": null,
+        "source": null,
+        "at": null
+      },
+      "acceptanceApproval": {
+        "status": "NOT_REQUESTED",
+        "approvalId": null,
+        "scope": null,
+        "source": null,
+        "at": null
+      },
+      "qcStatus": "NOT_TESTED",
+      "evidence": [],
+      "workUnits": [],
+      "skipReason": null,
+      "macroInternalGate": null
+    },
+    {
+      "id": "P16",
+      "name": "OpenFilm previs and shot review",
+      "status": "NOT_STARTED",
+      "planApproval": {
+        "status": "NOT_REQUESTED",
+        "approvalId": null,
+        "scope": null,
+        "source": null,
+        "at": null
+      },
+      "acceptanceApproval": {
+        "status": "NOT_REQUESTED",
+        "approvalId": null,
+        "scope": null,
+        "source": null,
+        "at": null
+      },
+      "qcStatus": "NOT_TESTED",
+      "evidence": [],
+      "workUnits": [],
+      "skipReason": null,
+      "macroInternalGate": null
+    },
+    {
+      "id": "P17",
+      "name": "Master timeline assembly",
+      "status": "NOT_STARTED",
+      "planApproval": {
+        "status": "NOT_REQUESTED",
+        "approvalId": null,
+        "scope": null,
+        "source": null,
+        "at": null
+      },
+      "acceptanceApproval": {
+        "status": "NOT_REQUESTED",
+        "approvalId": null,
+        "scope": null,
+        "source": null,
+        "at": null
+      },
+      "qcStatus": "NOT_TESTED",
+      "evidence": [],
+      "workUnits": [],
+      "skipReason": null,
+      "macroInternalGate": null
+    },
+    {
+      "id": "P18",
+      "name": "Five-second smoke",
+      "status": "NOT_STARTED",
+      "planApproval": {
+        "status": "NOT_REQUESTED",
+        "approvalId": null,
+        "scope": null,
+        "source": null,
+        "at": null
+      },
+      "acceptanceApproval": {
+        "status": "NOT_REQUESTED",
+        "approvalId": null,
+        "scope": null,
+        "source": null,
+        "at": null
+      },
+      "qcStatus": "NOT_TESTED",
+      "evidence": [],
+      "workUnits": [],
+      "skipReason": null,
+      "macroInternalGate": null
+    },
+    {
+      "id": "P19",
+      "name": "Full draft render",
+      "status": "NOT_STARTED",
+      "planApproval": {
+        "status": "NOT_REQUESTED",
+        "approvalId": null,
+        "scope": null,
+        "source": null,
+        "at": null
+      },
+      "acceptanceApproval": {
+        "status": "NOT_REQUESTED",
+        "approvalId": null,
+        "scope": null,
+        "source": null,
+        "at": null
+      },
+      "qcStatus": "NOT_TESTED",
+      "evidence": [],
+      "workUnits": [],
+      "skipReason": null,
+      "macroInternalGate": null
+    },
+    {
+      "id": "P20",
+      "name": "QC20 and remediation",
+      "status": "NOT_STARTED",
+      "planApproval": {
+        "status": "NOT_REQUESTED",
+        "approvalId": null,
+        "scope": null,
+        "source": null,
+        "at": null
+      },
+      "acceptanceApproval": {
+        "status": "NOT_REQUESTED",
+        "approvalId": null,
+        "scope": null,
+        "source": null,
+        "at": null
+      },
+      "qcStatus": "NOT_TESTED",
+      "evidence": [],
+      "workUnits": [],
+      "skipReason": null,
+      "macroInternalGate": null
+    },
+    {
+      "id": "P21",
+      "name": "Final master handoff",
+      "status": "NOT_STARTED",
+      "planApproval": {
+        "status": "NOT_REQUESTED",
+        "approvalId": null,
+        "scope": null,
+        "source": null,
+        "at": null
+      },
+      "acceptanceApproval": {
+        "status": "NOT_REQUESTED",
+        "approvalId": null,
+        "scope": null,
+        "source": null,
+        "at": null
+      },
+      "qcStatus": "NOT_TESTED",
+      "evidence": [],
+      "workUnits": [],
+      "skipReason": null,
+      "macroInternalGate": null
+    }
+  ]
+}

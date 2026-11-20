@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "note": "Templates only, not verified exports. Codec/CLI switches must be checked on installed runtime; sizes and bitrate are adjustable after approval.",
+  "profiles": [
+    {"id":"youtube-1080p-30", "width":1920,"height":1080,"fps":30,"videoCodec":"h264","audioCodec":"aac","audioSampleRate":48000,"target":"16:9"},
+    {"id":"shorts-1080x1920-30","width":1080,"height":1920,"fps":30,"videoCodec":"h264","audioCodec":"aac","audioSampleRate":48000,"target":"9:16"},
+    {"id":"square-1080-30","width":1080,"height":1080,"fps":30,"videoCodec":"h264","audioCodec":"aac","audioSampleRate":48000,"target":"1:1"},
+    {"id":"low-resource-preview","width":1280,"height":720,"fps":30,"videoCodec":"h264","audioCodec":"aac","audioSampleRate":48000,"target":"preview"}
+  ],
+  "ffprobeRequired": ["codec_name", "width", "height", "avg_frame_rate", "duration", "sample_rate", "channels"]
+}

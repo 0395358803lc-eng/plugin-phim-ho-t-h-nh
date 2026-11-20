@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "filmId": "hat-mam-anh-sang",
+  "masterEngine": "openfilm",
+  "fps": 30,
+  "width": 1920,
+  "height": 1080,
+  "durationInFrames": 2700,
+  "shots": [
+    {"id": "s01", "startFrame": 0, "durationInFrames": 240, "type": "2d", "scene": "lab-intro"},
+    {"id": "s02", "startFrame": 240, "durationInFrames": 480, "type": "2d", "scene": "lab-discovery"},
+    {"id": "s03", "startFrame": 720, "durationInFrames": 540, "type": "2d", "scene": "corridor"},
+    {"id": "s04", "startFrame": 1260, "durationInFrames": 540, "type": "3d", "scene": "garden-entry"},
+    {"id": "s05", "startFrame": 1800, "durationInFrames": 540, "type": "3d", "scene": "seed-grows"},
+    {"id": "s06", "startFrame": 2340, "durationInFrames": 360, "type": "3d", "scene": "light-tree-finale"}
+  ],
+  "dialogues": [
+    {"id": "d01", "shotId": "s02", "speaker": "an", "text": "Ủa… thứ gì đang phát sáng ở dưới chiếc bàn vậy nhỉ?", "startFrame": 270, "endFrame": 435, "audio": "assets/audio/voice/s02_l01.wav"},
+    {"id": "d02", "shotId": "s02", "speaker": "an", "text": "Một hạt giống sao? Nhưng ở đây làm gì có ánh mặt trời.", "startFrame": 465, "endFrame": 645, "audio": "assets/audio/voice/s02_l02.wav"},
+    {"id": "d03", "shotId": "s03", "speaker": "an", "text": "Thử mang cậu ra khu vườn xem sao.", "startFrame": 810, "endFrame": 1020, "audio": "assets/audio/voice/s03_l01.wav"},
+    {"id": "d04", "shotId": "s04", "speaker": "an", "text": "Được rồi, đây là nơi sáng nhất trong cả trạm.", "startFrame": 1320, "endFrame": 1530, "audio": "assets/audio/voice/s04_l01.wav"},
+    {"id": "d05", "shotId": "s05", "speaker": "an", "text": "Nào, chỉ cần một chút nước… và một chút kiên nhẫn.", "startFrame": 1860, "endFrame": 2115, "audio": "assets/audio/voice/s05_l01.wav"},
+    {"id": "d06", "shotId": "s05", "speaker": "an", "text": "Ôi! Cậu thật sự sống rồi!", "startFrame": 2160, "endFrame": 2340, "audio": "assets/audio/voice/s05_l02.wav"},
+    {"id": "d07", "shotId": "s06", "speaker": "narrator", "text": "Đôi khi một tia sáng nhỏ chỉ cần được đặt đúng nơi để lớn lên.", "startFrame": 2430, "endFrame": 2610, "audio": "assets/audio/voice/s06_l01.wav"}
+  ]
+}

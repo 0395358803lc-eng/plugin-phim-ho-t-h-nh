@@ -1,0 +1,86 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "video-hoat-hinh",
+  "version": "1.12.0",
+  "description": "Video hoạt hình OpenFilm CLI-first, VieNeu GPU-first; 8 macro M0–M7, 99 packet; Visual QC trực tiếp ảnh thật bắt buộc M2/M4/M5/M6/M7, phê duyệt theo nhóm.",
+  "license": "MIT",
+  "keywords": [
+    "animation",
+    "OpenFilm",
+    "storyboard",
+    "video",
+    "timeline",
+    "motion graphics",
+    "render",
+    "Vietnamese",
+    "GSAP",
+    "Three.js",
+    "Remotion",
+    "Windows",
+    "reuse",
+    "VieNeu-TTS",
+    "Vietnamese TTS",
+    "voiceover",
+    "speech synthesis",
+    "ONNX",
+    "Hybrid",
+    "R3F",
+    "FilmData",
+    "QC20",
+    "production",
+    "script input",
+    "checkpoint",
+    "P06-P21",
+    "approval",
+    "one-click approval",
+    "High work packets",
+    "resume",
+    "QC per packet",
+    "GPU-first",
+    "PyTorch CUDA",
+    "NVIDIA",
+    "CPU fallback approval",
+    "OpenFilm runtime profile",
+    "early film.html",
+    "Canvas optional",
+    "voice source lock",
+    "E2E smoke",
+    "OpenFilm CLI",
+    "CLI first",
+    "runtime CLI",
+    "look render",
+    "approval bundles",
+    "fewer clicks",
+    "batch QC",
+    "visual inspection",
+    "vision QC",
+    "actual rendered frames",
+    "multimodal images",
+    "render quality gate"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Video-hoạt-hình",
+        "shortDescription": "Tạo & biên tập hoạt hình",
+        "longDescription": "Plugin Video-hoạt-hình OpenFilm CLI-first + GSAP/Three.js/Remotion và VieNeu-TTS GPU. P00–P05 chọn máy, hỏi workspace, tái dùng công cụ và xin duyệt cài đặt riêng. Sau đó dùng 8 macro-bundle M0–M7 bao phủ P06–P21: kịch bản, FilmData, storyboard, asset, WAV GPU, hoạt hình, timeline, smoke, draft, QC20 và MP4. Giữ 99 packet kỹ thuật chỉ để QC/checkpoint; bấm phê duyệt theo nhóm, có thể tiếp tục nhóm đã duyệt qua nhiều lượt High bằng một nút, không duyệt riêng từng packet/Pxx. Nút phụ thuộc giao diện host, mỗi click tạo một lượt chat mới và không có thực thi nền. Cài/tải/CPU fallback/API phí/xóa/xuất bản cần phê duyệt riêng; luôn đòi bằng chứng file thật. Visual QC bắt buộc: ChatGPT phải thật sự nhận và nhìn ảnh storyboard/scene hoặc frame trích từ MP4 đã render tại M2/M4/M5/M6/M7, có báo cáo thị giác và hash; không PASS chỉ với log/JSON/FFprobe.",
+        "developerName": "ow fe",
+        "category": "Creativity",
+        "capabilities": [
+          "Skills"
+        ],
+        "defaultPrompt": [
+          "Hãy dùng Video-hoạt-hình lập storyboard và kế hoạch dựng video hoạt hình 2 phút.",
+          "Dựng cảnh hoạt hình OpenFilm tỷ lệ 9:16 từ kịch bản sau.",
+          "Kiểm tra chất lượng dự án hoạt hình và chuẩn bị render MP4."
+        ],
+        "logo": "./assets/logo.png",
+        "composerIcon": "./assets/logo.png"
+      }
+    }
+  },
+  "author": {
+    "name": "ow fe",
+    "email": "beecherbryson8708+68128@gmail.com"
+  }
+}

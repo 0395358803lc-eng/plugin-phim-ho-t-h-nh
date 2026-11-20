@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "pluginVersion": "1.11.0",
+  "stateRevision": 0,
+  "deviceId": null,
+  "workspace": null,
+  "filmId": null,
+  "packets": [],
+  "approvalBundles": [],
+  "macroBundles": [],
+  "stageStates": {},
+  "decisionGates": {},
+  "note": "Template not an approval. Never populate macroBundles with inferred shot IDs. All scope, allowed paths, input hashes, exact commands and user decisions must come from real checked input and host click. approvalBundles is legacy history only."
+}

@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "status": "NOT_TESTED",
+  "deviceId": null,
+  "workspace": null,
+  "cwd": null,
+  "executablePath": null,
+  "openFilmVersion": null,
+  "stageId": null,
+  "packetId": null,
+  "command": null,
+  "args": [],
+  "approvalId": null,
+  "exitCode": null,
+  "logPath": null,
+  "evidencePaths": [],
+  "notes": []
+}

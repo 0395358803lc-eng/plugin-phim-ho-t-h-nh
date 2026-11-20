@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "pluginVersion": "1.12.0",
+  "mandatoryMacroIds": [
+    "M2",
+    "M4",
+    "M5",
+    "M6",
+    "M7"
+  ],
+  "requiredMacros": {
+    "M2": {
+      "name": "Storyboard, character and asset vision",
+      "stages": [
+        "P10",
+        "P11"
+      ],
+      "sourceKind": "DESIGN_MANIFEST",
+      "requiredFrameRoles": [
+        "DESIGN"
+      ],
+      "targetManifest": "all approved storyboard frames + key characters + settings/background assets"
+    },
+    "M4": {
+      "name": "2D/3D scene vision",
+      "stages": [
+        "P14",
+        "P15",
+        "P16"
+      ],
+      "sourceKind": "SCENE_BUILD",
+      "requiredFrameRoles": [
+        "START",
+        "Q1",
+        "MID",
+        "Q3",
+        "END"
+      ],
+      "targetManifest": "all materialized shots including 3D if present"
+    },
+    "M5": {
+      "name": "Rendered five-second smoke vision",
+      "stages": [
+        "P17",
+        "P18"
+      ],
+      "sourceKind": "SMOKE_MP4",
+      "requiredFrameRoles": [
+        "START",
+        "Q1",
+        "MID",
+        "Q3",
+        "END"
+      ],
+      "targetManifest": "SMOKE"
+    },
+    "M6": {
+      "name": "Full draft video sampled-per-shot vision",
+      "stages": [
+        "P19",
+        "P20"
+      ],
+      "sourceKind": "DRAFT_MP4",
+      "requiredFrameRoles": [
+        "START",
+        "MID",
+        "END"
+      ],
+      "targetManifest": "all materialized shots"
+    },
+    "M7": {
+      "name": "Final master independent sampled-per-shot vision",
+      "stages": [
+        "P21"
+      ],
+      "sourceKind": "MASTER_MP4",
+      "requiredFrameRoles": [
+        "START",
+        "MID",
+        "END"
+      ],
+      "targetManifest": "all materialized shots"
+    }
+  },
+  "imageTransferAllowed": [
+    "RDC_READ_FILE",
+    "RDC_READ_MULTIPLE_FILES",
+    "USER_UPLOADED_IMAGE"
+  ],
+  "minimumImageWidth": 96,
+  "minimumImageHeight": 64,
+  "visualReportStatusForAccept": "VISUAL_PASS",
+  "hardStopWhen": [
+    "no actual image content in ChatGPT multimodal context",
+    "only CLI/FFprobe/JSON or asset path exists",
+    "missing/mismatched image or source sha256",
+    "missing shot or frame role",
+    "any observed fail, unresolved issue or visual block",
+    "review report refers to older source revision",
+    "render stages source is not actually rendered MP4",
+    "source screenshot stale after scene code or render changes"
+  ],
+  "cannotProveByCode": "Scripts cannot establish that the model truly perceived image content. The agent must observe actual multimodal image tool output and truthfully enter scene-specific observations; do not fabricate receipt or claim full video watched from frame sampling.",
+  "visualSamplingIsNotFullPlayback": true,
+  "mandatorySourceCheck": "Validate visual evidence on the selected Windows device using --workspace root and checksum; review the actual multimodal image content yourself."
+}
