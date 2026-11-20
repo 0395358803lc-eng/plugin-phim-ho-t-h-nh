@@ -58,6 +58,7 @@ def _validate_visual_accept(index:dict,event:dict,b:dict)->list[str]:
     return errors
 
 def validate(index:dict,event:dict,policy:dict)->list[str]:
+    if _ff.migration_errors(index):return _ff.migration_errors(index)
     if _ff.enabled(index):return _flow.validate_event(index,event,policy)
     err=[];action=event.get('action')
     if action not in ACTIONS:return ['unknown macro action']

@@ -14,6 +14,7 @@ def relative_path(p):
     return isinstance(p,str) and bool(p) and not p.startswith(('/', '\\')) and ':' not in p and '..' not in p.replace('\\','/').split('/')
 
 def validate(index, definitions=None):
+    if _vc.f.migration_errors(index):return _vc.f.migration_errors(index)
     if _vc.f.enabled(index):return _vc.validate_packets(index,definitions)
     errors=[]
     if index.get('schemaVersion')!=1: errors.append('schemaVersion must be 1')
@@ -121,6 +122,7 @@ def validate(index, definitions=None):
     return errors
 
 def check_files(index,root:Path):
+    if _vc.f.migration_errors(index):return _vc.f.migration_errors(index)
     if _vc.f.enabled(index):return _vc.validate_packets({**index,'workspace':str(root.resolve())})
     import hashlib
     issues=[];root=root.resolve()

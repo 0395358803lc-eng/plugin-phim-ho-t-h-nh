@@ -42,7 +42,7 @@ Mỗi shot/dial nằm trong `[startFrame,endFrame)` theo `film.json`; OpenFilm d
 
 Mọi `look`, `render`, `open` được gọi qua absolute CLI đã xác minh với cwd project chứa `film.html`; sau khi cập nhật timeline P17, dùng `openfilm look` nếu cần chẩn đoán. Chỉ cho phép `openfilm open` mở Studio tùy chọn sau phê duyệt; Desktop không thay CLI hoặc bản cuối. Đọc `openfilm-cli-execution` trước chỉnh sửa.
 
-## v1.12.0 — Mandatory Visual Inspection & Quality Gate
+## Đánh giá hình ảnh tùy chọn theo yêu cầu
 
 
 P17 hoàn thiện timeline từ cảnh, WAV, nhạc/SFX và phụ đề. P18 smoke là tùy chọn, có thể SKIPPED có lý do; chuyển P19 render V01 khi timeline dùng được.

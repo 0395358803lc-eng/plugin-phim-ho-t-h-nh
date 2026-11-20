@@ -1,4 +1,6 @@
-# Finish First — v1.14.0
+# Finish First — v1.14.1
+
+Thử migration trên bản sao: thêm `--copy-to NEW_FILE` trong thư mục đích đã chọn. Source checkpoint và workspace identity giữ nguyên; chỉ bản copy cùng backup được ghi. Đầu ra phải chưa tồn tại; hard link cùng thư mục công bố file hoàn chỉnh mà không ghi đè khi có concurrent writer. Bản copy vẫn cần scope revalidation trước execution.
 
 Mặc định `FINISH_FIRST_USER_REVIEW`: hoàn thành video V01 rồi bàn giao để người dùng đánh giá. Chính sách này ưu tiên hơn hướng dẫn QC legacy. QC20, Visual QC và nghe chấm từng take chỉ chạy khi người dùng chủ động yêu cầu; không chặn sản xuất/bàn giao. Smoke và kiểm frame/random seek chỉ dùng để chẩn đoán lỗi kỹ thuật hoặc theo yêu cầu.
 
@@ -35,3 +37,11 @@ OpenFilm CLI-first; Desktop/GUI chỉ để xem/chỉnh sửa tùy chọn. VieNe
 `migrate_checkpoint.py CHECKPOINT --workspace WORKSPACE` sao lưu byte gốc trước khi thay checkpoint. QC_PASS/READY_FOR_REVIEW/PASS chỉ đổi OUTPUT_READY khi file tồn tại, dùng được và đúng hash; thiếu file đổi FAILED_TECHNICAL. BLOCKED kỹ thuật được giữ; VISUAL_BLOCKED đổi PLANNED để tiếp tục sản xuất, không tự hoàn thành. ID và dữ liệu cũ được giữ. Quyền cũ cần đối chiếu lại snapshot, không tự tạo approval. LEGACY_QC chỉ phục vụ đọc/kiểm thử checkpoint cũ, không chọn cho dự án mới.
 
 QC nâng cao là công cụ tùy chọn khi user yêu cầu; các báo cáo không được thay trạng thái đầu ra. Bộ kiểm tra kỹ thuật không đánh giá thẩm mỹ.
+
+## Migration an toàn v1.14.1
+
+Thiếu productionMode là LEGACY_UNDECLARED kể cả khi pluginVersion ghi 1.14; explicit Finish First với pluginVersion trước 1.14 là LEGACY_VERSION. Không dispatch sang pipeline mới. Mode/schema/version không hỗ trợ bị từ chối; không suy ra ý định từ tên file.
+
+`migrate_checkpoint.migrate(path, workspace)` lưu bản byte gốc .bak, flush/fsync, biến đổi trên deep copy và atomic replace sau khi kiểm source chưa đổi. Chỉ đổi các task rows; runtime/preflight/approval/event histories giữ nguyên. PLANNED/WAITING_APPROVAL/IN_PROGRESS/BLOCKED/INVALIDATED không tự thành OUTPUT_READY dù có file trùng tên. Trạng thái legacy từng báo hoàn thành chỉ được đổi khi file decode/path/hash hợp lệ.
+
+Các trường quyền và bundle status cũ được giữ; thêm scopeRevalidationRequired để khóa execution sau migration. `restore_existing_approval(state, bundle_id, approval_id)` chỉ dùng receipt cũ có sẵn trong eventHistory/approvalHistory, đúng identity/snapshot/input hashes; không nhận một event mới để tự tạo quyền. Hàm trả copy và tăng revision. Caller vẫn phải xác minh receipt từ tương tác người dùng thật, rồi lưu atomic. Nếu thiếu receipt có thể kiểm chứng, ghi rõ giới hạn và chỉ làm rõ quyền một lần cho scope, không xin lại từng packet. Không sửa checkpoint dự án đang dùng để làm kiểm thử.

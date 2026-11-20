@@ -10,11 +10,12 @@ BUNDLE_ACTIONS = {'APPROVE_BUNDLE','ACCEPT_BUNDLE','ACCEPT_AND_APPROVE_NEXT_BUND
 ACTIONS = {'APPROVE_EXECUTE','ACCEPT_AND_RUN_NEXT','ACCEPT_ONLY','APPROVE_REPAIR','RECHECK','PAUSE','DETAILS'}
 
 def validate(index: dict, event: dict) -> list[str]:
-    if index.get('productionMode','FINISH_FIRST_USER_REVIEW')!='LEGACY_QC':
+    if index.get('productionMode')!='LEGACY_QC':
         import importlib.util
         root=Path(__file__).resolve().parents[2]/'openfilm-macro-bundles/references'
         spec=importlib.util.spec_from_file_location('production_flow',root/'production_flow.py')
         module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+        if not module.f.enabled(index):return module.f.migration_errors(index)
         if event.get('action') in ('VIEW_PROGRESS','VIEW_VIDEO','DETAILS','PAUSE'):
             errors=[k+' mismatch/stale' for k in ('deviceId','workspace','filmId','stateRevision') if event.get(k)!=index.get(k)]
             if event.get('action')=='VIEW_VIDEO':

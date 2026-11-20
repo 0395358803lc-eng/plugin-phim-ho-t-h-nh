@@ -28,7 +28,7 @@ def setup(root, stages=('P07','P10')):
             'scopeIds':[stage],'inputPaths':['input.json'] if i==0 else [packets[-1]['outputPaths'][0]],
             'outputPaths':[f'out/{stage}.json'],'allowedCommands':[],
             'riskClass':'NORMAL','dependencies':[] if i==0 else [packets[-1]['packetId']]})
-    state={'schemaVersion':1,'stateRevision':1,'deviceId':'test-pc','workspace':str(root),
+    state={'productionMode':f.MODE,'schemaVersion':1,'stateRevision':1,'deviceId':'test-pc','workspace':str(root),
         'filmId':'fixture','packets':packets,'macroBundles':[], 'preflightGates':{}}
     for i in range(6):
         p=f'reports/P{i:02d}.json';file(root,p)
@@ -89,6 +89,7 @@ def test_special_action_cannot_hide_in_production_scope(tmp_path):
 
 def test_legacy_migration_backups_and_never_invents_completion(tmp_path):
     state=setup(tmp_path);ready(state,tmp_path,0)
+    state.pop('productionMode')
     state['packets'][0]['status']='QC_PASS';state['packets'][1]['status']='READY_FOR_REVIEW'
     state['legacyData']={'old':'preserved'}
     path=tmp_path/'checkpoint.json';path.write_text(json.dumps(state),encoding='utf-8');before=path.read_bytes()
@@ -178,6 +179,7 @@ def test_resume_checks_derived_input_from_another_approved_macro(tmp_path):
 
 def test_migration_keeps_runtime_proofs_and_user_metadata(tmp_path):
     state=setup(tmp_path);state['runtime']={'status':'PASS','data':'untouched'}
+    state.pop('productionMode')
     original_preflight=copy.deepcopy(state['preflightGates'])
     state['packets'][0]['status']='VISUAL_BLOCKED';state['packets'][1]['status']='BLOCKED'
     p=tmp_path/'state.json';p.write_text(json.dumps(state),encoding='utf-8')

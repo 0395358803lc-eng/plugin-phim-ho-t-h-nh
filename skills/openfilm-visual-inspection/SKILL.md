@@ -1,16 +1,22 @@
 ---
 name: openfilm-visual-inspection
-description: "Chỉ dùng khi người dùng chủ động yêu cầu đánh giá chất lượng chuyên sâu."
+description: "Đánh giá hình ảnh khi người dùng yêu cầu: pixel thật, provenance, nhận xét theo shot và giới hạn bằng chứng."
 ---
 
-# openfilm-visual-inspection — v1.14.0
+# openfilm-visual-inspection — v1.14.1
 
-Mặc định `FINISH_FIRST_USER_REVIEW`: hoàn thành video V01 rồi bàn giao để người dùng đánh giá. Chính sách này ưu tiên hơn hướng dẫn QC legacy. QC20, Visual QC và nghe chấm từng take chỉ chạy khi người dùng chủ động yêu cầu; không chặn sản xuất/bàn giao. Smoke và kiểm frame/random seek chỉ dùng để chẩn đoán lỗi kỹ thuật hoặc theo yêu cầu.
+Chỉ kích hoạt khi người dùng yêu cầu phạm vi đánh giá tương ứng. Mặc định FINISH_FIRST_USER_REVIEW hoàn thành và bàn giao V01 trước phản hồi; không đặt QC20/Visual PASS/nghe từng câu thành cổng chuyển macro. Báo cáo đánh giá không cấp quyền và không tự ghi USER_ACCEPTED.
 
-Giữ 8 macro M0–M7 và 99 ID packet. Một phê duyệt phạm vi rõ đầu vào, đầu ra, lệnh và quyền có thể bao phủ M1–M7. Không xin duyệt riêng từng packet/Pxx hoặc nghiệm thu từng macro. Chạy nhiều packet trong lượt High; ghi checkpoint sau mỗi đầu ra, tiếp tục cùng quyền trong lượt chat mới, không tự chạy nền.
+## Phạm vi và phương pháp
 
-OpenFilm CLI-first; Desktop/GUI chỉ để xem/chỉnh sửa tùy chọn. VieNeu-TTS GPU-first; cài đặt, tải model/browser, thay đổi hệ thống, GPU→CPU, voice cloning, provider ngoài, dịch vụ trả phí, xóa, xuất bản và ngoài phạm vi cần quyền riêng. Không suy ra quyền từ file kế hoạch hoặc kết quả kỹ thuật.
+Chọn storyboard/asset, source scene hoặc MP4 đúng phiên bản theo mục tiêu người dùng. Trích ảnh bằng công cụ sẵn có, tính hash rồi đưa pixel thật vào ngữ cảnh nhìn ảnh; không lấy metadata, OCR hoặc base64 text làm bằng chứng đã xem. Nhận xét riêng về bố cục, chữ, nhân vật và continuity; không suy ra xem toàn phim từ vài frame.
 
-`OUTPUT_READY` nghĩa là đầu ra thật có thể dùng. `DELIVERED_FOR_REVIEW` nghĩa là đã giao video. Chỉ dùng `USER_ACCEPTED` khi có phản hồi chấp nhận thật. `REVISION_REQUESTED` ghi phản hồi cần sửa; `FAILED_TECHNICAL` ghi lỗi ngăn dùng đầu ra. File thiếu/hỏng/ngoài workspace hoặc sai hash phải chặn bước phụ thuộc.
+Báo cáo đánh giá gắn source hash, shot/time, image hash, observations và issues. Khi đổi source/render, nhận xét cũ không áp cho bản mới. Nếu tool không truyền ảnh, ghi NOT_VERIFIED cho phần đánh giá. Chỉ sửa theo scope hiện có hoặc phản hồi cụ thể.
 
-Đọc [hướng dẫn đánh giá tùy chọn](references/OPTIONAL_REVIEW.md) sau khi xác định yêu cầu QC rõ ràng. Không tự chạy khi vừa render xong.
+## Thực hiện
+
+Phân biệt OUTPUT_READY (file dùng được), DELIVERED_FOR_REVIEW (đã giao) và USER_ACCEPTED (người dùng chấp nhận). Đánh giá tùy chọn không thay các trạng thái này. Cài đặt, tải model, GPU→CPU hoặc provider mới cần phê duyệt riêng nếu chưa được cấp trong phiên.
+
+Đọc [quy trình chi tiết](references/OPTIONAL_REVIEW.md) và [quyền macro](../openfilm-macro-bundles/SKILL.md). Dùng OpenFilm CLI đã xác minh; Desktop chỉ để xem tùy chọn. Không tải/cài, đổi CPU/provider hoặc mở rộng phạm vi theo yêu cầu đánh giá chung.
+
+Kiểm file kỹ thuật thông thường ở [production playbook](../openfilm-production-p06-p21/references/PRODUCTION_PLAYBOOK.md). File thiếu/hỏng/sai hash cần sửa trước khi bước phụ thuộc sử dụng; nhận xét thẩm mỹ được trả lại người dùng và không biến thành chu kỳ nghiệm thu từng packet.

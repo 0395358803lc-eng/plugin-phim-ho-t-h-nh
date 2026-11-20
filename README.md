@@ -1,4 +1,4 @@
-# Video-hoạt-hình v1.14.0 — Finish First — User Review Later
+# Video-hoạt-hình v1.14.1 — Finish First — User Review Later
 
 Mặc định `FINISH_FIRST_USER_REVIEW`: hoàn thành video V01 rồi bàn giao để người dùng đánh giá. Chính sách này ưu tiên hơn hướng dẫn QC legacy. QC20, Visual QC và nghe chấm từng take chỉ chạy khi người dùng chủ động yêu cầu; không chặn sản xuất/bàn giao. Smoke và kiểm frame/random seek chỉ dùng để chẩn đoán lỗi kỹ thuật hoặc theo yêu cầu.
 
@@ -36,4 +36,4 @@ OpenFilm CLI-first; Desktop/GUI chỉ để xem/chỉnh sửa tùy chọn. VieNe
 
 QC nâng cao là công cụ tùy chọn khi user yêu cầu; các báo cáo không được thay trạng thái đầu ra. Bộ kiểm tra kỹ thuật không đánh giá thẩm mỹ.
 
-Kiểm thử: `python -X utf8 -m pytest -q`. Bài OpenFilm CLI thực tế được ghi riêng trong RELEASE_v1.14.0.md; unit test không chứng minh VieNeu GPU hoặc toàn bộ runtime.
+Kiểm thử: `python -X utf8 -m pytest -q --basetemp=.validation/pytest-recheck`. [Báo cáo v1.14.1](RELEASE_v1.14.1.md) ghi 244 tests pass, 2 skip, ba cảnh thoại VieNeu GPU và V01/V02 render thực. Native host click chưa kiểm chứng; unit tests không thay bằng chứng UI. [Production playbook](skills/openfilm-production-p06-p21/references/PRODUCTION_PLAYBOOK.md) hướng dẫn nguồn, assets, audio, animation, timeline và bàn giao.

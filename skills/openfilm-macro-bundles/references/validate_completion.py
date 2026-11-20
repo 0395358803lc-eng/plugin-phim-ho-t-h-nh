@@ -5,6 +5,7 @@ spec=importlib.util.spec_from_file_location('finish_first',Path(__file__).with_n
 f=importlib.util.module_from_spec(spec);spec.loader.exec_module(f)
 
 def validate_packets(index,definitions=None):
+    if not f.enabled(index):return f.migration_errors(index) or ['MIGRATION_REQUIRED']
     errors=[];root=index.get('workspace');packets=index.get('packets',[])
     if index.get('schemaVersion')!=1:errors.append('schemaVersion must be 1')
     if type(index.get('stateRevision')) is not int:errors.append('stateRevision invalid')
@@ -54,6 +55,7 @@ def validate_packets(index,definitions=None):
     return errors
 
 def validate_stages(state):
+    if not f.enabled(state):return f.migration_errors(state) or ['MIGRATION_REQUIRED']
     errors=[];root=state.get('workspace');stages=state.get('stages')
     if state.get('schemaVersion')!=1:errors.append('schemaVersion must equal 1')
     if not isinstance(stages,list):return errors+['stages must be list']

@@ -45,6 +45,6 @@ Khi `VOICE_SOURCE_LOCK.json` chọn VieNeu, **không** gọi `openfilm get voice
 
 `openfilm get` (nếu dùng) là lệnh CLI có khả năng gọi dịch vụ/tải/tạo tài sản, chỉ chạy khi có phê duyệt cụ thể từng provider/chi phí/loại media; không dùng trong P04. Với VieNeu-TTS giữ nguồn WAV GPU-first cục bộ, không chạy `openfilm get voice/tts` để thay thế. Mọi media phải có path trong workspace, license và manifest.
 
-## v1.12.0 — Mandatory Visual Inspection & Quality Gate
+## Đánh giá hình ảnh tùy chọn theo yêu cầu
 
 Các ảnh asset M2 phải được ChatGPT **nhìn trực tiếp** qua ảnh mà Remote Desktop Commander trả về, không coi file tồn tại/URL/license là kiểm định thẩm mỹ. Cần kiểm ánh sáng, style và consistency thực; thiếu multimedia transfer thì `VISUAL_BLOCKED`. Không tự gọi dịch vụ ngoài tạo ảnh mà chưa phê duyệt. Xem `openfilm-visual-inspection`.

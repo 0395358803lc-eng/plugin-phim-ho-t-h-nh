@@ -40,4 +40,4 @@ Lệnh cụ thể và cờ luôn phải được đối chiếu **`openfilm <com
 
 **Tuyệt đối không** biến việc nâng cấp skill v1.9 thành quyền cài/ghi/render trên PC. Cần quyền P05/P06 cho cài đặt/thử nghiệm đặc biệt và quyền macro M0–M7 có scope rõ cho các lệnh CLI thường. Một lệnh `look`/`probe` nội bộ không phát sinh nút duyệt riêng. Đọc `openfilm-macro-bundles/SKILL.md` v1.11.0 (các chỉ dẫn packet-level trước đây là LEGACY). Chưa thử thực tế trên Windows: trạng thái `NOT_TESTED`, không khẳng định OpenFilm CLI đã chạy.
 
-## v1.12.0 — Mandatory Visual Inspection & Quality Gate
+## Đánh giá hình ảnh tùy chọn theo yêu cầu

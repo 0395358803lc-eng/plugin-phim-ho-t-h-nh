@@ -38,6 +38,7 @@ def internal_macro_gate(stage, status):
 
 
 def validate(state:dict)->list[str]:
+    if _vc.f.migration_errors(state):return _vc.f.migration_errors(state)
     if _vc.f.enabled(state):return _vc.validate_stages(state)
     errors=[]
     if state.get('schemaVersion')!=1:
@@ -106,6 +107,7 @@ def validate(state:dict)->list[str]:
 
 def validate_files(state:dict,workspace:Path)->list[str]:
     """Optional file/hash check. No media playback or audio review is done."""
+    if _vc.f.migration_errors(state):return _vc.f.migration_errors(state)
     if _vc.f.enabled(state):return _vc.validate_stages({**state,'workspace':str(workspace.resolve())})
     import hashlib
     issues=[]

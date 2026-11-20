@@ -3,7 +3,7 @@ name: openfilm-checkpoint-approval
 description: "Lưu checkpoint, xác minh đầu ra và migration bảo toàn dữ liệu."
 ---
 
-# openfilm-checkpoint-approval — v1.14.0
+# openfilm-checkpoint-approval — v1.14.1
 
 Mặc định `FINISH_FIRST_USER_REVIEW`: hoàn thành video V01 rồi bàn giao để người dùng đánh giá. Chính sách này ưu tiên hơn hướng dẫn QC legacy. QC20, Visual QC và nghe chấm từng take chỉ chạy khi người dùng chủ động yêu cầu; không chặn sản xuất/bàn giao. Smoke và kiểm frame/random seek chỉ dùng để chẩn đoán lỗi kỹ thuật hoặc theo yêu cầu.
 

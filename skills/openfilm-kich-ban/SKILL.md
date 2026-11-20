@@ -44,6 +44,6 @@ Với HTML/SVG/CSS thuần, tạo hoạt hình 2D, typographic, whiteboard và e
 
 Thực hiện P10.06 chọn `FILE_STORYBOARD` hoặc `OPENFILM_CANVAS` dựa runtime verified. Nếu dùng Canvas, P10.07 bố trí board được duyệt nhưng không Make nodes tự chạy. Nếu không, lưu storyboard file bình thường, không báo fail. Tham chiếu `openfilm-runtime-control/references/CANVAS_DECISION.md`.
 
-## v1.12.0 — Mandatory Visual Inspection & Quality Gate
+## Đánh giá hình ảnh tùy chọn theo yêu cầu
 
 M2 cần ChatGPT trực tiếp nhìn ảnh storyboard, nhân vật và bối cảnh đã rasterize, không chỉ đọc mô tả `.md`/SVG text/Canvas JSON. Toàn bộ `visualTargets[M2]` phải phản ánh shot/character/background IDs có thật trong nguồn được duyệt. Nếu chưa chuyển được ảnh vào ChatGPT multimodal, dừng `VISUAL_BLOCKED`, không đánh dấu chất lượng hình ảnh đạt. Xem `openfilm-visual-inspection`.

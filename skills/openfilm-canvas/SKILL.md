@@ -55,4 +55,4 @@ Trước lệnh Canvas ở P10 đọc `openfilm-runtime-control/references/CANVA
 
 Khi user chọn Canvas tại P10 và capability `openCanvas=VERIFIED` của **CLI** (không phải UI-only), dùng `openfilm canvas`/`canvas apply` bản CLI đã xác minh, cwd đúng project và có phê duyệt ghi board. Nếu thiếu CLI/canvas subcommand hoặc permission, dùng `FILE_STORYBOARD`, báo `SKIPPED_CANVAS` có bằng chứng; không bật GUI Desktop để thay CLI. Nút Make/Make all/provider/TTS bị chặn theo voice-source lock.
 
-## v1.12.0 — Mandatory Visual Inspection & Quality Gate
+## Đánh giá hình ảnh tùy chọn theo yêu cầu

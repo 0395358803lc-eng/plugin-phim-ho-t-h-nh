@@ -136,6 +136,7 @@ def next_eligible_packet(index:dict, macro_bundle_id:str, policy:dict)->str|None
     Intra-macro cross-stage dependencies can use internal QC; cross-macro needs
     actual user acceptance. Never treats a plan, log, or QC as an approval.
     """
+    if _ff.migration_errors(index):return None
     if _ff.enabled(index):
         return _flow.next_packet(index,macro_bundle_id,policy,_ordered_packets(index,policy))
     b=next((b for b in index.get('macroBundles',[]) if b.get('macroBundleId')==macro_bundle_id),None)

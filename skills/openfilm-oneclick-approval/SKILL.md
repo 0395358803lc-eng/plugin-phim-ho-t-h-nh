@@ -3,7 +3,7 @@ name: openfilm-oneclick-approval
 description: "Hiển thị thao tác tiếp tục sản xuất và đánh giá video sau bàn giao."
 ---
 
-# openfilm-oneclick-approval — v1.14.0
+# openfilm-oneclick-approval — v1.14.1
 
 Mặc định `FINISH_FIRST_USER_REVIEW`: hoàn thành video V01 rồi bàn giao để người dùng đánh giá. Chính sách này ưu tiên hơn hướng dẫn QC legacy. QC20, Visual QC và nghe chấm từng take chỉ chạy khi người dùng chủ động yêu cầu; không chặn sản xuất/bàn giao. Smoke và kiểm frame/random seek chỉ dùng để chẩn đoán lỗi kỹ thuật hoặc theo yêu cầu.
 
@@ -18,3 +18,9 @@ Nút theo giao diện host: **Tiếp tục sản xuất V01**, **Xem tiến đ�
 Nếu host không có nút thật, dùng lựa chọn văn bản ngắn; không vẽ nút giả hoặc tạo approval receipt. Xem tiến độ/Xem video là đọc, không phê duyệt. Tiếp tục chỉ dùng scope đã duyệt; nếu chưa duyệt thì trình scope cụ thể trước. Chấp nhận video cần video đã giao cùng sự kiện người dùng; yêu cầu chỉnh sửa phải có danh sách mục cần sửa. Không hỏi QC từng packet.
 
 Đọc [openfilm-macro-bundles](../openfilm-macro-bundles/SKILL.md). Validator approval legacy chỉ cho checkpoint cũ.
+
+## Kết nối host và lưu event
+
+Đọc [ONE_CLICK_CONTRACT.md](references/ONE_CLICK_CONTRACT.md) cho bảng action, payload, stale revision và ranh giới quyền. Chỉ dùng callback/API thực đang có; không giả định GenUI tồn tại. Xem tiến độ/video không tăng revision hoặc sinh approval. Không thử chấp nhận trên checkpoint thật chỉ để kiểm thử giao diện.
+
+Nếu host không hỗ trợ nút, liên kết file và câu trả lời trong chat là đường dùng thực. Ghi rõ UI chưa kiểm chứng, không lấy test Python làm bằng chứng đã click trong ChatGPT. Một lần cấp scope nhiều macro được giữ khi tiếp tục, không trình lại 99 packet.

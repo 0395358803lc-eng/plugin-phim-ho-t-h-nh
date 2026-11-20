@@ -36,4 +36,4 @@ Nguồn kỹ thuật GSAP: https://gsap.com/docs/v3/GSAP/Timeline/seek%28%29/ .
 
 Cùng nguyên tắc paused + seek nhưng timeline gốc là frame Remotion: `const frame=useCurrentFrame(); const {fps}=useVideoConfig(); tl.seek(frame/fps)` khi DOM đã mount và các tween `fromTo` có start/end xác định. Với hiệu ứng đơn giản ưu tiên `interpolate` để tránh effect/state của GSAP gây lệch frame trong SSR. Không để timeline tự play/ticker; không truy cập `window` ở module scope khi SSR. Xem `openfilm-audio-subtitles` để xử lý phần audio nằm ngoài scene GSAP.
 
-## v1.12.0 — Mandatory Visual Inspection & Quality Gate
+## Đánh giá hình ảnh tùy chọn theo yêu cầu

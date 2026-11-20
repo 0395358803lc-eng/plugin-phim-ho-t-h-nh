@@ -1,40 +1,21 @@
-> v1.14.0: FINISH_FIRST_USER_REVIEW ưu tiên. Đây là công thức kỹ thuật/tham khảo; mọi đánh giá thẩm mỹ chỉ theo yêu cầu người dùng, mọi cổng QC legacy không chặn V01. OpenFilm CLI-first, GUI tùy chọn.
+# QC nâng cao tùy chọn — v1.14.1
 
-Chỉ dùng khi người dùng chủ động yêu cầu QC. Không có quyền chặn macro hoặc bàn giao.
+Chỉ kích hoạt khi user yêu cầu QC chuyên sâu hoặc một phép chẩn đoán kỹ thuật cụ thể. Không tự chạy QC20, smoke, random seek ở mọi lần render. Bộ kiểm tra này không cấp quyền, không đổi video thành USER_ACCEPTED và không chặn V01 chỉ vì báo cáo chưa có.
 
-# Quy trình đánh giá tùy chọn
+## Determinism và random seek
 
-Chỉ áp dụng khi người dùng yêu cầu đánh giá chất lượng. Không chặn sản xuất hoặc bàn giao V01. Các từ “bắt buộc” dưới đây chỉ ràng buộc báo cáo đánh giá được yêu cầu, không phải tiến độ phim.
+FilmData dùng integer frames, random có seed. GSAP paused+seek, Three/R3F transform tính từ thời gian/frame; audio trên track riêng. Khi cần chẩn đoán, so cùng frame sau thứ tự khác nhau, ví dụ [0,90,15,90,0] nếu clip đủ dài. Dùng t=frame/fps cho OpenFilm hoặc useCurrentFrame cho Remotion. Lưu ảnh source/version và môi trường GPU; so pixel trong tolerance phù hợp, không đòi bit-identical giữa GPU khác.
 
+Kiểm boundary endFrame-1/next.startFrame để tìm flash, thiếu media hoặc jump. Chỉ thử phần có liên quan lỗi; sau sửa giữ bằng chứng trước/sau, không mở vòng nghiệm thu toàn bộ phim.
 
+## Smoke có mục đích
 
-# QC nâng cao và smoke 5 giây (N14, N16, N18)
+Khi cần, render một đoạn đại diện 5 giây (5×fps frames) bằng runtime hiện có: hình, WAV, subtitle, 3D nếu phim có. P06 tone fixture kiểm đường render/audio; nó không chứng minh VieNeu hoạt động. P18 sample phim thật chỉ dùng để chẩn đoán tích hợp khi cần; không có quy tắc P18 FAIL khóa P19 do thiếu đánh giá thẩm mỹ.
 
-Cần sau `openfilm-filmdata`, `openfilm-audio-subtitles` và `openfilm-render-profiles`. Nguồn 20 mục từ báo cáo đính kèm; xem `references/QC20.md`. **Không đánh dấu PASS nếu chưa có artifact thực**: nguồn mẫu, TSX hoặc lệnh dự kiến không thay thế video đã render.
+Ghi command, output, decode/probe và phần đã xem/nghe thực tế. Lỗi kỹ thuật xác định được phải sửa trong scope trước khi dùng file hỏng; thiếu yêu cầu QC thì không tạo nghĩa vụ nghe/xem thêm.
 
-## Determinism và kiểm thử ở frame bất kỳ
+## QC20 khi được yêu cầu rõ
 
-1. Có bản dữ liệu integer frames, cố định seed của random, GSAP timeline paused+seek, Three/R3F transform tính trực tiếp từ frame, VieNeu audio nằm trên timeline riêng.
-2. So sánh ít nhất các mốc [0, giữa, cuối-1] và trình tự random `[0, 90, 15, 90, 0]` nếu clip dài đủ. Với OpenFilm dùng `window.film.frame(t)` với `t=frame/fps`; Remotion dùng `useCurrentFrame` và render frame sequence. So sánh pixel trong tolerance/hardware, không đòi bit-identical khác GPU.
-3. So sánh shot boundary `endFrame-1` và `next.startFrame`, phát hiện missing media, frame đen/nhảy cảnh.
+Danh mục tham khảo ở [QC20.md](QC20.md). Ghi trạng thái từng mục PASS/FAIL/NOT_VERIFIED và bằng chứng; mục không phù hợp có lý do. Tập trung source/script, asset/license, font, framing, determinism, voice/captions, color, encode và package. Không phục hồi quy tắc khóa P19/P21, phê duyệt từng stage hoặc bắt user nghe mỗi take từ tài liệu cũ.
 
-## Smoke
-
-- **SMOKE-01:** sau khi đã được duyệt và dependencies/runtime đã kiểm, render **5 giây, 150 frames ở 30fps** (hoặc 5*fps theo profile) gồm hình 2D, 3D nếu bật, một WAV mẫu có quyền, phụ đề và SFX/nhạc nếu cần. Output trong `WORKSPACE/renders/smoke/`, không ghi đè nguồn; không `npx` fallback download.
-- **SMOKE-02:** dùng FFprobe đo streams, codec, FPS, width/height, duration, sample rate; đọc log; phát video cả hình và tiếng. Chỉ PASS nếu file thực tồn tại và xem/nghe được.
-- **SMOKE-03:** đối chiếu sample gốc/timeline. Fail → báo nguyên nhân và xin duyệt phạm vi sửa; không âm thầm tiếp tục master.
-
-## QC 20 điều kiện
-
-Mỗi mục trong `references/QC20.md` có ba trạng thái `PASS/FAIL/BLOCKED` và evidence path/line. Khóa phát hành nếu script chưa khóa, voice chưa nghe, font sai, soundtrack thiếu license, model/texture missing, codec không phù hợp, hoặc QC master thiếu. Bảo toàn SRT, WAV, project source, manifest, logs. Render preview và master cần phê duyệt công đoạn riêng nếu yêu cầu.
-
-## Kết nối P18–P21 v1.5.0
-
-Mọi lần smoke/draft/QC20/master phải ghi bằng chứng từng stage trong `reports/PRODUCTION_STATUS.json` theo `openfilm-checkpoint-approval`. P18 FAIL khóa P19, P20 FAIL khóa P21. P21 PASS chỉ nếu master MP4 thật có FFprobe + phát/quan sát/nghe thật; log render đơn lẻ không chứng minh có video. Bản draft sau sửa phải có revision mới, chỉ invalidate unit/shot/sequence bị ảnh hưởng.
-
-## Hai smoke độc lập v1.8.0
-
-OpenFilm E2E P06 kiểm tra máy/runtime trên project fixture 7s (cảnh + WAV tone + VTT), còn P18 kiểm tra timeline/thành phẩm thực đã tích hợp nhiều shots và VieNeu khi bật. Không gộp PASS hai bài test; FFprobe và kiểm xem/nghe riêng. Khi CLI không khả dụng nhưng GUI đã xác minh, chỉ thử qua GUI sau duyệt, không dùng npx tải hoặc ghi sai trạng thái.
-
-## v1.12.0 — Mandatory Visual Inspection & Quality Gate
-QC20 ở M6 phải bao gồm trực tiếp đọc frame trích từ **draft MP4** của tất cả `shot_id` được materialize, không chỉ FFprobe/JSON. M7 kiểm lại frame từ **FINAL_MASTER.mp4**; bản draft không thay thế được. Ghi nhận xét thị giác thật và source/image hash, report `qc/visual/M6|M7`, chặn PASS/accept nếu thiếu; xem `openfilm-visual-inspection/SKILL.md`. Không tuyên bố full video playback từ frame sample, QC âm thanh/voice vẫn riêng.
+Báo cáo chỉ kết luận trong phạm vi thực kiểm. Review bản V01 không áp cho V02 khi hash đổi. Đề nghị sửa có targetIds và category rõ; execution dùng quyền hiện hành, chỉ xin quyền mới cho phần ngoài scope. Bàn giao phim vẫn theo finish-first và đánh giá cuối của người dùng.

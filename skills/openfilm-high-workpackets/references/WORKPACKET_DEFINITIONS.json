@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pluginVersion": "1.14.0",
+  "pluginVersion": "1.14.1",
   "minStages": "P06-P21",
   "selectionPolicy": "first dependency ready approved bundle, execute multiple compatible internal packets per High turn, checkpoint each",
   "dynamicExpansion": "materialize only IDs verified from source manifests; stable-sort by appearance in source; preserve completed packets",

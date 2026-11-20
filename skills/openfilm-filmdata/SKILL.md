@@ -37,4 +37,4 @@ QC tối thiểu: validate JSON; 6 shot sample liên tục đủ 2700 frames; 7 
 
 Trước P09, P07 phải đọc nội dung thật theo `openfilm-script-input`, xác minh header CSV và mapping scene/dialogue/person vào FilmData, giữ source bản gốc. Không lấy ảnh danh sách tệp thay cho nội dung. P09 cung cấp FilmData đã kiểm chứng cho checkpoint `openfilm-checkpoint-approval`; khi WAV thật thay thời lượng thì invalidation P13 và những scene/timeline downstream bị ảnh hưởng sau duyệt.
 
-## v1.12.0 — Mandatory Visual Inspection & Quality Gate
+## Đánh giá hình ảnh tùy chọn theo yêu cầu

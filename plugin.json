@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "video-hoat-hinh",
-  "version": "1.14.0",
+  "version": "1.14.1",
   "description": "Video hoạt hình Finish First: hoàn thành V01 rồi người dùng đánh giá; OpenFilm CLI-first, VieNeu GPU-first, 8 macro, 99 packet và ZIP ảnh.",
   "license": "MIT",
   "keywords": [
@@ -67,7 +67,7 @@
       "interface": {
         "displayName": "Video-hoạt-hình",
         "shortDescription": "Tạo & biên tập hoạt hình",
-        "longDescription": "Video-hoạt-hình v1.14.0 — Finish First — User Review Later. Sản xuất V01 từ 7 tệp nguồn đến FilmData, asset, WAV GPU, hoạt hình, timeline và MP4 dùng được. Một phạm vi phê duyệt có thể bao phủ M1–M7; giữ 8 macro, 99 ID packet, checkpoint và ZIP ảnh. OpenFilm CLI-first; VieNeu-TTS GPU-first. Bàn giao DELIVERED_FOR_REVIEW trước đánh giá chất lượng. Chỉ USER_ACCEPTED khi người dùng chấp nhận; sửa theo phản hồi thành V02/V03, giữ bản cũ. QC chất lượng tùy chọn khi user yêu cầu. Cài/tải/thay đổi hệ thống/CPU fallback/voice cloning/provider/phí/xóa/xuất bản cần quyền riêng. Không tự chạy nền hoặc báo hoàn thành khi thiếu file thật.",
+        "longDescription": "Video-hoạt-hình v1.14.1 — Finish First — User Review Later. Sản xuất V01 từ 7 tệp nguồn đến FilmData, asset, WAV GPU, hoạt hình, timeline và MP4 dùng được. Một phạm vi phê duyệt có thể bao phủ M1–M7; giữ 8 macro, 99 ID packet, checkpoint và ZIP ảnh. OpenFilm CLI-first; VieNeu-TTS GPU-first. Bàn giao DELIVERED_FOR_REVIEW trước đánh giá chất lượng. Chỉ USER_ACCEPTED khi người dùng chấp nhận; sửa theo phản hồi thành V02/V03, giữ bản cũ. QC chất lượng tùy chọn khi user yêu cầu. Cài/tải/thay đổi hệ thống/CPU fallback/voice cloning/provider/phí/xóa/xuất bản cần quyền riêng. Không tự chạy nền hoặc báo hoàn thành khi thiếu file thật.",
         "developerName": "ow fe",
         "category": "Creativity",
         "capabilities": [

@@ -37,4 +37,4 @@ Nguồn kỹ thuật: https://threejs.org/docs/pages/WebGLRenderer ; đặc tả
 
 Nếu master là Remotion, không bọc nguyên trang OpenFilm WebGL trong JSX. Chọn `openfilm-remotion-r3f`, dùng `@remotion/three`/`<ThreeCanvas>` và `useCurrentFrame()`; không `useFrame` tích lũy state, phải test ANGLE/headless WebGL. Nếu đang OpenFilm Master, vẫn dùng `frame(t)` như các phần trên. Không tự cài `@react-three/fiber` hoặc đổi GPU driver; B05–B10 là thành phần tùy chọn.
 
-## v1.12.0 — Mandatory Visual Inspection & Quality Gate
+## Đánh giá hình ảnh tùy chọn theo yêu cầu

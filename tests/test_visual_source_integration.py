@@ -39,7 +39,7 @@ def test_validator_is_enforced_by_macro_accept_events():
 
 def test_root_and_legacy_manifest_remain_in_sync_with_prompt_and_private_identity():
     root=json.loads(read('plugin.json'));leg=json.loads(read('.codex-plugin/plugin.json'))
-    assert root['version']==leg['version']=='1.14.0'
+    assert root['version']==leg['version']=='1.14.1'
     assert root['name']==leg['name']=='video-hoat-hinh'
     assert root['extensions']['com.openai']['interface']==leg['interface']
     assert len(root['extensions']['com.openai']['interface']['defaultPrompt'])==3

@@ -20,7 +20,25 @@ SPECIAL = {'PACKAGE_INSTALL', 'MODEL_DOWNLOAD', 'BROWSER_DOWNLOAD', 'SYSTEM_CHAN
            'DELETE', 'PUBLISH', 'OUT_OF_SCOPE'}
 
 def enabled(state):
-    return state.get('productionMode', MODE) != 'LEGACY_QC'
+    return checkpoint_kind(state) == MODE
+
+def checkpoint_kind(state):
+    """Missing mode is never evidence of a new project, even with a new version."""
+    mode=state.get('productionMode')
+    if mode is None:return 'LEGACY_UNDECLARED'
+    if mode=='LEGACY_QC':return 'LEGACY_QC'
+    if mode!=MODE:return 'UNSUPPORTED_MODE'
+    version=state.get('pluginVersion')
+    if version is not None:
+        match=re.fullmatch(r'(\d+)\.(\d+)\.(\d+)(?:[-+].*)?',str(version))
+        if not match:return 'UNSUPPORTED_VERSION'
+        if tuple(map(int,match.groups()))<(1,14,0):return 'LEGACY_VERSION'
+    return MODE
+
+def migration_errors(state):
+    kind=checkpoint_kind(state)
+    if kind in (MODE,'LEGACY_QC'):return []
+    return [f'MIGRATION_REQUIRED: {kind}; inspect and back up checkpoint before Finish First execution']
 
 def digest(path):
     with Path(path).open('rb') as stream:
@@ -133,7 +151,7 @@ def user_event(event):
     return bool(event.get('approvalId') and event.get('source') in ('USER_CHAT','HOST_BUTTON') and event.get('at'))
 
 def authorized(bundle):
-    return bool(bundle.get('planApprovalId') and bundle.get('approvedScopeSha256') == scope_digest(bundle))
+    return bool(not bundle.get('scopeRevalidationRequired') and bundle.get('planApprovalId') and bundle.get('approvedScopeSha256') == scope_digest(bundle))
 
 def packet_scope_errors(packet, bundle, policy):
     errors=[]

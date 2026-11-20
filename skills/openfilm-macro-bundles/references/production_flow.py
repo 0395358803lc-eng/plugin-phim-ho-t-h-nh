@@ -12,6 +12,7 @@ def load(name):
 f=load('finish_first')
 
 def next_packet(index, bundle_id, policy, ordered):
+    if not f.enabled(index):return None
     bundle=next((b for b in index.get('macroBundles',[]) if b.get('macroBundleId')==bundle_id),None)
     if not bundle or bundle.get('status') not in ('APPROVED','IN_PROGRESS') or not f.authorized(bundle):
         return None
@@ -55,6 +56,7 @@ def next_packet(index, bundle_id, policy, ordered):
 SCOPE_FIELDS=('macroId','macroIds','stageIds','packetIds','scopeIds','allowedPaths','allowedCommands','riskClass','inputHashes','specialApprovalRequired')
 
 def validate_event(index,event,policy):
+    if not f.enabled(index):return f.migration_errors(index) or ['MIGRATION_REQUIRED: legacy checkpoint cannot execute Finish First events']
     errors=[]
     action=event.get('action')
     if action not in ('APPROVE_PRODUCTION','APPROVE_MACRO','RESUME_APPROVED_MACRO','COMPLETE_MACRO',
@@ -142,6 +144,7 @@ def apply_event(index,event,policy):
         if b['macroBundleId'] not in ids:continue
         if action in ('APPROVE_PRODUCTION','APPROVE_MACRO'):
             b.update(status='APPROVED',planApprovalId=event['approvalId'],approvedScopeSha256=f.scope_digest(b))
+            b.pop('scopeRevalidationRequired',None)
             for p in result['packets']:
                 if p['packetId'] in b['packetIds']:p['planApprovalId']=event['approvalId']
         elif action in ('COMPLETE_MACRO','ACCEPT_MACRO'):b['status']='OUTPUT_READY'

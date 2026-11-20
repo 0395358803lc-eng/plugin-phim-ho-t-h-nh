@@ -3,7 +3,7 @@ name: openfilm-macro-bundles
 description: "Điều phối 8 macro và phê duyệt phạm vi nhiều macro, giữ 99 packet và checkpoint."
 ---
 
-# openfilm-macro-bundles — v1.14.0
+# openfilm-macro-bundles — v1.14.1
 
 Mặc định `FINISH_FIRST_USER_REVIEW`: hoàn thành video V01 rồi bàn giao để người dùng đánh giá. Chính sách này ưu tiên hơn hướng dẫn QC legacy. QC20, Visual QC và nghe chấm từng take chỉ chạy khi người dùng chủ động yêu cầu; không chặn sản xuất/bàn giao. Smoke và kiểm frame/random seek chỉ dùng để chẩn đoán lỗi kỹ thuật hoặc theo yêu cầu.
 
@@ -44,3 +44,13 @@ QC nâng cao là công cụ tùy chọn khi user yêu cầu; các báo cáo khô
 Rủi ro riêng: PACKAGE_INSTALL, MODEL_DOWNLOAD, BROWSER_DOWNLOAD, SYSTEM_CHANGE, GPU_TO_CPU_FALLBACK, VOICE_CLONING, EXTERNAL_PROVIDER, PAID_ACTION, DELETE, PUBLISH, OUT_OF_SCOPE. Phê duyệt cài đặt phải riêng.
 
 P00–P05 phải có bằng chứng chọn thiết bị/workspace và quyền sử dụng runtime hiện có.
+
+## API và trách nhiệm lưu trạng thái
+
+Đọc [OPERATIONS.md](references/OPERATIONS.md) cho migration và khôi phục quyền. `finish_first.checkpoint_kind` nhận diện mode; thiếu mode trả LEGACY_UNDECLARED, phiên bản trước 1.14 trả LEGACY_VERSION, không tự chọn Finish First. `migration_errors` được kiểm ở scheduler và validators trước mọi action.
+
+`macro_scheduler.propose` chỉ lập scope, không cấp quyền. `production_flow.validate_event` kiểm event thật do host/user cung cấp; `apply_event` trả bản sao. Executor chịu trách nhiệm chạy đúng allowedCommands/allowedPaths, đối chiếu output thực rồi ghi checkpoint atomic. Các hàm không tự chạy công cụ hay tạo callback UI.
+
+Khi tiếp tục, kiểm seal của từng bundle, source hash và output của packet trước. Macro trước OUTPUT_READY không cần ACCEPT_MACRO để macro tiếp đã duyệt chạy. Scope/identity đổi phải được đối chiếu; không tái sử dụng seal cũ. Sau mỗi file hoàn thành, lưu outputHashes và revision, giữ eventHistory gốc. Bản ghi JSON source=USER_CHAT tự nó không chứng minh user đã cấp quyền.
+
+P20 không chặn V01: chỉ lập sửa đổi khi có phản hồi. revision_history giữ videoHistory và xác minh SHA bản cũ; feedback phải có category, targetIds, request. Output mới OUTPUT_READY rồi DELIVERED_FOR_REVIEW; chỉ ACCEPT_VIDEO thực mới tạo USER_ACCEPTED.

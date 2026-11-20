@@ -39,6 +39,6 @@ Mã cảnh OpenFilm được viết **đè có kiểm soát vào bản working c
 ## Đường kiểm tra OpenFilm CLI v1.9.0
 
 
-## v1.12.0 — Mandatory Visual Inspection & Quality Gate
+## Đánh giá hình ảnh tùy chọn theo yêu cầu
 
 Đầu ra là mã cảnh thật theo FilmData, assets truy cập được và render được bằng OpenFilm CLI. Kiểm năm mốc ảnh/random seek chỉ để chẩn đoán hoặc theo yêu cầu; không chấm hình trước khi chuyển tiếp.

@@ -3,7 +3,7 @@ name: openfilm-production-p06-p21
 description: "Sản xuất P06–P21 từ đầu ra thực đến bàn giao V01; P20 phản hồi tùy chọn."
 ---
 
-# openfilm-production-p06-p21 — v1.14.0
+# openfilm-production-p06-p21 — v1.14.1
 
 Mặc định `FINISH_FIRST_USER_REVIEW`: hoàn thành video V01 rồi bàn giao để người dùng đánh giá. Chính sách này ưu tiên hơn hướng dẫn QC legacy. QC20, Visual QC và nghe chấm từng take chỉ chạy khi người dùng chủ động yêu cầu; không chặn sản xuất/bàn giao. Smoke và kiểm frame/random seek chỉ dùng để chẩn đoán lỗi kỹ thuật hoặc theo yêu cầu.
 
@@ -40,3 +40,9 @@ OpenFilm CLI-first; Desktop/GUI chỉ để xem/chỉnh sửa tùy chọn. VieNe
 `migrate_checkpoint.py CHECKPOINT --workspace WORKSPACE` sao lưu byte gốc trước khi thay checkpoint. QC_PASS/READY_FOR_REVIEW/PASS chỉ đổi OUTPUT_READY khi file tồn tại, dùng được và đúng hash; thiếu file đổi FAILED_TECHNICAL. BLOCKED kỹ thuật được giữ; VISUAL_BLOCKED đổi PLANNED để tiếp tục sản xuất, không tự hoàn thành. ID và dữ liệu cũ được giữ. Quyền cũ cần đối chiếu lại snapshot, không tự tạo approval. LEGACY_QC chỉ phục vụ đọc/kiểm thử checkpoint cũ, không chọn cho dự án mới.
 
 QC nâng cao là công cụ tùy chọn khi user yêu cầu; các báo cáo không được thay trạng thái đầu ra. Bộ kiểm tra kỹ thuật không đánh giá thẩm mỹ.
+
+## Hướng dẫn triển khai chi tiết
+
+Đọc [PRODUCTION_PLAYBOOK.md](references/PRODUCTION_PLAYBOOK.md) trước khi dựng: tài liệu quy định cây thư mục, bảy nguồn, FilmData integer frames, storyboard/asset provenance, thiết bị CUDA của model/codec, timing WAV/captions, GSAP seek và Three/R3F, timeline và lệnh render/giải mã. Đọc [bảng điều phối](../video-hoat-hinh/SKILL.md) để chọn đúng kỹ năng theo công cụ. Không yêu cầu Remotion/Three.js nếu phim 2D OpenFilm đã đủ.
+
+Ví dụ thật có thể tái lập từ scripts/run_vieneu_gpu.py và scripts/build_production_sample.py ở root plugin: ba cảnh, thoại GPU local, source V01/V02 độc lập. Bài mẫu chỉ chạy theo yêu cầu thử nghiệm, không phải một cổng mới cho mọi dự án.

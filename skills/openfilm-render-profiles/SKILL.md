@@ -37,5 +37,5 @@ Mốc `RENDER_READY` chỉ PASS khi runtime, bản quyền, asset, TTS, phụ đ
 
 Phân biệt mode `openfilm` vs `remotion`. Với `openfilm` chạy bản CLI đã xác minh `render --out ... --fps ...`/`--workers` (chỉ nếu bản cài hỗ trợ) bằng cwd project có `film.html`; không tự cập nhật OpenFilm hay Chromium. Với Remotion Master, OpenFilm CLI chỉ xuất previews; profile final thuộc Remotion. Check FFprobe trước PASS.
 
-## v1.12.0 — Mandatory Visual Inspection & Quality Gate
+## Đánh giá hình ảnh tùy chọn theo yêu cầu
 Dù codec/FPS/bitrate đạt qua FFprobe, **không nghiệm thu thị giác** M5/M6/M7 nếu ChatGPT chưa xem ảnh frame trích từ chính output MP4. Chọn khung START/MID/END theo mỗi shot ở draft/master và bổ sung cảnh chuyển động nhanh/cut; không tự hạ profile để che lỗi khi chưa được duyệt. Xem `openfilm-visual-inspection`.
